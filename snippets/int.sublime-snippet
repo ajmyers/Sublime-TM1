@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[INT(${1:nValue})]]></content>
+   <tabTrigger>INT</tabTrigger>
+   <scope>source.tm1</scope>
+   <description></description>
+</snippet>

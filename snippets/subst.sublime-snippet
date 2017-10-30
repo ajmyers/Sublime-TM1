@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[SUBST(${1:sValue}, ${2:nPos}, ${3:nLength})]]></content>
+   <tabTrigger>SUBST</tabTrigger>
+   <scope>source.tm1</scope>
+   <description></description>
+</snippet>

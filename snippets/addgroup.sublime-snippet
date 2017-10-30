@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[ADDGROUP(${1:sGroup});]]></content>
+   <tabTrigger>ADDGROUP</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description></description>
+</snippet>

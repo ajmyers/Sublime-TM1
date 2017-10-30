@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[GETPROCESSERRORFILENAME()]]></content>
+   <tabTrigger>GETPROCESSERRORFILENAME</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description></description>
+</snippet>

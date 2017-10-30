@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[ELISANC(${1:sDim}, ${2:sElePar}, ${3:sEle})]]></content>
+   <tabTrigger>ELISANC</tabTrigger>
+   <scope>source.tm1</scope>
+   <description></description>
+</snippet>

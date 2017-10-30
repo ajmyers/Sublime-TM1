@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[SETUSEACTIVESANDBOXPROPERTY(${1:0});]]></content>
+   <tabTrigger>SETUSEACTIVESANDBOXPROPERTY</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description>0=Write to base data, 1=Write to active sandbox</description>
+</snippet>

@@ -1,0 +1,21 @@
+<snippet>
+   <content><![CDATA[${3:sLoopString} = TRIM(${1:cLoopString});
+${3} = ${3} | IF(SUBST(${3}, LONG(${3}), 1) @<> '${8:|}', '${8}', '');
+
+${4:nStart} = 1;
+${5:nCurPos} = 1;
+WHILE(${5} <= LONG(${3}));
+   ${6:sCurChar} = SUBST(${3}, ${5}, 1);
+   IF(${6} @= '${8}');
+      ${2:sEle} = SUBST(${3}, ${4}, ${5} - ${4});
+
+      ${7:}
+
+      ${4} = ${5} + 1;
+   ENDIF;
+   ${5} = ${5} + 1;
+END;]]></content>
+   <tabTrigger>_ITERATE-STRING-WITH-PIPE-SEPARATOR</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description>While loop that iterates over a sing of objects separated by a pipe</description>
+</snippet>

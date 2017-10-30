@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[PROCESSQUIT();]]></content>
+   <tabTrigger>PROCESSQUIT</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description></description>
+</snippet>

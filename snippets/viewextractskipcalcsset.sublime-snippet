@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[VIEWEXTRACTSKIPCALCSSET(${1:sCube}, ${2:sView}, ${3:1});]]></content>
+   <tabTrigger>VIEWEXTRACTSKIPCALCSSET</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description></description>
+</snippet>

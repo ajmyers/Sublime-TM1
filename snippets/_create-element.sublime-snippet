@@ -1,0 +1,20 @@
+<snippet>
+   <content><![CDATA[${6:sDim} = ${1:};
+${7:sEle} = ${2:};
+${8:sElePar} = ${3:};
+
+IF(DIMIX(${6}, ${7}) = 0);
+   DIMENSIONELEMENTINSERT(${6}, '', ${7}, '${4:N}');
+ENDIF;
+
+IF(DIMIX(${6}, ${8}) = 0);
+   DIMENSIONELEMENTINSERT(${6}, '', ${8}, 'C');
+ENDIF;
+
+IF(ELISCOMP(${6}, ${7}, ${8}) = 0);
+   DIMENSIONELEMENTCOMPONENTADD(${6}, ${8}, ${7}, ${5:1});
+ENDIF;]]></content>
+   <tabTrigger>_CREATE-ELEMENT</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description>Code creates a dimension element, optionally adding to parent.</description>
+</snippet>

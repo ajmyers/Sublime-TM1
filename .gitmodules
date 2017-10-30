@@ -1,0 +1,3 @@
+[submodule "include/TM1py"]
+	path = include/TM1py
+	url = https://github.com/cubewise-code/TM1py

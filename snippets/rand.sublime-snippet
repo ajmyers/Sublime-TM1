@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[RAND()]]></content>
+   <tabTrigger>RAND</tabTrigger>
+   <scope>source.tm1</scope>
+   <description></description>
+</snippet>

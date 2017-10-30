@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[CUBEDATARESERVATIONACQUIRE(${1:Cube}, ${2:User}, ${3:bForce}, ${4:Address}, ${5:[AddressDelimiter]})]]></content>
+   <tabTrigger>CUBEDATARESERVATIONACQUIRE</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description></description>
+</snippet>

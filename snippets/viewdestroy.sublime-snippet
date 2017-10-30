@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[VIEWDESTROY(${1:sCube}, ${2:sView});]]></content>
+   <tabTrigger>VIEWDESTROY</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description></description>
+</snippet>

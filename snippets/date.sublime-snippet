@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[DATE(${1:nDate}${2, :<ReturnFourDigitYear>})]]></content>
+   <tabTrigger>DATE</tabTrigger>
+   <scope>source.tm1</scope>
+   <description></description>
+</snippet>

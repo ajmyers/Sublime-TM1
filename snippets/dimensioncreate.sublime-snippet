@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[DIMENSIONCREATE(${1:sDim});]]></content>
+   <tabTrigger>DIMENSIONCREATE</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description></description>
+</snippet>

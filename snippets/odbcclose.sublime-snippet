@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[ODBCCLOSE(${1:sSource})]]></content>
+   <tabTrigger>ODBCCLOSE</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description></description>
+</snippet>

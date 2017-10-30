@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[PROCESSERROR();]]></content>
+   <tabTrigger>PROCESSERROR</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description></description>
+</snippet>

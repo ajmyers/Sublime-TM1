@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[VIEWEXISTS(${1:sCube}, ${2:sView})]]></content>
+   <tabTrigger>VIEWEXISTS</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description></description>
+</snippet>

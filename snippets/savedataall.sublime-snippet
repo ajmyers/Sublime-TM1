@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[SAVEDATAALL();]]></content>
+   <tabTrigger>SAVEDATAALL</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description></description>
+</snippet>

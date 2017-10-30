@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[GETPROCESSERRORFILEDIRECTORY()]]></content>
+   <tabTrigger>GETPROCESSERRORFILEDIRECTORY</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description></description>
+</snippet>

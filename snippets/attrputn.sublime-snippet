@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[ATTRPUTN(${1:nValue}, ${2:sDim}, ${3:sEle}, ${4:sAttr});]]></content>
+   <tabTrigger>ATTRPUTN</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description></description>
+</snippet>

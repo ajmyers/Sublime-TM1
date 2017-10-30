@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[EXPAND(${1:sValue})]]></content>
+   <tabTrigger>EXPAND</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description></description>
+</snippet>

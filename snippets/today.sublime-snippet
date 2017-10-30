@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[TODAY(${1:1})]]></content>
+   <tabTrigger>TODAY</tabTrigger>
+   <scope>source.tm1</scope>
+   <description>0: return YY-MM-DD, 1: return YYYY-MM-DD</description>
+</snippet>

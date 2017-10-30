@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[CELLISUPDATEABLE(${1:sCube}, ${2:sEle1}, ${3:sEle2}${4:, ...})]]></content>
+   <tabTrigger>CELLISUPDATEABLE</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description></description>
+</snippet>

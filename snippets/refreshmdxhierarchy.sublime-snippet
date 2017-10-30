@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[REFRESHMDXHIERARCHY(${1:sDim})]]></content>
+   <tabTrigger>REFRESHMDXHIERARCHY</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description></description>
+</snippet>

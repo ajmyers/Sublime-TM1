@@ -1,0 +1,11 @@
+<snippet>
+   <content><![CDATA[${5:sDim} = ${1:''};
+${6:sEle} = ${2:''};
+
+IF(DIMIX(${5}, ${6}) ${3:=} ${4:0});
+   PROCESSERROR();
+ENDIF;]]></content>
+   <tabTrigger>_CHECK-DIMENSION-ELEMENT-EXISTS</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description>Code determines whether an element exists in a dimension and PROCESSERROR() if false.</description>
+</snippet>

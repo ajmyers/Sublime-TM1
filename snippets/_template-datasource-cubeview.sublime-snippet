@@ -1,0 +1,12 @@
+<snippet>
+   <content><![CDATA[###############################################################################
+### DATASOURCE:
+###      type: "TM1CubeView"
+###      data_source_name_for_client: "${1:CubeName}"
+###      data_source_name_for_server: "${1}"
+###      view: "${2:ViewName}"
+###############################################################################]]></content>
+   <tabTrigger>_TEMPLATE-DATASOURCE-CUBEVIEW</tabTrigger>
+   <scope>source.tm1</scope>
+   <description>Inserts a TI template block for defining a cube view datasource</description>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[UPPER(${1:sValue})]]></content>
+   <tabTrigger>UPPER</tabTrigger>
+   <scope>source.tm1</scope>
+   <description></description>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[ELEMENTSECURITYGET(${1:sDim}, ${2:sEle}, ${3:sGroup})]]></content>
+   <tabTrigger>ELEMENTSECURITYGET</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description></description>
+</snippet>

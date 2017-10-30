@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[SUBSETISALLSET(${1:sDim}, ${2:sSub}, ${3:1})]]></content>
+   <tabTrigger>SUBSETISALLSET</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description></description>
+</snippet>

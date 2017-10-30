@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[CUBEEXISTS(${1:sCube})]]></content>
+   <tabTrigger>CUBEEXISTS</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description></description>
+</snippet>

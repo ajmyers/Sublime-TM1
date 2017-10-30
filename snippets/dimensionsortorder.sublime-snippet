@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[DIMENSIONSORTORDER(${1:sDim}, ${2:'BYINPUT, BYNAME'}, ${3:'ASCENDING'}, ${4:'BYINPUT, BYNAME, BYLEVEL, BYHIERARCHY'}, ${5:'ASCENDING'})]]></content>
+   <tabTrigger>DIMENSIONSORTORDER</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description></description>
+</snippet>

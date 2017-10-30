@@ -1,0 +1,11 @@
+<snippet>
+   <content><![CDATA[${5:sDim} = ${1:''};
+${6:sEle} = ${2:''};
+
+IF(ELLEV(${5}, ${6}) ${3:<>} ${4:0});
+   PROCESSERROR();
+ENDIF;]]></content>
+   <tabTrigger>_CHECK-DIMENSION-ELEMENT-LEVEL-ZERO</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description>Code determines whether an element is level 0 and PROCESSERROR() if false.</description>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[ROUNDP(${1:nValue}, ${2:nDecimalPlaces})]]></content>
+   <tabTrigger>ROUNDP</tabTrigger>
+   <scope>source.tm1</scope>
+   <description></description>
+</snippet>

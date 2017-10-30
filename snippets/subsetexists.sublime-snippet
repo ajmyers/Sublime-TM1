@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[SUBSETEXISTS(${1:sDim}, ${2:sSub})]]></content>
+   <tabTrigger>SUBSETEXISTS</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description></description>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[BATCHUPDATESTART();]]></content>
+   <tabTrigger>BATCHUPDATESTART</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description></description>
+</snippet>

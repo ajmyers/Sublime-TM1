@@ -1,0 +1,63 @@
+%YAML 1.2
+---
+name: TM1 Turbo Integrator
+file_extensions: [ti, pro]
+scope: source.tm1.ti
+
+contexts:
+  main:
+    - match: (?i)(if|elseif|while|end|endif|break|next)(\s*?)(?=\()
+      scope: keyword.control
+
+    - match: (?i)(endif|else|end)
+      scope: keyword.control
+
+    - match: (?i)(asciidelete|asciioutput|setinputcharacterset|setoutputcharacterset|textoutput|attrdelete|attrinsert|attrputn|attrputs|chorequit|setchoreverbosemessages|addcubedependency|cellgetn|cellgets|cellisupdateable|cellputn|cellputproportionalspread|cellputs|cubecleardata|cubecreate|cubedestroy|cubeexists|cubegetlogchanges|cubesetconnparams|cubesetlogchanges|cubeunload|cubedatareservationacquire|cubedatareservationrelease|cubedatareservationreleaseall|cubedatareservationget|cubedatareservationgetconflicts|dimensioncreate|dimensiondeleteallelements|dimensiondestroy|dimensionelementcomponentadd|dimensionelementcomponentdelete|dimensionelementdelete|dimensionelementinsert|dimensionelementprincipalname|dimensionexists|dimensionsortorder|odbcclose|odbcopen|odbcopenex|odbcoutput|setodbcunicodeinterface|executecommand|executeprocess|getprocesserrorfiledirectory|getprocesserrorfilename|getprocessname|itemreject|itemskip|processbreak|processerror|processquit|cubeprocessfeeders|deleteallpersistentfeeders|forceskipcheck|ruleloadfromfile|sandbox|functions|serveractivesandboxget|serveractivesandboxset|getuseactivesandboxproperty|setuseactivesandboxproperty|addclient|addgroup|assignclienttogroup|assignclientpassword|deleteclient|deletegroup|elementsecurityget|elementsecurityput|removeclientfromgroup|securityrefresh|batchupdatefinish|batchupdatefinishwait|batchupdatestart|disablebulkloadmode|enablebulkloadmode|savedataall|servershutdown|subsetaliasset|subsetcreate|subsetcreatebymdx|subsetdeleteallelements|subsetdestroy|subsetelementdelete|subsetelementinsert|subsetexists|subsetexpandaboveset|subsetformatstyleset|subsetgetelementname|subsetgetsize|subsetisallset|publishview|viewcolumndimensionset|viewcolumnsuppresszeroesset|viewconstruct|viewcreate|viewdestroy|viewexists|viewextractskipcalcsset|viewextractskiprulevaluesset|viewextractskipzeroesset|viewrowdimensionset|viewrowsuppresszeroesset|viewsubsetassign|viewsuppresszeroesset|viewtitledimensionset|viewtitleelementset|viewzeroout|addinfocuberestriction|datasourcesapusingroleauths|datasourcesapusingtexts|expand|fileexists|numbertostring|numbertostringex|refreshmdxhierarchy|stringtonumber|stringtonumberex|file|wildcardfilesearch|subsetelementdelete|subsetelementinsert|subsetexists|subsetexpandaboveset|subsetformatstyleset|subsetgetelementname|subsetgetsize|subsetisallset|publishview|viewcolumndimensionset|undef|undefvals|date|dates|day|dayno|month|now|time|timst|timvl|today|year|attrn|attrs|dimnm|dimsiz|dnext|dnlev|tabdim|dimix|dtype|elcomp|elcompn|elisanc|eliscomp|elispar|ellev|elpar|elparn|elweight|fv|paymt|pv|abs|acos|asin|atan|cos|exp|int|isund|ln|log|max|min|mod|rand|round|roundp|sign|sin|sqrt|tan|capit|char|code|delet|fill|insrt|long|lower|numbr|scan|str|subst|trim|upper|stringglobalvariable|numericglobalvariable|numericsessionvariable|stringsessionvariable|tm1user|processexitbychorequit|processexitnormal|processexitminorerror|processexitbyquit|processexitwithmessage|processexitseriouserror|processexitoninit|processexitbybreak|dimensionelementinsertdirect|dimensionelementcomponentadddirect|dimensionupdatedirect|dimensionelementdeletedirect|cubesavedata|cellincrementn|executejavan|executejavas|subsetmdxget|subsetmdxset|swapaliaswithprincipalname)(\s*?)(?=\()
+      scope: entity.name.function
+
+    - match: ((\s*)(#+)(\s+)([=*>\-#]{60,80})(\s+)(#))(\n)
+      push: comment-block
+
+    - match: (\s*)(#+)(.*?)(#*?)$
+      scope: comment
+      captures:
+        3: comment.text
+
+    - match: \b(str|num|p|v|V|int|s|n|c)(\w+?)(?=[\W])|(\b)(i|j|k|l|p)(\b)
+      scope: variable.other
+
+    - match: \b(?i)(dataminorerrorcount|metadataminorerrorcount|processreturncode|prologminorerrorcount)
+      scope: variable.other.global
+    - match: \b(?i)(DatasourceNameForServer|DatasourceNameForClient|DatasourceType|DatasourceUsername|DatasourcePassword|DatasourceQuery|DatasourceCubeview|DatasourceDimensionSubset|DatasourceASCIIDelimiter|DatasourceASCIIDecimalSeparator|DatasourceASCIIThousandSeparator|DatasourceASCIIQuoteCharacter|DatasourceASCIIHeaderRecords|Value_Is_String|NValue|SValue|OnMinorErrorDoItemSkip|MinorErrorLogMax|DataSourceODBOCatalog|DataSourceODBOConnectionString|DataSourceODBOCubeName|DataSourceODBOHierarchyName|DataSourceODBOLocation|DataSourceODBOProvider|DataSourceODBOSAPClientID|DataSourceODBOSAPClientLanguage)
+      scope: variable.other.local
+
+    - match: (')
+      push: string
+
+    - match: (\d)
+      scope: constant.numeric
+
+    - match: (=|@=|@\<\>|\<|\>|\||\+|-|/|\\|\*)
+      scope: keyword.operator
+
+  comment-block:
+    - meta_scope: comment.block
+
+    - match: (\1)
+      pop: true
+
+    - match: (\s*)(#+)(.*?)(#*)$
+      captures:
+        3: comment.text
+
+    - match: ^(\s*)([^#])(.*)$
+      scope: invalid
+
+  string:
+    - meta_scope: string
+
+    - match: (%\w+?%)
+      scope: string.expand
+
+    - match: \1
+      pop: true

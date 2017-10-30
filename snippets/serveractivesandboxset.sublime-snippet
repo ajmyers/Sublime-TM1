@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[SERVERACTIVESANDBOXSET(${1:sSandbox});]]></content>
+   <tabTrigger>SERVERACTIVESANDBOXSET</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description></description>
+</snippet>

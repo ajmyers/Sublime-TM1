@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[ENABLEBULKLOADMODE();]]></content>
+   <tabTrigger>ENABLEBULKLOADMODE</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description></description>
+</snippet>

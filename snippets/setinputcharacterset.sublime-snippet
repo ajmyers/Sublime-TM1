@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[SETINPUTCHARACTERSET(${1:sCharacterSet});]]></content>
+   <tabTrigger>SETINPUTCHARACTERSET</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description></description>
+</snippet>

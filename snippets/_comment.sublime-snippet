@@ -1,0 +1,9 @@
+<snippet>
+   <content><![CDATA[# ==================================================================== #
+# ${1}
+# ==================================================================== #
+${2}]]></content>
+   <tabTrigger>_COMMENT</tabTrigger>
+   <scope>source.tm1</scope>
+   <description>Inserts a block comment.</description>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[WILDCARDFILESEARCH(${1:sPath}, ${2:sFilePrior})]]></content>
+   <tabTrigger>WILDCARDFILESEARCH</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description></description>
+</snippet>

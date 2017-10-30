@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[ELWEIGHT(${1:sDim}, ${2:sElePar}, ${3:sEle})]]></content>
+   <tabTrigger>ELWEIGHT</tabTrigger>
+   <scope>source.tm1</scope>
+   <description></description>
+</snippet>

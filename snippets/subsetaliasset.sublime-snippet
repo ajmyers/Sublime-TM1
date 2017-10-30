@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[SUBSETALIASSET(${1:sDim}, ${2:sSub}, ${3:sAlias});]]></content>
+   <tabTrigger>SUBSETALIASSET</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description></description>
+</snippet>

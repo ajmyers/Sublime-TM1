@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[ELEMENTSECURITYPUT(${1:sAccessLevel}, ${2:sDim}, ${3:sEle}, ${4:sGroup});]]></content>
+   <tabTrigger>ELEMENTSECURITYPUT</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description></description>
+</snippet>

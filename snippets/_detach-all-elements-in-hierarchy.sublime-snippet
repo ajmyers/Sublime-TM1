@@ -1,0 +1,31 @@
+<snippet>
+   <content><![CDATA[${4:sDim} = ${1:};
+${5:sHier} = ${2:};
+${6:p} = DNLEV(${4});
+
+WHILE(${6} > 0);
+   ${7:i} = DIMSIZ(${4});
+   WHILE(${7} > 0);
+      ${8:sEle} = DIMNM(${4}, ${7});
+      IF(ELLEV(${4}, ${8}) = 0 & ELISANC(${4}, ${5}, ${8}) = 1);
+         IF(DTYPE(${4}, ${8}) @= 'N');
+            ${9:j} = ELPARN(${4}, ${8});
+            WHILE(${9} > 0);
+               ${10:sElePar} = ELPAR(${4}, ${8}, ${9});
+               IF(ELISANC(${4}, ${5}, ${10}) = 1);
+                  DIMENSIONELEMENTCOMPONENTDELETE(${4}, ${10}, ${8});
+               ENDIF;
+               ${9} = ${9} - 1;
+            END;
+         ${3:# }ELSEIF(DTYPE(${4}, ${8}) @= 'C');
+         ${3}   DIMENSIONELEMENTDELETE(${4}, ${8});
+         ENDIF;
+      ENDIF;
+      ${7} = ${7} - 1;
+   END;
+   ${6} = ${6} - 1;
+END;]]></content>
+   <tabTrigger>_DETACH-ALL-ELEMENTS-IN-HIERARCHY</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description>Detaches all elements in a specific hierarchy in a dimension from bottom to top (optionally desoying consolidated elements).</description>
+</snippet>

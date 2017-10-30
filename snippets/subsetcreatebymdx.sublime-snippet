@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[SUBSETCREATEBYMDX(${1:sSub}, ${2:sMDX});]]></content>
+   <tabTrigger>SUBSETCREATEBYMDX</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description></description>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[DIMENSIONELEMENTPRINCIPALNAME(${1:sDim}, ${2:sEle})]]></content>
+   <tabTrigger>DIMENSIONELEMENTPRINCIPALNAME</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description></description>
+</snippet>

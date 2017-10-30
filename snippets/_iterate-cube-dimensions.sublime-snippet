@@ -1,0 +1,15 @@
+<snippet>
+   <content><![CDATA[${3:sCube} = ${1:''};
+
+${4:i} = 1;
+WHILE(TABDIM(${3}, ${4}) @<> '');
+   ${5:sDim} = TABDIM(${3}, ${4})
+
+   ${2}
+
+   ${4} = ${4} + 1;
+END;]]></content>
+   <tabTrigger>_ITERATE-CUBE-DIMENSIONS</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description>While loop that iterates over all dimensions in a cube.</description>
+</snippet>

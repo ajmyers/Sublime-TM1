@@ -1,0 +1,17 @@
+<snippet>
+   <content><![CDATA[###############################################################################
+### DATASOURCE:
+###      type: "ASCII"
+###      data_source_name_for_client: "${1:FileLocation}"
+###      data_source_name_for_server: "${1}"
+###      ascii_decimal_separator: "${2:.}"
+###      ascii_delimiter_char: "${3:,}"
+###      ascii_delimiter_type: "${4:Character}"
+###      ascii_header_records: ${5:0}
+###      ascii_quote_character: "${6:\"}"
+###      ascii_thousand_separator: "${7:,}"
+###############################################################################]]></content>
+   <tabTrigger>_TEMPLATE-DATASOURCE-ASCII</tabTrigger>
+   <scope>source.tm1</scope>
+   <description>Inserts a TI template block for defining an ASCII datasource</description>
+</snippet>

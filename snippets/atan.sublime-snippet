@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[ATAN(${1:nValue})]]></content>
+   <tabTrigger>ATAN</tabTrigger>
+   <scope>source.tm1</scope>
+   <description></description>
+</snippet>

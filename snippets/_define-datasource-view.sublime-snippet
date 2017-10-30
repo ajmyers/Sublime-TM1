@@ -1,0 +1,16 @@
+<snippet>
+   <content><![CDATA[${3:sCube} = ${1:cCube};
+${4:sView} = ${2:cView};
+
+IF(VIEWEXISTS(${3}, ${4}) = 0);
+   PROCESSERROR();
+ENDIF;
+
+DATASOURCETYPE = 'VIEW';
+DATASOURCENAMEFORSERVER = ${3};
+DATASOURCENAMEFORCLIENT = ${3}
+DATASOURCECUBEVIEW = ${4};]]></content>
+   <tabTrigger>_DEFINE-DATASOURCE-VIEW</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description>Code creates datasource variables for a cube view.</description>
+</snippet>

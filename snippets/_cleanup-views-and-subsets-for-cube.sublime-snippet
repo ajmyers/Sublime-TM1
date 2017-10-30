@@ -1,0 +1,24 @@
+<snippet>
+   <content><![CDATA[${4:sCube} = ${1:cCube};
+
+${5:sView} = ${2:cView};
+${6:sSub} = ${3:cSub};
+
+IF(VIEWEXISTS(${4}, ${5}) = 1);
+   VIEWDESTROY(${4}, ${5});
+ENDIF;
+
+${7:i} = 1;
+WHILE(TABDIM(${4}, ${7}) @<> '');
+   ${8:sDim} = TABDIM(${4}, ${7});
+
+   IF(SUBSETEXISTS(${8}, ${6}) = 1);
+      SUBSETDESTROY(${8}, ${6});
+   ENDIF;
+
+   ${7} = ${7} + 1;
+END;]]></content>
+   <tabTrigger>_CLEANUP-VIEWS-AND-SUBSETS-FOR-CUBE</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description>Code deletes all instances of a specified view and subsets from specified cube and it's dimensions.</description>
+</snippet>

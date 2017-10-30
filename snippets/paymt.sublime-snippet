@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[PAYMT(${1:nPrincipal}, ${2:nInterest}, ${3:nPeriods})]]></content>
+   <tabTrigger>PAYMT</tabTrigger>
+   <scope>source.tm1</scope>
+   <description></description>
+</snippet>

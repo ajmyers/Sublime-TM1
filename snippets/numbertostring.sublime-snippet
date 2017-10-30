@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[NUMBERTOSTRING(${1:nValue})]]></content>
+   <tabTrigger>NUMBERTOSTRING</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description></description>
+</snippet>

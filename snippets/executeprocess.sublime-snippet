@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[EXECUTEPROCESS(${1:sProcess}, ${2:'Param1'}, ${3:sParam1}${4:, '', sParam2}${5:, '', sParam3});]]></content>
+   <tabTrigger>EXECUTEPROCESS</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description></description>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[CUBECREATE(${1:sCube}, ${2:sDim1}, ${3:sDim2}${4:, ...})]]></content>
+   <tabTrigger>CUBECREATE</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description></description>
+</snippet>

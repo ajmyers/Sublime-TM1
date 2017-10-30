@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[FILEEXISTS(${1:sFile})]]></content>
+   <tabTrigger>FILEEXISTS</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description></description>
+</snippet>

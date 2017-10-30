@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[DATES(${1:nYear}, ${2:nMonth}, ${3:nDay})]]></content>
+   <tabTrigger>DATES</tabTrigger>
+   <scope>source.tm1</scope>
+   <description></description>
+</snippet>

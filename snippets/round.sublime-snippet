@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[ROUND(${1:nValue})]]></content>
+   <tabTrigger>ROUND</tabTrigger>
+   <scope>source.tm1</scope>
+   <description></description>
+</snippet>

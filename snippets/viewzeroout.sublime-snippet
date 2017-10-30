@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[VIEWZEROOUT(${1:sCube}, ${2:sView});]]></content>
+   <tabTrigger>VIEWZEROOUT</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description></description>
+</snippet>

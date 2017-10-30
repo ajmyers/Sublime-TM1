@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[ATTRS(${1:sDim}, ${2:sEle}, ${3:sAttr})]]></content>
+   <tabTrigger>ATTRS</tabTrigger>
+   <scope>source.tm1</scope>
+   <description></description>
+</snippet>

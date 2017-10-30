@@ -1,0 +1,20 @@
+<snippet>
+   <content><![CDATA[${3:sPath} = ${1:cPath};
+${3} = ${3} | IF(SUBST(${3}, LONG(${3}), 1) @<> '\', '\', '');
+${4:sFilter} = ${2:'*.csv'};
+
+${5:sFile} = '';
+${6:sFilePrior} = '';
+${7:sFileLoopStarted} = 'N';
+WHILE(${5} @<> '' % ${7} @= 'N');
+   ${7} = 'Y';
+   ${5} = WILDCARDFILESEARCH(${3} | ${4}, ${6});
+
+   ${8}
+
+   ${6} = ${5}
+END;]]></content>
+   <tabTrigger>_ITERATE-FILES-IN-DIRECTORY</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description>Loops through files in a directory</description>
+</snippet>

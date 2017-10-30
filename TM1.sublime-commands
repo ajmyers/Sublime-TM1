@@ -1,0 +1,8 @@
+[
+    { "caption": "TM1: Get - Pull Objects from Server", "command": "get_objects_from_server" },
+    { "caption": "TM1: Put - Push Object to Server", "command": "put_object_to_server" },
+    { "caption": "TM1: Run - Execute Turbo Integrator Process", "command": "run_turbo_integrator_process"},
+    { "caption": "TM1: Console - Show Console", "command": "display_tm1_ops_console"},
+    { "caption": "TM1: Console - Kill Thread", "command": "kill_tm1_thread"},
+    { "caption": "TM1: Config - Update TM1 Project Settings", "command": "update_tm1_project_settings"}
+]

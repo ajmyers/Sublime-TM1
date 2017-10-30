@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[ASIN(${1:nValue})]]></content>
+   <tabTrigger>ASIN</tabTrigger>
+   <scope>source.tm1</scope>
+   <description></description>
+</snippet>

@@ -1,0 +1,13 @@
+<snippet>
+   <content><![CDATA[${3:sPath} = TRIM(${1:cPath});
+${3} = ${3} | IF(SUBST(${3}, LONG(${3}), 1) @<> '\', '\', '');
+
+${4:sFile} = TRIM(${2:cFile});
+
+IF(FILEEXISTS(${3} | ${4}) = 0);
+   PROCESSERROR();
+ENDIF;]]></content>
+   <tabTrigger>_CHECK-FILE-EXISTS</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description>Code determines whether a file exists and PROCESSERROR() if false.</description>
+</snippet>

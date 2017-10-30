@@ -1,0 +1,13 @@
+<snippet>
+   <content><![CDATA[${2:sDim} = ${1:''};
+
+${3:i} = DIMSIZ(${2});
+WHILE(${3} > 1);
+   ${4:sEle} = DIMNM(${2}, ${3});
+
+   ${3} = ${3} - 1;
+END;]]></content>
+   <tabTrigger>_ITERATE-DIMENSION-ELEMENTS-REVERSE</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description>While loop that iterates over all elements of a dimension in reverse.</description>
+</snippet>

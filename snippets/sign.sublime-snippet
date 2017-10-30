@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[SIGN(${1:nValue})]]></content>
+   <tabTrigger>SIGN</tabTrigger>
+   <scope>source.tm1</scope>
+   <description></description>
+</snippet>

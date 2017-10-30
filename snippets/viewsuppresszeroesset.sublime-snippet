@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[VIEWSUPPRESSZEROESSET(${1:sCube}, ${2:sView}, ${3:1});]]></content>
+   <tabTrigger>VIEWSUPPRESSZEROESSET</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description></description>
+</snippet>

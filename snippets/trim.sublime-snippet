@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[TRIM(${1:sValue})]]></content>
+   <tabTrigger>TRIM</tabTrigger>
+   <scope>source.tm1</scope>
+   <description></description>
+</snippet>

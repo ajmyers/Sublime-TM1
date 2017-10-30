@@ -1,0 +1,35 @@
+<snippet>
+   <content><![CDATA[${1:sLocal1}_l = ${1/(^s.*?$)|(^n.*?$)/(?1:TRIM\(V1\))(?2:NUMBR\(V1\))/};
+${2:sLocal2}_l = ${2/(^s.*?$)|(^n.*?$)/(?1:TRIM\(V2\))(?2:NUMBR\(V2\))/};
+${3:sLocal3}_l = ${3/(^s.*?$)|(^n.*?$)/(?1:TRIM\(V3\))(?2:NUMBR\(V3\))/};
+${4:sLocal4}_l = ${4/(^s.*?$)|(^n.*?$)/(?1:TRIM\(V4\))(?2:NUMBR\(V4\))/};
+${5:sLocal5}_l = ${5/(^s.*?$)|(^n.*?$)/(?1:TRIM\(V5\))(?2:NUMBR\(V5\))/};
+${6:sLocal6}_l = ${6/(^s.*?$)|(^n.*?$)/(?1:TRIM\(V6\))(?2:NUMBR\(V6\))/};
+${7:sLocal7}_l = ${7/(^s.*?$)|(^n.*?$)/(?1:TRIM\(V7\))(?2:NUMBR\(V7\))/};
+${8:sLocal8}_l = ${8/(^s.*?$)|(^n.*?$)/(?1:TRIM\(V8\))(?2:NUMBR\(V8\))/};
+${9:sLocal9}_l = ${9/(^s.*?$)|(^n.*?$)/(?1:TRIM\(V9\))(?2:NUMBR\(V9\))/};
+${10:sLocal10}_l = ${10/(^s.*?$)|(^n.*?$)/(?1:TRIM\(V10\))(?2:NUMBR\(V10\))/};
+${11:sLocal11}_l = ${11/(^s.*?$)|(^n.*?$)/(?1:TRIM\(V11\))(?2:NUMBR\(V11\))/};
+${12:sLocal12}_l = ${12/(^s.*?$)|(^n.*?$)/(?1:TRIM\(V12\))(?2:NUMBR\(V12\))/};
+${13:sLocal13}_l = ${13/(^s.*?$)|(^n.*?$)/(?1:TRIM\(V13\))(?2:NUMBR\(V13\))/};
+${14:sLocal14}_l = ${14/(^s.*?$)|(^n.*?$)/(?1:TRIM\(V14\))(?2:NUMBR\(V14\))/};
+${15:sLocal15}_l = ${15/(^s.*?$)|(^n.*?$)/(?1:TRIM\(V15\))(?2:NUMBR\(V15\))/};
+${16:sLocal16}_l = ${16/(^s.*?$)|(^n.*?$)/(?1:TRIM\(V16\))(?2:NUMBR\(V16\))/};
+${17:sLocal17}_l = ${17/(^s.*?$)|(^n.*?$)/(?1:TRIM\(V17\))(?2:NUMBR\(V17\))/};
+${18:sLocal18}_l = ${18/(^s.*?$)|(^n.*?$)/(?1:TRIM\(V18\))(?2:NUMBR\(V18\))/};
+${19:sLocal19}_l = ${19/(^s.*?$)|(^n.*?$)/(?1:TRIM\(V19\))(?2:NUMBR\(V19\))/};
+${20:sLocal20}_l = ${20/(^s.*?$)|(^n.*?$)/(?1:TRIM\(V20\))(?2:NUMBR\(V20\))/};
+${21:sLocal21}_l = ${21/(^s.*?$)|(^n.*?$)/(?1:TRIM\(V21\))(?2:NUMBR\(V21\))/};
+${22:sLocal22}_l = ${22/(^s.*?$)|(^n.*?$)/(?1:TRIM\(V22\))(?2:NUMBR\(V22\))/};
+${23:sLocal23}_l = ${23/(^s.*?$)|(^n.*?$)/(?1:TRIM\(V23\))(?2:NUMBR\(V23\))/};
+${24:sLocal24}_l = ${24/(^s.*?$)|(^n.*?$)/(?1:TRIM\(V24\))(?2:NUMBR\(V24\))/};
+${25:sLocal25}_l = ${25/(^s.*?$)|(^n.*?$)/(?1:TRIM\(V25\))(?2:NUMBR\(V25\))/};
+${26:sLocal26}_l = ${26/(^s.*?$)|(^n.*?$)/(?1:TRIM\(V26\))(?2:NUMBR\(V26\))/};
+${27:sLocal27}_l = ${27/(^s.*?$)|(^n.*?$)/(?1:TRIM\(V27\))(?2:NUMBR\(V27\))/};
+${28:sLocal28}_l = ${28/(^s.*?$)|(^n.*?$)/(?1:TRIM\(V28\))(?2:NUMBR\(V28\))/};
+${29:sLocal29}_l = ${29/(^s.*?$)|(^n.*?$)/(?1:TRIM\(V29\))(?2:NUMBR\(V29\))/};
+${30:sLocal30}_l = ${30/(^s.*?$)|(^n.*?$)/(?1:TRIM\(V30\))(?2:NUMBR\(V30\))/};]]></content>
+   <tabTrigger>_DEFINE-LOCAL-VARIABLES</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description>Code creates local variables</description>
+</snippet>

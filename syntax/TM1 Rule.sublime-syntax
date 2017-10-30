@@ -1,0 +1,58 @@
+%YAML 1.2
+---
+name: TM1 Rule
+file_extensions: [rux, rule]
+scope: source.tm1.rule
+
+contexts:
+  main:
+  - match: (?i)(db|isleaf|undef|undefvals|date|dates|day|dayno|month|now|time|timst|timvl|today|year|attrn|attrs|consolidatechildren|dimnm|dimsiz|dnext|dnlev|tabdim|dimix|dtype|elcomp|elcompn|elisanc|eliscomp|elispar|ellev|elpar|elparn|elweight|fv|paymt|pv|continue|if|stet|abs|acos|asin|atan|cos|exp|int|isund|ln|log|max|min|mod|rand|round|roundp|sign|sin|sqrt|tan|capit|char|code|delet|fill|insrt|long|lower|numbr|scan|str|subst|trim|upper|abs|acos|asin|atan|cos|exp|int|isund|ln|log|max|min|mod|rand|if|consolidatedcountunique)(\s*?)(?=\()
+    scope: entity.name.function
+
+  - match: (?i)(stet|continue)
+    scope: entity.name.function
+
+  - match: (?i)(feeders|feedstrings|skipcheck)(;)
+    scope: constant.language
+
+  - match: (!)(.*?)(?=(,|\)|!))
+    scope: variable.parameter
+
+  - match: (')
+    push: string
+
+  - match: (\d)
+    scope: constant.numeric
+
+  - match: (=|@=|@\<\>|\<|\>|\||\+|-|/|\\|\*)
+    scope: keyword.operator
+
+  - match: ((\s*)(#+)(\s+)([=*>\-#]{60,80})(\s+)(#))(\n)
+    push: comment-block
+
+  - match: (\s*)(#+)(.*?)(#*?)$
+    scope: comment
+    captures:
+      3: comment.text
+
+  comment-block:
+    - meta_scope: comment.block
+
+    - match: (\1)
+      pop: true
+
+    - match: (\s*)(#+)(.*?)(#*)$
+      captures:
+        3: comment.text
+
+    - match: ^(\s*)([^#])(.*)$
+      scope: invalid
+
+  string:
+    - meta_scope: string
+
+    - match: (%\w+?%)
+      scope: string.expand
+
+    - match: \1
+      pop: true

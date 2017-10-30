@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[PUBLISHVIEW(${1:sCube}, ${2:sView}, ${3:nPublishPrivateSubsets}, ${4:nOverwrite})]]></content>
+   <tabTrigger>PUBLISHVIEW</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description></description>
+</snippet>
