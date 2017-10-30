@@ -1,12 +1,12 @@
 <snippet>
    <content><![CDATA[###############################################################################
 ### PARAMETERS:
-###    - Name: ${1:pParam1}
-###      Value: ${2:""}
-###      Prompt: "${3}"
-###    - Name: ${4:pParam2}
-###      Value: ${5:""}
-###      Prompt: "${6}"
+###    - name: ${1:pParam1}
+###      value: "${2}"
+###      prompt: "${3}"
+###    - name: ${4:pParam2}
+###      value: "${5}"
+###      prompt: "${6}"
 ###############################################################################]]></content>
    <tabTrigger>_TEMPLATE-PARAMETERS</tabTrigger>
    <scope>source.tm1</scope>
