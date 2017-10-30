@@ -25,13 +25,13 @@ Requirements
 Usage
 =======================
 
-Setup:
+### Setup:
  - Sublime-TM1 can be installed via Package Control [Here](https://packagecontrol.io/installation)
  - Instructions on how to use Package Control [here](https://packagecontrol.io/docs/usage)
  - Install the 'TM1 Planning Analytics Developer Tools' package from Package Control
  - On the TM1 server, the REST API must be enabled, instructions [Here](https://www.ibm.com/support/knowledgecenter/en/SSD29G_2.0.0/com.ibm.swg.ba.cognos.tm1_inst.2.0.0.doc/t_ug_cxr_odata_config.html)
 
-Configuration:
+### Configuration:
  - Create a folder on your computer to store the TM1 objects
  - Open a new sublime window, and drag the newly created folder into the Sublime Text window. You should see the folder as the only entry in the sidebar.
  - Go to Project -> Save Project As and save the project to location on your PC
