@@ -1,6 +1,7 @@
+import base64
 import sublime
 import sublime_plugin
-import base64
+
 
 SESSION_DEFAULT = {
     'APIString': '/api/v1/',

@@ -1,13 +1,9 @@
+import connect
 import sublime
 import sublime_plugin
-import os
-import sys
 import threading
 import time
 
-sys.path.append(os.path.dirname(__file__))
-
-import connect
 from prettytable import PrettyTable
 
 

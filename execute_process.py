@@ -1,15 +1,12 @@
+import connect
+import json
+import os
 import sublime
 import sublime_plugin
-import os
-import sys
-import json
-import time
 import threading
-
-sys.path.append(os.path.dirname(__file__))
+import time
 
 from TM1py.Exceptions import TM1pyException
-import connect
 
 
 class runTurboIntegratorProcessCommand(sublime_plugin.WindowCommand):

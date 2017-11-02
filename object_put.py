@@ -1,14 +1,11 @@
+import connect
+import os
+import re
 import sublime
 import sublime_plugin
-import os
-import sys
 import threading
-import re
 import yaml
 
-sys.path.append(os.path.dirname(__file__))
-
-import connect
 from TM1py import Process
 from TM1py.Exceptions import TM1pyException
 

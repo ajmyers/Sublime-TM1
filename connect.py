@@ -1,13 +1,9 @@
 import os
-import sys
 import pickle
 import requests
 import tempfile
 
 from base64 import b64decode, urlsafe_b64decode, urlsafe_b64encode
-
-sys.path.append(os.path.join(os.path.dirname(__file__), 'include/TM1py'))
-sys.path.append(os.path.join(os.path.dirname(__file__), 'include/prettytable'))
 
 from TM1py import TM1Service, RESTService
 from TM1py.Exceptions import TM1pyException

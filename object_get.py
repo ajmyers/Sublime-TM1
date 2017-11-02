@@ -1,12 +1,8 @@
+import connect
+import json
+import os
 import sublime
 import sublime_plugin
-import os
-import sys
-import json
-
-sys.path.append(os.path.dirname(__file__))
-
-import connect
 
 
 class GetObjectsFromServerCommand(sublime_plugin.WindowCommand):
