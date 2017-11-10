@@ -111,10 +111,6 @@ class PutObjectToServerCommand(sublime_plugin.WindowCommand):
             datasource = {'type': 'None'}
 
         for key, item in datasource.items():
-            # remap for typo
-            if key == 'ascii_decimal_separator':
-                key = 'ascii_decimal_seperator'
-
             obj_key = 'datasource_' + key
             try:
                 if obj_key in dir(process):
@@ -128,7 +124,7 @@ class PutObjectToServerCommand(sublime_plugin.WindowCommand):
         # Variables
         variables = yaml.load(section_text['VARIABLES'])
         for variable in process.variables.copy():
-            process.remove_variables(variable['Name'])
+            process.remove_variable(variable['Name'])
 
         if variables != 'None':
             for x in variables:
