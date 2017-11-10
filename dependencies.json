@@ -2,11 +2,13 @@
     "*": {
         ">=3000": [
             "pyyaml",
-            "requests"
+            "requests",
+            "TM1py"
         ],
         "<3000": [
             "pyyaml",
-            "requests"
+            "requests",
+            "TM1py"
         ]
     }
 }
