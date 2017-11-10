@@ -37,6 +37,7 @@ class runTurboIntegratorProcessCommand(sublime_plugin.WindowCommand):
         self.get_parameter_input()
 
     def get_parameter_input(self):
+        prompt = ''
         for par in self._process.parameters:
             if 'SelectedValue' not in par:
                 prompt_type = 'String'
