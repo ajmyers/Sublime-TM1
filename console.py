@@ -6,13 +6,15 @@ import time
 
 from prettytable import PrettyTable
 
+DEFAULT_REFRESH = 2.5
+
 
 class displayTm1OpsConsoleCommand(sublime_plugin.WindowCommand):
 
     def run(self):
-        active_project = sublime.active_window().project_data()
-        project_settings = active_project['settings']
-        self._session = project_settings['TM1ConnectionSettings']
+        self.active_project = sublime.active_window().project_data()
+        self.project_settings = self.active_project['settings']
+        self._session = self.project_settings['TM1ConnectionSettings']
 
         # Get instance name
         window_name = 'Console'
@@ -28,9 +30,14 @@ class displayTm1OpsConsoleCommand(sublime_plugin.WindowCommand):
         t.start()
 
     def run_refresh(self):
+        if 'ConsoleRefreshTime' in self.project_settings:
+            refresh_time = self.project_settings['ConsoleRefreshTime']
+        else:
+            refresh_time = DEFAULT_REFRESH
+
         while self._output.window():
             self._output.run_command('refresh_tm1_ops_console', {'session_settings': self._session})
-            time.sleep(2.5)
+            time.sleep(float(refresh_time))
 
 
 class killTm1ThreadCommand(sublime_plugin.WindowCommand):
@@ -61,10 +68,11 @@ class refreshTm1OpsConsoleCommand(sublime_plugin.TextCommand):
 
         for row in threads:
             data_row = []
-            for c in columns:
-                data_row.append(row[c])
+            if row['Function'] != 'GET /api/v1/Threads':
+                for c in columns:
+                    data_row.append(row[c])
 
-            t.add_row(data_row)
+                t.add_row(data_row)
 
         table = t.get_string()
 
