@@ -15,7 +15,7 @@ contexts:
   - match: (?i)(feeders|feedstrings|skipcheck)(;)
     scope: constant.language
 
-  - match: (!)(.*?)(?=(,|\)|!))
+  - match: (!)(.*?)(?=([^\w\s]))
     scope: variable.parameter
 
   - match: (')
