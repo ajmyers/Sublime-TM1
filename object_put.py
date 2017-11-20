@@ -20,7 +20,7 @@ class PutObjectToServerCommand(sublime_plugin.WindowCommand):
         self._session = connect.get_tm1_service(session_settings)
 
         # Determine if rule or process
-        self.active_file = os.path.basename(self.window.active_view().file_name()).lower()
+        self.active_file = os.path.basename(self.window.active_view().file_name())
         self.active_file_base, self.active_file_ext = os.path.splitext(self.active_file)
 
         funcmap = [
@@ -29,7 +29,7 @@ class PutObjectToServerCommand(sublime_plugin.WindowCommand):
         ]
 
         for ext_list, put_func in funcmap:
-            if(self.active_file_ext in ext_list):
+            if(self.active_file_ext.lower() in ext_list):
                 self.window.active_view().run_command("save")
                 thread_name = 'TM1.UPDATE.{}'.format(self.active_file_base)
                 if len([x for x in threading.enumerate() if x.getName() == thread_name]) == 0:
