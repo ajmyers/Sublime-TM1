@@ -1,10 +1,11 @@
-import connect
+
 import sublime
 import sublime_plugin
 import threading
 import time
 
-from prettytable import PrettyTable
+from .include.prettytable.prettytable import PrettyTable
+from .connect import get_tm1_service
 
 DEFAULT_REFRESH = 2.5
 
@@ -50,7 +51,7 @@ class killTm1ThreadCommand(sublime_plugin.WindowCommand):
         project_settings = active_project['settings']
         session_settings = project_settings['TM1ConnectionSettings']
 
-        self._session = connect.get_tm1_service(session_settings)
+        self._session = get_tm1_service(session_settings)
 
         self._session.monitoring.cancel_thread(text)
         self.window.run_command("display_tm1_ops_console")
@@ -58,7 +59,7 @@ class killTm1ThreadCommand(sublime_plugin.WindowCommand):
 
 class refreshTm1OpsConsoleCommand(sublime_plugin.TextCommand):
     def run(self, edit, session_settings):
-        session = connect.get_tm1_service(session_settings)
+        session = get_tm1_service(session_settings)
 
         threads = session.monitoring.get_threads()
 

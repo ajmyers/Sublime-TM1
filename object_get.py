@@ -1,8 +1,10 @@
-import connect
+
 import json
 import os
 import sublime
 import sublime_plugin
+
+from .connect import get_tm1_service
 
 PROCESS_TEMPLATE = '''###############################################################################
 ### Process: {name}
@@ -50,7 +52,7 @@ class GetObjectsFromServerCommand(sublime_plugin.WindowCommand):
 
         completions = []
 
-        self._session = connect.get_tm1_service(session_settings)
+        self._session = get_tm1_service(session_settings)
 
         self._folder = sublime.active_window().extract_variables()['folder']
         processes = self._session.processes.get_all()

@@ -1,4 +1,4 @@
-import connect
+
 import os
 import re
 import sublime
@@ -6,6 +6,7 @@ import sublime_plugin
 import threading
 import yaml
 
+from .connect import get_tm1_service
 from TM1py import Process
 from TM1py.Exceptions import TM1pyException
 
@@ -17,7 +18,7 @@ class PutObjectToServerCommand(sublime_plugin.WindowCommand):
         project_settings = active_project['settings']
         session_settings = project_settings['TM1ConnectionSettings']
 
-        self._session = connect.get_tm1_service(session_settings)
+        self._session = get_tm1_service(session_settings)
 
         # Determine if rule or process
         self.active_file = os.path.basename(self.window.active_view().file_name())
