@@ -1,0 +1,6 @@
+<snippet>
+   <content><![CDATA[SUBSETMDXSET(${1:sDim}, ${2:sSub}, ${3:sMDX});]]></content>
+   <tabTrigger>SUBSETMDXSET</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description></description>
+</snippet>
