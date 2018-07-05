@@ -254,5 +254,10 @@ class GetObjectsFromServerCommand(sublime_plugin.WindowCommand):
             file.write(template.format(name=process.name, parameters=parameters, variables=variables,
                                        datasource=datasource, prolog=formatted_procedure['prolog'], metadata=formatted_procedure['metadata'],
                                        data=formatted_procedure['data'], epilog=formatted_procedure['epilog']))
+            
+        # remove buffer file
+        for section in procedure:
+            buffer_fine_name = os.path.join(self._folder, section + 'buffer_file.txt')
+            os.remove(buffer_fine_name)
 
         return
