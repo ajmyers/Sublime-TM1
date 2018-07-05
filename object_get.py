@@ -9,39 +9,29 @@ from .connect import get_tm1_service
 PROCESS_TEMPLATE = '''###############################################################################
 ### Process: {name}
 ###############################################################################
-
 ###############################################################################
 ### PARAMETERS:
 {parameters}###############################################################################
-
 ###############################################################################
 ### DATASOURCE:
 {datasource}###############################################################################
-
 ###############################################################################
 ### VARIABLES:
 {variables}###############################################################################
-
 ###############################################################################
 ### PROLOG: ###################################################################
-
 {prolog}
-
 ###############################################################################
 ### METADATA: #################################################################
-
 {metadata}
-
 ###############################################################################
 ### DATA: #####################################################################
-
 {data}
-
 ###############################################################################
 ### EPILOG: ###################################################################
-
 {epilog}
 '''
+
 
 class GetObjectsFromServerCommand(sublime_plugin.WindowCommand):
 
@@ -57,12 +47,21 @@ class GetObjectsFromServerCommand(sublime_plugin.WindowCommand):
         self._folder = sublime.active_window().extract_variables()['folder']
         processes = self._session.processes.get_all()
         for process in processes:
-            self.output_process(process)
-            completions.append(self.create_completion(process))
+            try:
+                self.output_process(process)
+                completions.append(self.create_completion(process))
+            except Exception as e:
+                print('Error extracting process {}, {}'.format(process.name, e))
+                pass
 
         cubes = self._session.cubes.get_all()
         for cube in [x for x in cubes if x.has_rules]:
-            self.output_rule(cube)
+            try:
+                self.output_rule(cube)
+            except Exception as e:
+                print('Error extracting rule {}, {}'.format(cube.name, e))
+                print(e)
+                pass
 
         active_project['completions'] = completions
         sublime.active_window().set_project_data(active_project)
