@@ -129,18 +129,50 @@ class GetObjectsFromServerCommand(sublime_plugin.WindowCommand):
             'epilog': process.epilog_procedure
         }
 
-        clean = [
-            '#****Begin: Generated Statements***',
-            '#****End: Generated Statements****',
-            '#****GENERATED STATEMENTS START****',
-            '#****GENERATED STATEMENTS FINISH****'
-        ]
+        clean = {
+            'beg1': '#****Begin: Generated Statements***',
+            'end1': '#****End: Generated Statements****',
+            'beg2': '#****GENERATED STATEMENTS START****',
+            'end2': '#****GENERATED STATEMENTS FINISH****'
+        }
 
+        formatted_procedure = {
+            'prolog': '',
+            'metadata': '',
+            'data': '',
+            'epilog': ''
+        }
+ 
         for section in procedure:
+            buffer_fine_name = os.path.join(self._folder, section + 'buffer_file.txt')
+            with open(buffer_fine_name, "w") as buffer_file:
+                buffer_file.write(procedure[section])
+            with open(buffer_fine_name, "r") as buffer_file:
+                    counter = 1
+                    for line in buffer_file:
+                        if not counter % 2 == 0:
+                            formatted_procedure[section] += line
+                        counter += 1
+
+        for section in formatted_procedure:
+            beg_end = formatted_procedure[section].find(clean['beg1']) + len(clean['beg1']) + 1
+            if formatted_procedure[section].find(clean['beg1']) >= 0 and not beg_end == formatted_procedure[section].find(clean['end1']):
+                removingstring = formatted_procedure[section]
+                beg = int(formatted_procedure[section].find(clean['beg1']))
+                end = int(formatted_procedure[section].find(clean['end1']) + len(clean['end1']))
+                removingstring = removingstring[beg:end]
+                formatted_procedure[section] = formatted_procedure[section].replace(removingstring, '')
+
+            beg_end = formatted_procedure[section].find(clean['beg2']) + len(clean['beg2']) + 1
+            if formatted_procedure[section].find(clean['beg2']) >= 0 and not beg_end == formatted_procedure[section].find(clean['end2']):
+                removingstring = formatted_procedure[section]
+                removingstring = removingstring[int(formatted_procedure[section].find(clean['beg2'])):int(formatted_procedure[section].find(clean['end2']) + len(clean['end2']))]
+                formatted_procedure[section] = formatted_procedure[section].replace(removingstring, '')
+
             for item in clean:
-                procedure[section] = procedure[section].replace(item, '')
-                procedure[section] = procedure[
-                    section].lstrip("\r\n").rstrip("\'r\n")
+                formatted_procedure[section] = formatted_procedure[section].replace(clean[item], '')
+                formatted_procedure[section] = formatted_procedure[
+                    section].lstrip("\r\n").rstrip("\r\n")
 
         template = PROCESS_TEMPLATE
 
@@ -220,7 +252,12 @@ class GetObjectsFromServerCommand(sublime_plugin.WindowCommand):
         # write file
         with open(output_file, "w", encoding="utf-8") as file:
             file.write(template.format(name=process.name, parameters=parameters, variables=variables,
-                                       datasource=datasource, prolog=procedure['prolog'], metadata=procedure['metadata'],
-                                       data=procedure['data'], epilog=procedure['epilog']))
+                                       datasource=datasource, prolog=formatted_procedure['prolog'], metadata=formatted_procedure['metadata'],
+                                       data=formatted_procedure['data'], epilog=formatted_procedure['epilog']))
+            
+        # remove buffer file
+        for section in procedure:
+            buffer_fine_name = os.path.join(self._folder, section + 'buffer_file.txt')
+            os.remove(buffer_fine_name)
 
         return
