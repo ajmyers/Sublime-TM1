@@ -115,7 +115,7 @@ class GetObjectsFromServerCommand(sublime_plugin.WindowCommand):
 
         header += '###############################################################################\n\n'
 
-        with open(output_file, 'w') as file:
+        with open(output_file, 'w', encoding='utf-8') as file:
             file.write(header)
             file.write(cube.rules.text.replace(header, ''))
 
@@ -152,9 +152,9 @@ class GetObjectsFromServerCommand(sublime_plugin.WindowCommand):
             for parameter in process.parameters:
                 parameters += '###    - name: {}\n'.format(parameter['Name'])
                 parameters += '###      value: {}\n'.format(
-                    json.dumps(parameter['Value']))
+                    json.dumps(parameter['Value'], ensure_ascii=False))
                 parameters += '###      prompt: {}\n'.format(
-                    json.dumps(parameter['Prompt']))
+                    json.dumps(parameter['Prompt'], ensure_ascii=False))
 
         # format datasource
         datasource_keys = {
@@ -198,13 +198,13 @@ class GetObjectsFromServerCommand(sublime_plugin.WindowCommand):
         elif process.datasource_type in datasource_keys:
             for item in datasource_keys[process.datasource_type]:
                 attribute = json.dumps(
-                    getattr(process, '_datasource_{}'.format(item), ''))
+                    getattr(process, '_datasource_{}'.format(item), ''), ensure_ascii=False)
                 datasource += '###      {}: {}\n'.format(item, attribute)
         else:
             for item in [x for x in dir(process) if x.startswith('_datasource_')]:
                 attribute = getattr(process, item, '')
                 if attribute != '':
-                    attribute = json.dumps(attribute)
+                    attribute = json.dumps(attribute, ensure_ascii=False)
                     datasource += '###      {}: {}\n'.format(
                         item[12:], attribute)
 
@@ -218,7 +218,7 @@ class GetObjectsFromServerCommand(sublime_plugin.WindowCommand):
                     variable['Name'], variable['Type'])
 
         # write file
-        with open(output_file, "w") as file:
+        with open(output_file, "w", encoding="utf-8") as file:
             file.write(template.format(name=process.name, parameters=parameters, variables=variables,
                                        datasource=datasource, prolog=procedure['prolog'], metadata=procedure['metadata'],
                                        data=procedure['data'], epilog=procedure['epilog']))
