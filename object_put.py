@@ -136,13 +136,13 @@ class PutObjectToServerCommand(sublime_plugin.WindowCommand):
                     var_type = 'String'
                     var_name = x['name'].replace('(String)', '')
 
-                var_name = var_name.rstrip().lstrip()
+                var_name = var_name.strip()
                 process.add_variable(var_name, var_type)
 
-        process.prolog_procedure = section_text['PROLOG']
-        process.metadata_procedure = section_text['METADATA']
-        process.data_procedure = section_text['DATA']
-        process.epilog_procedure = section_text['EPILOG']
+        process.prolog_procedure = section_text['PROLOG'].strip()
+        process.metadata_procedure = section_text['METADATA'].strip()
+        process.data_procedure = section_text['DATA'].strip()
+        process.epilog_procedure = section_text['EPILOG'].strip()
 
         try:
             if not update_process:
