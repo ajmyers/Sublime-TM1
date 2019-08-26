@@ -147,9 +147,13 @@ class PutObjectToServerCommand(sublime_plugin.WindowCommand):
         try:
             if not update_process:
                 self._session.processes.create(process)
-                sublime.message_dialog('Created {} TI Process Successfully'.format(process_name))
             else:
                 self._session.processes.update(process)
+
+            errors = self._session.compile(process)
+            if errors:
+                sublime.message_dialog('Error compiling {}: \n\nProcedure: {} (Line {})\n{}'.format(process_name, errors[0]['Procedure'], str(errors[0]['LineNumber']), errors[0]['Message']))
+            else:
                 sublime.message_dialog('Updated {} TI Process Successfully'.format(process_name))
         except Exception as e:
             sublime.message_dialog('An error occurred updating {}\n\n{}'.format(process_name, e))
