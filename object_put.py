@@ -150,7 +150,7 @@ class PutObjectToServerCommand(sublime_plugin.WindowCommand):
             else:
                 self._session.processes.update(process)
 
-            errors = self._session.processes.compile(process)
+            errors = self._session.processes.compile(process_name)
             if errors:
                 sublime.message_dialog('Error compiling {}: \n\nProcedure: {} (Line {})\n{}'.format(process_name, errors[0]['Procedure'], str(errors[0]['LineNumber']), errors[0]['Message']))
             else:
