@@ -24,7 +24,7 @@ sSub = ${3/(^s.+$)|(.+)/(?1:$0)(?2:'$0')/};
 IF(VIEWEXISTS(sCube, sView) = 1);
    VIEWDESTROY(sCube, sView);
 ENDIF;
-VIEWCREATE(sCube, sView);
+VIEWCREATE(sCube, sView, 1);
 
 VIEWEXTRACTSKIPCALCSSET(sCube, sView, 1);
 VIEWEXTRACTSKIPRULEVALUESSET(sCube, sView, 1);
@@ -36,7 +36,7 @@ WHILE(TABDIM(sCube, i) @<> '');
    sDim = TABDIM(sCube, i);
 
    IF(SUBSETEXISTS(sDim, sSub) = 0);
-      SUBSETCREATE(sDim, sSub);
+      SUBSETCREATE(sDim, sSub, 1);
    ENDIF;
    SUBSETDELETEALLELEMENTS(sDim, sSub);
 

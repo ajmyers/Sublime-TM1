@@ -1,9 +1,9 @@
 <snippet>
-   <content><![CDATA[${2:sRand_g} = NUMBERTOSTRING(ROUND(RAND() * 100000));
+   <content><![CDATA[${2:cRand} = NUMBERTOSTRING(ROUND(RAND() * 100000));
 ${2} = FILL('0', 6 - LONG(${2})) | ${2};
 
-${3:sView_g} = ${1:'zzTemp'} | '.' | ${2};
-${4:sSub_g} = ${1} | '.' | ${2};]]></content>
+${3:cView} = ${1:'zzTemp'} | '.' | ${2};
+${4:cSub} = ${1} | '.' | ${2};]]></content>
    <tabTrigger>_DEFINE-RANDOM-VIEW-AND-SUBSET-GLOBAL-VARIABLES</tabTrigger>
    <scope>source.tm1.ti</scope>
    <description>Code creates global view and subset variables with a random 6 digit suffix</description>

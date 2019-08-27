@@ -20,7 +20,7 @@ Requirements
 =======================
 
 - Sublime Text
-- TM1       (10.2.2 FP 5 or higher)
+- TM1 (10.2.2 FP 5 or higher)
 
 Usage
 =======================
