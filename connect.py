@@ -26,7 +26,7 @@ def get_tm1_service(settings):
     if os.path.isfile(cookie_file):
         try:
             service = TM1Service.restore_from_file(cookie_file)
-            if service.is_connected():
+            if service._tm1_rest.is_connected():
                 connected = True
         except TM1pyException as e:
             pass
