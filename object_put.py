@@ -57,7 +57,7 @@ class PutObjectToServerCommand(sublime_plugin.WindowCommand):
             if errors:
                 sublime.message_dialog('Error compiling {}:\n\nLine {}\n\n{}'.format(cube_name, str(errors[0]['LineNumber']), errors[0]['Message']))
             else:
-                sublime.message_dialog('Updated {} TI Rule Successfully'.format(cube_name))
+                sublime.message_dialog('Updated {} Rule Successfully'.format(cube_name))
         except Exception as e:
             sublime.message_dialog('An error occurred updating {}\n\n{}'.format(self.active_file_base, e))
 
