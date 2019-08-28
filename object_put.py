@@ -46,12 +46,18 @@ class PutObjectToServerCommand(sublime_plugin.WindowCommand):
         rules = ''.join([active_view.substr(region).rstrip() + '\n' for region in regions])
 
         try:
-            cube = self._session.cubes.get(self.active_file_base)
+            cube_name = self.active_file_base
+            cube = self._session.cubes.get(cube_name)
 
             cube.rules = rules
             self._session.cubes.update(cube)
 
-            sublime.message_dialog('Updated {} Rule Successfully'.format(self.active_file_base))
+            request = "/api/v1/Cubes('{}')/tm1.CheckRules".format(cube_name)
+            errors = self._session._tm1_rest.POST(request, '').json()['value']
+            if errors:
+                sublime.message_dialog('Error compiling {} (Line {}):\n\n{}'.format(cube_name, str(errors[0]['LineNumber']), errors[0]['Message']))
+            else:
+                sublime.message_dialog('Updated {} TI Rule Successfully'.format(cube_name))
         except Exception as e:
             sublime.message_dialog('An error occurred updating {}\n\n{}'.format(self.active_file_base, e))
 
