@@ -55,7 +55,7 @@ class PutObjectToServerCommand(sublime_plugin.WindowCommand):
             request = "/api/v1/Cubes('{}')/tm1.CheckRules".format(cube_name)
             errors = self._session._tm1_rest.POST(request, '').json()['value']
             if errors:
-                sublime.message_dialog('Error compiling {} (Line {}):\n\n{}'.format(cube_name, str(errors[0]['LineNumber']), errors[0]['Message']))
+                sublime.message_dialog('Error compiling {}:\n\nLine {}\n\n{}'.format(cube_name, str(errors[0]['LineNumber']), errors[0]['Message']))
             else:
                 sublime.message_dialog('Updated {} TI Rule Successfully'.format(cube_name))
         except Exception as e:
