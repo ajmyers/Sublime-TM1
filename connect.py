@@ -14,6 +14,7 @@ def get_tm1_service(settings):
     ssl = True if settings['UseSSL'] == 'T' else False
     password = decode("1234567890", settings['Password'])
     namespace = settings['CAMNamespaceID']
+    async_requests_mode = True if settings.get('UseAsync', 'F') == 'T' else False
 
     session_name = '{}_{}_{}_{}'.format(address, port, user, namespace)
 
@@ -33,7 +34,7 @@ def get_tm1_service(settings):
 
     if not connected:
         try:
-            service = TM1Service(address=address, port=port, user=user, password=password, namespace=namespace, ssl=ssl)
+            service = TM1Service(address=address, port=port, user=user, password=password, namespace=namespace, ssl=ssl, async_requests_mode=async_requests_mode)
             connected = True
         except TM1pyException as e:
             raise

@@ -110,8 +110,8 @@ class GetObjectsFromServerCommand(sublime_plugin.WindowCommand):
         header += '### Cube: {}\n'.format(cube.name)
         header += '### Dimensions:\n'
 
-        for x in range(0, len(cube.dimensions)):
-            header += '###     {}: {}\n'.format(x + 1, cube.dimensions[x])
+        for index, dimension in enumerate(dim for dim in cube.dimensions if dim != 'Sandboxes'):
+            header += '###     {}: {}\n'.format(index + 1, dimension)
 
         header += '###############################################################################\n\n'
 

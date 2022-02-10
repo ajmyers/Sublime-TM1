@@ -6,6 +6,7 @@ SetOutputEscapeDoubleQuote
 StringToNumber
 StringToNumberEx
 TextOutput
+AsciiOutput
 ATTRNL
 ATTRSL
 AttrDelete

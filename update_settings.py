@@ -11,6 +11,7 @@ SESSION_DEFAULT = {
     'ServerAddress': '',
     'UseSSL': 'F',
     'UserName': ''
+    'UseAsync': 'F'
 }
 
 
