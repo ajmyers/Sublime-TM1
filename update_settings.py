@@ -10,7 +10,7 @@ SESSION_DEFAULT = {
     'PortNumber': '',
     'ServerAddress': '',
     'UseSSL': 'F',
-    'UserName': ''
+    'UserName': '',
     'UseAsync': 'F'
 }
 
