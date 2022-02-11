@@ -7,6 +7,8 @@ import threading
 import yaml
 
 from .connect import get_tm1_service
+from .format_process import view_to_process
+
 from TM1py import Process
 from TM1py.Exceptions import TM1pyException
 
@@ -73,82 +75,7 @@ class PutObjectToServerCommand(sublime_plugin.WindowCommand):
             process = Process(name=process_name)
             update_process = False
 
-        regions = active_view.split_by_newlines(sublime.Region(0, active_view.size()))
-        text = [active_view.substr(region).rstrip() + '\n' for region in regions]
-
-        # Parse Sections
-        sections = ['PARAMETERS', 'DATASOURCE', 'VARIABLES', 'PROLOG', 'METADATA', 'DATA', 'EPILOG']
-        section_text = {}
-
-        comment_line = '###############################################################################'
-        for section in sections:
-            parse_section = section
-            section_text[parse_section] = ''
-
-            regex_find = re.compile('^(#+\s*?)?(' + parse_section + ')(:|;)')
-            regex_end = re.compile('^(#+\s*?)?({})(:|;)'.format('|'.join(sections)))
-
-            search_active = False
-
-            for line in text:
-                if search_active and not regex_end.search(line) and line.rstrip() != comment_line:
-                    section_text[parse_section] += line.rstrip() + '\n'
-                if regex_end.search(line) and search_active:
-                    break
-                if regex_find.search(line) and not search_active:
-                    search_active = True
-
-        for section in ['PARAMETERS', 'DATASOURCE', 'VARIABLES']:
-            section_text[section] = section_text[section].replace("### ", "")
-
-        parameters = yaml.load(section_text['PARAMETERS'])
-        if parameters == 'None':
-            parameters = []
-
-        for parameter in process.parameters.copy():
-            process.remove_parameter(parameter['Name'])
-
-        for parameter in parameters:
-            process.add_parameter(parameter['name'], parameter['prompt'], parameter['value'])
-
-        # Datasource
-        datasource = yaml.load(section_text['DATASOURCE'])
-
-        if datasource == 'None':
-            datasource = {'type': 'None'}
-
-        for key, item in datasource.items():
-            obj_key = 'datasource_' + key
-            try:
-                if obj_key in dir(process):
-                    setattr(process, '' + obj_key, item)
-                else:
-                    print('encountered unknown datasource setting: ' + key)
-            except Exception as e:
-                sublime.message_dialog('An error occurred updating {}\n\n{}'.format(process_name, e))
-                raise
-
-        # Variables
-        variables = yaml.load(section_text['VARIABLES'])
-        for variable in process.variables.copy():
-            process.remove_variable(variable['Name'])
-
-        if variables != 'None':
-            for x in variables:
-                if '(Numeric)' in x['name']:
-                    var_type = 'Numeric'
-                    var_name = x['name'].replace('(Numeric)', '')
-                else:
-                    var_type = 'String'
-                    var_name = x['name'].replace('(String)', '')
-
-                var_name = var_name.strip()
-                process.add_variable(var_name, var_type)
-
-        process.prolog_procedure = section_text['PROLOG'].strip()
-        process.metadata_procedure = section_text['METADATA'].strip()
-        process.data_procedure = section_text['DATA'].strip()
-        process.epilog_procedure = section_text['EPILOG'].strip()
+        process = view_to_process(active_view, process)
 
         try:
             if not update_process:
