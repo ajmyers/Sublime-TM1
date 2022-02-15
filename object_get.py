@@ -82,9 +82,12 @@ class GetObjectsFromServerCommand(sublime_plugin.WindowCommand):
 
         header += '###############################################################################\n\n'
 
+        rule_text = cube.rules.text.replace(header, '')
+        rule_text = rule_text.replace('\r\n', '\n')
+
         with open(output_file, 'w', encoding='utf-8') as file:
             file.write(header)
-            file.write(cube.rules.text.replace(header, ''))
+            file.write(rule_text)
 
     def output_process(self, process):
         output_file = os.path.join(self._folder, process.name + '.pro')

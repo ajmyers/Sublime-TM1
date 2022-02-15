@@ -309,6 +309,8 @@ def process_to_view(process):
             variables += '###    - name: {} ({})\n'.format(
                 variable['Name'], variable['Type'])
 
-    return template.format(name=process.name, parameters=parameters, variables=variables,
+    view = template.format(name=process.name, parameters=parameters, variables=variables,
                            datasource=datasource, prolog=procedure['prolog'], metadata=procedure['metadata'],
                            data=procedure['data'], epilog=procedure['epilog'])
+
+    return view.replace('\r\n', '\n')
