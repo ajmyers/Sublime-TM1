@@ -4,6 +4,7 @@ import re
 import sublime
 import sublime_plugin
 import threading
+import time
 import yaml
 
 from .connect import get_tm1_service
@@ -34,6 +35,7 @@ class PutObjectToServerCommand(sublime_plugin.WindowCommand):
         for ext_list, put_func in funcmap:
             if(self.active_file_ext.lower() in ext_list):
                 self.window.active_view().run_command("save")
+                self.window.active_view().erase_regions('error')
                 thread_name = 'TM1.UPDATE.{}'.format(self.active_file_base)
                 if len([x for x in threading.enumerate() if x.getName() == thread_name]) == 0:
                     t = threading.Thread(name=thread_name, daemon=True, target=put_func, args=(self.window.active_view(),))
@@ -45,7 +47,7 @@ class PutObjectToServerCommand(sublime_plugin.WindowCommand):
         sublime.status_message("Processing server update of rule: " + self.active_file_base)
 
         regions = active_view.split_by_newlines(sublime.Region(0, active_view.size()))
-        rules = ''.join([active_view.substr(region).rstrip() + '\n' for region in regions])
+        rules = ''.join([active_view.substr(region).rstrip() + '\n' for region in regions]).rstrip('\n') + '\n'
 
         try:
             cube_name = self.active_file_base
@@ -57,7 +59,7 @@ class PutObjectToServerCommand(sublime_plugin.WindowCommand):
             request = "/api/v1/Cubes('{}')/tm1.CheckRules".format(cube_name)
             errors = self._session._tm1_rest.POST(request, '').json()['value']
             if errors:
-                sublime.message_dialog('Error compiling {}:\n\nLine {}\n\n{}'.format(cube_name, str(errors[0]['LineNumber']), errors[0]['Message']))
+                self.highlight_errors(active_view, errors[0]['Message'], errors[0]['LineNumber'], None)
             else:
                 sublime.message_dialog('Updated {} Rule Successfully'.format(cube_name))
         except Exception as e:
@@ -85,9 +87,26 @@ class PutObjectToServerCommand(sublime_plugin.WindowCommand):
 
             errors = self._session.processes.compile(process_name)
             if errors:
-                sublime.message_dialog('Error compiling {}: \n\nProcedure: {} (~Line {})\n\n{}'.format(process_name, errors[0]['Procedure'], str(errors[0]['LineNumber']), errors[0]['Message']))
+                self.highlight_errors(active_view, errors[0]['Message'], errors[0]['LineNumber'], errors[0]['Procedure'])
             else:
                 sublime.message_dialog('Updated {} TI Process Successfully'.format(process_name))
         except Exception as e:
             sublime.message_dialog('An error occurred updating {}\n\n{}'.format(process_name, e))
             raise
+
+    def highlight_errors(self, active_view, popup_message, line_number, procedure):
+        if procedure:
+            highlight_region = active_view.find('(### ' + procedure.upper() + ':)(.*?)(\n)', 0)
+            for _ in range(1, line_number):
+                highlight_region = active_view.find('(.*?)(\n)', highlight_region.b)
+            highlight_region = sublime.Region(highlight_region.a, highlight_region.b - 1)
+        else:
+            highlight_region = active_view.line(sublime.Region(active_view.text_point(line_number-1, 0), active_view.text_point(line_number-1, 0)))
+
+        active_view.add_regions('error', [highlight_region], "invalid")
+        active_view.show(highlight_region, True)
+
+        while not active_view.visible_region().contains(highlight_region):
+            time.sleep(0.01)
+
+        active_view.show_popup(popup_message, location=highlight_region.b)
