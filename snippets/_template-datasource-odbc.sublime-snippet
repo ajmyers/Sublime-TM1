@@ -7,7 +7,7 @@
 ###      user_name: "${2:UserName}"
 ###      password: "${3:Password}"
 ###      query: "${4:Query}"
-###      uses_unicode: ${4:true}
+###      uses_unicode: ${5:true}
 ###############################################################################]]></content>
    <tabTrigger>_TEMPLATE-DATASOURCE-ODBC</tabTrigger>
    <scope>source.tm1</scope>
