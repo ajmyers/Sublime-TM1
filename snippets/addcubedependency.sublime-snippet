@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[ADDCUBEDEPENDENCY(${1:sCubeBase}, ${2:sCubeDependent});]]></content>
-   <tabTrigger>ADDCUBEDEPENDENCY</tabTrigger>
-   <scope>source.tm1.ti</scope>
-   <description></description>
-</snippet>

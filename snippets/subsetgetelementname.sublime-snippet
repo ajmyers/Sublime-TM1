@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[SUBSETGETELEMENTNAME(${1:sDim}, ${2:sSub}, ${3:i})]]></content>
-   <tabTrigger>SUBSETGETELEMENTNAME</tabTrigger>
-   <scope>source.tm1.ti</scope>
-   <description></description>
-</snippet>

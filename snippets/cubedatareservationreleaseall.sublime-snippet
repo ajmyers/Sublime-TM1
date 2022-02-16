@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[CUBEDATARESERVATIONRELEASEALL(${1:Cube}, ${2:UserFilter}, ${3:Address}, ${4:[AddressDelimiter]})]]></content>
-   <tabTrigger>CUBEDATARESERVATIONRELEASEALL</tabTrigger>
-   <scope>source.tm1.ti</scope>
-   <description></description>
-</snippet>

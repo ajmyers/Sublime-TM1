@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[VIEWCREATE(${1:sCube}, ${2:sView});]]></content>
-   <tabTrigger>VIEWCREATE</tabTrigger>
-   <scope>source.tm1.ti</scope>
-   <description></description>
-</snippet>

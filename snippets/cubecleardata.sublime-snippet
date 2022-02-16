@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[CUBECLEARDATA(${1:sCube});]]></content>
-   <tabTrigger>CUBECLEARDATA</tabTrigger>
-   <scope>source.tm1.ti</scope>
-   <description></description>
-</snippet>

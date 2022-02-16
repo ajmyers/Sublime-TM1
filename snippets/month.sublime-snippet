@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[MONTH(${1:sDate})]]></content>
-   <tabTrigger>MONTH</tabTrigger>
-   <scope>source.tm1</scope>
-   <description>sDate: YYYY-MM-DD</description>
-</snippet>

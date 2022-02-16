@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[TAN(${1:nValue})]]></content>
-   <tabTrigger>TAN</tabTrigger>
-   <scope>source.tm1</scope>
-   <description></description>
-</snippet>

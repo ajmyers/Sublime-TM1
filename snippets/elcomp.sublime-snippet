@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[ELCOMP(${1:sDim}, ${2:sEle}, ${3:i})]]></content>
-   <tabTrigger>ELCOMP</tabTrigger>
-   <scope>source.tm1</scope>
-   <description></description>
-</snippet>

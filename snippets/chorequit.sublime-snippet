@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[CHOREQUIT();]]></content>
-   <tabTrigger>CHOREQUIT</tabTrigger>
-   <scope>source.tm1.ti</scope>
-   <description></description>
-</snippet>

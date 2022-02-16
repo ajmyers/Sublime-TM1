@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[DELETECLIENT(${1:sClient});]]></content>
-   <tabTrigger>DELETECLIENT</tabTrigger>
-   <scope>source.tm1.ti</scope>
-   <description></description>
-</snippet>

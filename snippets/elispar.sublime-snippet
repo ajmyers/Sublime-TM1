@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[ELISPAR(${1:sDim}, ${2:sElePar}, ${3:sEle})]]></content>
-   <tabTrigger>ELISPAR</tabTrigger>
-   <scope>source.tm1</scope>
-   <description></description>
-</snippet>

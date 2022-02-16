@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[ELLEV(${1:sDim}, ${2:sEle})]]></content>
-   <tabTrigger>ELLEV</tabTrigger>
-   <scope>source.tm1</scope>
-   <description></description>
-</snippet>

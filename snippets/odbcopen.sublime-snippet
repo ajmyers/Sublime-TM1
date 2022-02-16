@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[ODBCOPEN(${1:sSource}, ${2:sClient}, ${3:sPassword})]]></content>
-   <tabTrigger>ODBCOPEN</tabTrigger>
-   <scope>source.tm1.ti</scope>
-   <description></description>
-</snippet>

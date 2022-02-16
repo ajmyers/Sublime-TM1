@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[SERVERSHUTDOWN(${1:1});]]></content>
-   <tabTrigger>SERVERSHUTDOWN</tabTrigger>
-   <scope>source.tm1.ti</scope>
-   <description></description>
-</snippet>

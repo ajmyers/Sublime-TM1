@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[DIMIX(${1:sDim}, ${2:sEle})]]></content>
-   <tabTrigger>DIMIX</tabTrigger>
-   <scope>source.tm1</scope>
-   <description></description>
-</snippet>

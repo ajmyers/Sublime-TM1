@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[DISABLEBULKLOADMODE(${1:})]]></content>
-   <tabTrigger>DISABLEBULKLOADMODE</tabTrigger>
-   <scope>source.tm1.ti</scope>
-   <description></description>
-</snippet>

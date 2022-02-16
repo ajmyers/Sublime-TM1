@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[CUBESETCONNPARAMS(${1:cubeName}, ${2:providerName}, ${3:dataSourceLocation}, ${4:dataSourceName}, ${5:dataSourceCatalog}, ${6:userID}, ${7:password}, ${8:sapClientLang}, ${9:providerString})]]></content>
-   <tabTrigger>CUBESETCONNPARAMS</tabTrigger>
-   <scope>source.tm1.ti</scope>
-   <description></description>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[TIME()]]></content>
-   <tabTrigger>TIME</tabTrigger>
-   <scope>source.tm1</scope>
-   <description></description>
-</snippet>

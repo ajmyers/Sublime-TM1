@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[BATCHUPDATEFINISH(${1:SaveChanges})]]></content>
-   <tabTrigger>BATCHUPDATEFINISH</tabTrigger>
-   <scope>source.tm1.ti</scope>
-   <description></description>
-</snippet>

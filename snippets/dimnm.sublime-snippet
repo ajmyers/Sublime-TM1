@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[DIMNM(${1:sDim}, ${2:i})]]></content>
-   <tabTrigger>DIMNM</tabTrigger>
-   <scope>source.tm1</scope>
-   <description></description>
-</snippet>

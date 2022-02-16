@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[REMOVECLIENTFROMGROUP(${1:sClient}, ${2:sGroup})]]></content>
-   <tabTrigger>REMOVECLIENTFROMGROUP</tabTrigger>
-   <scope>source.tm1.ti</scope>
-   <description></description>
-</snippet>

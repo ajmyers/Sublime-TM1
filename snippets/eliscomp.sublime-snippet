@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[ELISCOMP(${1:sDim}, ${2:sEle}, ${3:sElePar})]]></content>
-   <tabTrigger>ELISCOMP</tabTrigger>
-   <scope>source.tm1</scope>
-   <description></description>
-</snippet>

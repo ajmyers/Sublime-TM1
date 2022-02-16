@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[CUBESETLOGCHANGES(${1:sCube}, ${2:nLogChanges})]]></content>
-   <tabTrigger>CUBESETLOGCHANGES</tabTrigger>
-   <scope>source.tm1.ti</scope>
-   <description></description>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[RULELOADFROMFILE(${1:sCube}, ${2:sFile});]]></content>
-   <tabTrigger>RULELOADFROMFILE</tabTrigger>
-   <scope>source.tm1.ti</scope>
-   <description></description>
-</snippet>

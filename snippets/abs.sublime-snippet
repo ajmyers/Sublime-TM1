@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[ABS(${1:nValue})]]></content>
-   <tabTrigger>ABS</tabTrigger>
-   <scope>source.tm1</scope>
-   <description></description>
-</snippet>

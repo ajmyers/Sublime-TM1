@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[DELET(${1:sValue}, ${2:nStart}, ${3:nLength})]]></content>
-   <tabTrigger>DELET</tabTrigger>
-   <scope>source.tm1</scope>
-   <description></description>
-</snippet>

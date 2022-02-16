@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[LONG(${1:sValue})]]></content>
-   <tabTrigger>LONG</tabTrigger>
-   <scope>source.tm1</scope>
-   <description></description>
-</snippet>

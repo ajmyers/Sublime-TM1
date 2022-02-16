@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[SUBSETELEMENTDELETE(${1:sDim}, ${2:sSub}, ${3:nIndex});]]></content>
-   <tabTrigger>SUBSETELEMENTDELETE</tabTrigger>
-   <scope>source.tm1.ti</scope>
-   <description></description>
-</snippet>

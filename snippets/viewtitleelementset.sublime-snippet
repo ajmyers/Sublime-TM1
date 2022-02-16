@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[VIEWTITLEELEMENTSET(${1:sCube}, ${2:sView}, ${3:sDim}, ${4:nIndex})]]></content>
-   <tabTrigger>VIEWTITLEELEMENTSET</tabTrigger>
-   <scope>source.tm1.ti</scope>
-   <description></description>
-</snippet>

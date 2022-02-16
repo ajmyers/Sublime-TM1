@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[TIMVL(${1:nDate}, ${2:sType}, ${3:ExtendedYears})]]></content>
-   <tabTrigger>TIMVL</tabTrigger>
-   <scope>source.tm1</scope>
-   <description>sType = Y:2015 | M:1-12 | D:1-31 | H:0-23 | I:00-59 | S:00-59</description>
-</snippet>

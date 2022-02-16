@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[SUBSETGETSIZE(${1:sDim}, ${2:sSub})]]></content>
-   <tabTrigger>SUBSETGETSIZE</tabTrigger>
-   <scope>source.tm1.ti</scope>
-   <description></description>
-</snippet>

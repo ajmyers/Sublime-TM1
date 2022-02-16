@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[SETOUTPUTCHARACTERSET(${1:sFile}, ${2:sCharacterSet});]]></content>
-   <tabTrigger>SETOUTPUTCHARACTERSET</tabTrigger>
-   <scope>source.tm1.ti</scope>
-   <description></description>
-</snippet>

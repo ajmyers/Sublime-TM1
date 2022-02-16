@@ -1,0 +1,691 @@
+{
+    "scope": "source.tm1",
+    "completions": [
+        {
+            "trigger": "ATTRN",
+            "annotation": "ATTRN(dimension, element, attribute)",
+            "contents": "ATTRN(${1:sDim}, ${2:sEle}, ${3:sAttr})",
+            "kind": "function",
+            "details": "ATTRN returns a numeric attribute for a specified element of a dimension.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "ATTRS",
+            "annotation": "ATTRS(dimension, element, attribute)",
+            "contents": "ATTRS(${1:sDim}, ${2:sEle}, ${3:sAttr})",
+            "kind": "function",
+            "details": "ATTRS returns a string attribute for a specified element of a dimension.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "CUBEATTRN",
+            "annotation": "CubeATTRN(CubeName, AttrName);",
+            "contents": "CUBEATTRN(${1:sCube}, ${2:sAttr});",
+            "kind": "function",
+            "details": "CubeATTRN returns a numeric attribute for a specified cube.\nThis function is valid in TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "CUBEATTRS",
+            "annotation": "CubeATTRS(CubeName, AttrName);",
+            "contents": "CUBEATTRS(${1:sCube}, ${2:sAttr});",
+            "kind": "function",
+            "details": "CubeATTRS returns a string attribute for a specified cube.\nThis function is valid in TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "DIMENSIONATTRN",
+            "annotation": "DimensionATTRN(DimName, AttrName);",
+            "contents": "DIMENSIONATTRN(${1:sDim}, ${2:sAttr});",
+            "kind": "function",
+            "details": "DimensionATTRN returns a numeric attribute for a specified dimension.\nThis function is valid in TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "DIMENSIONATTRS",
+            "annotation": "DimensionATTRS(DimName, AttrName);",
+            "contents": "DIMENSIONATTRS(${1:sDim}, ${2:sAttr});",
+            "kind": "function",
+            "details": "DimensionATTRS returns a string attribute for a specified dimension.\nThis function is valid in TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "ELEMENTATTRN",
+            "annotation": "ElementAttrN(dimension, hierarchy, element, attribute)",
+            "contents": "ELEMENTATTRN(${1:sDim}, ${2:sHier}, ${3:sEle}, ${4:sAttr})",
+            "kind": "function",
+            "details": "ElementAttrN returns a numeric attribute for a specified element of a\ndimension.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "ELEMENTATTRS",
+            "annotation": "ElementAttrS(dimension, hierarchy, element, attribute)",
+            "contents": "ELEMENTATTRS(${1:sDim}, ${2:sHier}, ${3:sEle}, ${4:sAttr})",
+            "kind": "function",
+            "details": "ElementAttrS returns a string attribute for a specified element of a\ndimension.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "CONSOLIDATEDAVG",
+            "annotation": "ConsolidatedAvg(flag-value, cube-name, element_1, element_2, \u00e2\u0080\u00a6);",
+            "contents": "CONSOLIDATEDAVG(${1:nFlag}, ${2:sCube}, ${3:sEle1}, ${4:sEle2}, ${5:sEleN});",
+            "kind": "function",
+            "details": "ConsolidatedAvg calculates the average value in a consolidation and returns that single\nvalue.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "CONSOLIDATEDCOUNT",
+            "annotation": "ConsolidatedCount(flag-value, cube-name, element_1, element_2, \u00e2\u0080\u00a6);",
+            "contents": "CONSOLIDATEDCOUNT(${1:nFlag}, ${2:sCube}, ${3:sEle1}, ${4:sEle2}, ${5:sEleN});",
+            "kind": "function",
+            "details": "ConsolidatedCount returns the number of values in a consolidation.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "CONSOLIDATEDCOUNTUNIQUE",
+            "annotation": "ConsolidatedCountUnique(flag-value, unique-along-dimension-name, cube-name, elem_1, elem_2, ...);",
+            "contents": "CONSOLIDATEDCOUNTUNIQUE(${1:nFlag}, ${2:sDimUniqueAlong}, ${3:sCube}, ${4:sEle1}, ${5:sEle2}, ${6:...});",
+            "kind": "function",
+            "details": "ConsolidatedCountUnique counts the number of unique elements for which data points\nactually exist for the specified consolidation. The unique elements are counted along one dimension\nof the consolidated cell.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "CONSOLIDATEDMAX",
+            "annotation": "ConsolidatedMax(flag-value, cube-name, element_1, element_2, \u00e2\u0080\u00a6);",
+            "contents": "CONSOLIDATEDMAX(${1:nFlag}, ${2:sCube}, ${3:sEle1}, ${4:sEle2}, ${5:sEleN});",
+            "kind": "function",
+            "details": "ConsolidatedMax calculates the maximum value in a consolidation and returns that single\nvalue.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "CONSOLIDATEDMIN",
+            "annotation": "ConsolidatedMin(flag-value, cube-name, element_1, element_2, \u00e2\u0080\u00a6);",
+            "contents": "CONSOLIDATEDMIN(${1:nFlag}, ${2:sCube}, ${3:sEle1}, ${4:sEle2}, ${5:sEleN});",
+            "kind": "function",
+            "details": "ConsolidatedMin calculates the minimum value in a consolidation and returns that single\nvalue. \nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "ISUNDEFINEDCELLVALUE",
+            "annotation": "",
+            "contents": "ISUNDEFINEDCELLVALUE()",
+            "kind": "function",
+            "details": "ISUNDEFINEDCELLVALUE compares the passed value to the default numeric cube value, which\nis influenced by the presence of the UNDEFVALS declaration in that cube's rule. The function returns\n1 if the passed value equals the cube's default value, otherwise the function returns 0.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "UNDEF",
+            "annotation": "UNDEF",
+            "contents": "UNDEF()",
+            "kind": "function",
+            "details": "UNDEF returns the undefined value. This function can be used to prevent datafrom being\nstored in a cube based on a logical test.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "UNDEFINEDCELLVALUE",
+            "annotation": "",
+            "contents": "UNDEFINEDCELLVALUE()",
+            "kind": "function",
+            "details": "UNDEFINEDCELLVALUE returns the default numeric cube value, which is influenced by the\npresence of the UNDEFVALS declaration in that cube's rule.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "DATE",
+            "annotation": "DATE(SerialNumber, ReturnFourDigitYear)",
+            "contents": "DATE(${1:nSerial}, ${2:nReturnFourDigitYear})",
+            "kind": "function",
+            "details": "DATE returns the date string in yy-mm-dd or\nyyyy-mm-dd format for a given serial number.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "DATES",
+            "annotation": "DATES(year, month, day)",
+            "contents": "DATES(${1:nYear}, ${2:sMonth}, ${3:nDay})",
+            "kind": "function",
+            "details": "DATES returns a date string, in the form 'yy-mm-dd' or 'yyyy-mm-dd', corresponding to a\ngiven year, month, and day.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "DAY",
+            "annotation": "DAY(DateString)",
+            "contents": "DAY(${1:sDate})",
+            "kind": "function",
+            "details": "DAY returns a numeric value for the day in a given date string.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "DAYNO",
+            "annotation": "DAYNO('DateString')",
+            "contents": "DAYNO(${1:'DateString'})",
+            "kind": "function",
+            "details": "DAYNO returns the serial date number corresponding to a given date string.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "MONTH",
+            "annotation": "MONTH(date)",
+            "contents": "MONTH(${1:nDate})",
+            "kind": "function",
+            "details": "MONTH returns a numeric value for the month in a given date string.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "NOW",
+            "annotation": "NOW",
+            "contents": "NOW()",
+            "kind": "function",
+            "details": "NOW returns the current date/time value in serial number format.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "TIME",
+            "annotation": "TIME",
+            "contents": "TIME()",
+            "kind": "function",
+            "details": "TIME returns a string, in HH:MM format, representing the system time on the TM1 server.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "TIMST",
+            "annotation": "TIMST(datetime, format, ExtendedYears)",
+            "contents": "TIMST(${1:nDate}, ${2:sFormat}, ${3:nExtendedYears})",
+            "kind": "function",
+            "details": "TIMST returns a formatted date/time string.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "TIMVL",
+            "annotation": "TIMVL(datetime, type, ExtendedYears)",
+            "contents": "TIMVL(${1:nDate}, ${2:sType}, ${3:nExtendedYears})",
+            "kind": "function",
+            "details": "TIMVL returns the numeric value of a component (year, month, etc.) of a date/time\nvalue.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "TODAY",
+            "annotation": "TODAY(<ReturnFourDigitYear>)",
+            "contents": "TODAY(${1:nReturnFourDigitYear})",
+            "kind": "function",
+            "details": "TODAY returns the current date in yy-mm-dd format.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "YEAR",
+            "annotation": "YEAR(date)",
+            "contents": "YEAR(${1:nDate})",
+            "kind": "function",
+            "details": "YEAR returns a numeric value for the year in a given date string.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "DIMIX",
+            "annotation": "DIMIX(server_name:dimension, element)",
+            "contents": "DIMIX(${1:sDim}, ${2:sEle})",
+            "kind": "function",
+            "details": "DIMIX returns the index number of an element within a dimension.\nThis function is valid in TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "DIMNM",
+            "annotation": "DIMNM(server_name:dimension, index)",
+            "contents": "DIMNM(${1:sDim}, ${2:nIndex})",
+            "kind": "function",
+            "details": "DIMNM returns the element of a dimension that corresponds to the index\nargument.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "DIMSIZ",
+            "annotation": "DIMSIZ(dimension)",
+            "contents": "DIMSIZ(${1:sDim})",
+            "kind": "function",
+            "details": "DIMSIZ returns the number of elements within a specified dimension. \nThis function is valid in TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "DNEXT",
+            "annotation": "DNEXT(dimension, element)",
+            "contents": "DNEXT(${1:sDim}, ${2:sEle})",
+            "kind": "function",
+            "details": "DNEXT returns the element name that follows the element specified as an argument to the\nfunction.\nThis function is valid in TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "DNLEV",
+            "annotation": "DNLEV(dimension)",
+            "contents": "DNLEV(${1:sDim})",
+            "kind": "function",
+            "details": "DNLEV returns the number levels in a dimension.\nThis function is valid in TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "DTYPE",
+            "annotation": "DTYPE(dimension, element)",
+            "contents": "DTYPE(${1:sDim}, ${2:sEle})",
+            "kind": "function",
+            "details": "DTYPE returns information about the element type of a specified element. DTYPE returns N\nif the element is a numeric element, S if the element is a string element, and C if the element is a\nconsolidated element.\nThis function is valid in TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "TABDIM",
+            "annotation": "TABDIM(cube, index)",
+            "contents": "TABDIM(${1:sCube}, ${2:nIndex})",
+            "kind": "function",
+            "details": "TABDIM returns the dimension name that corresponds to the index argument.\nThis function is valid in TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "ELCOMP",
+            "annotation": "ELCOMP(dimension, element, position)",
+            "contents": "ELCOMP(${1:sDim}, ${2:sEle}, ${3:nPos})",
+            "kind": "function",
+            "details": "ELCOMP returns the name of a child of a consolidated element in a specified dimension.\n\nThis function is valid in TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "ELCOMPN",
+            "annotation": "ELCOMPN(dimension, element)",
+            "contents": "ELCOMPN(${1:sDim}, ${2:sEle})",
+            "kind": "function",
+            "details": "ELCOMPN returns the number of components in a specified element. If the element argument\nis not a consolidated element, the function returns 0.\nThis function is valid in TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "ELEMENTCOMPONENT",
+            "annotation": "ElementComponent(dimension, hierarchy, element, position)",
+            "contents": "ELEMENTCOMPONENT(${1:sDim}, ${2:sHier}, ${3:sEle}, ${4:nPos})",
+            "kind": "function",
+            "details": "ElementComponent returns the name of a child of a consolidated element in a specified\ndimension. If the element argument is not a consolidated element, the function returns\n0.\nThis function is valid in TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "ELEMENTCOMPONENTCOUNT",
+            "annotation": "ElementComponentCount(dimension, hierarchy, element)",
+            "contents": "ELEMENTCOMPONENTCOUNT(${1:sDim}, ${2:sHier}, ${3:sEle})",
+            "kind": "function",
+            "details": "ElementComponentCount returns the number of components in a specified element. If the\nelement argument is not a consolidated element, the function returns 0.\nThis function is valid in TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "ELEMENTCOUNT",
+            "annotation": "ElementCount(dimension, hierarchy)",
+            "contents": "ELEMENTCOUNT(${1:sDim}, ${2:sHier})",
+            "kind": "function",
+            "details": "ElementCount returns the number of elements within a specified dimension. \nThis function is valid in TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "ELEMENTFIRST",
+            "annotation": "ElementFirst(server_name:dimension, hierarchy)",
+            "contents": "ELEMENTFIRST(${1:sDim}, ${2:sHier})",
+            "kind": "function",
+            "details": "ElementFirst returns the first element of a specified dimension. \nThis function is valid in TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "ELEMENTINDEX",
+            "annotation": "ElementIndex(server_name:dimension, hierarchy, element)",
+            "contents": "ELEMENTINDEX(${1:sDim}, ${2:sHier}, ${3:sEle})",
+            "kind": "function",
+            "details": "ElementIndex returns the index number of an element within a dimension.\nThis function is valid in TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "ELEMENTISANCESTOR",
+            "annotation": "ElementIsAncestor(dimension, hierarchy, element1, element2)",
+            "contents": "ELEMENTISANCESTOR(${1:sDim}, ${2:sHier}, ${3:sEle1}, ${4:sEle2})",
+            "kind": "function",
+            "details": "ElementIsAncestor determines whether element1 is an ancestor of element2 in the specified\ndimension. The function returns 1 if element1 is an ancestor of element2, otherwise the function\nreturns 0.\nThis function is valid in TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "ELEMENTISCOMPONENT",
+            "annotation": "ElementIsComponent(dimension, hierarchy, element1, element2)",
+            "contents": "ELEMENTISCOMPONENT(${1:sDim}, ${2:sHier}, ${3:sEle1}, ${4:sEle2})",
+            "kind": "function",
+            "details": "ElementIsComponent determines whether element1 is a child of element2 in the specified\ndimension. The function returns 1 if element1 is a child of element2, otherwise the function returns\n0. \nThis function is valid in TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "ELEMENTISPARENT",
+            "annotation": "ElementIsParent(dimension, hierarchy, element1, element2)",
+            "contents": "ELEMENTISPARENT(${1:sDim}, ${2:sHier}, ${3:sEle1}, ${4:sEle2})",
+            "kind": "function",
+            "details": "ElementIsParent determines whether element1 is a parent of element2 in the specified\ndimension. The function returns 1 if element1 is a parent of element2, otherwise the function\nreturns 0. \nThis function is valid in TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "ELEMENTLEVEL",
+            "annotation": "ElementLevel(dimension, hierarchy, element)",
+            "contents": "ELEMENTLEVEL(${1:sDim}, ${2:sHier}, ${3:sEle})",
+            "kind": "function",
+            "details": "ElementLevel returns the level of an element within a dimension.\nThis function is valid in TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "ELEMENTNAME",
+            "annotation": "ElementName(dimension, hierarchy, index)",
+            "contents": "ELEMENTNAME(${1:sDim}, ${2:sHier}, ${3:nIndex})",
+            "kind": "function",
+            "details": "ElementName returns the element of a dimension that corresponds to the index\nargument.\nThis function is valid in TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "ELEMENTNEXT",
+            "annotation": "ElementNext(dimension, hierarchy, element)",
+            "contents": "ELEMENTNEXT(${1:sDim}, ${2:sHier}, ${3:sEle})",
+            "kind": "function",
+            "details": "ElementNext returns the element name that follows the element specified as an argument to\nthe function.\nThis function is valid in TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "ELEMENTPARENT",
+            "annotation": "ElementParent(dimension, hierarchy, element, index)",
+            "contents": "ELEMENTPARENT(${1:sDim}, ${2:sHier}, ${3:sEle}, ${4:nIndex})",
+            "kind": "function",
+            "details": "ElementParent returns the parent of an element in a specified dimension. \nThis function is valid in TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "ELEMENTPARENTCOUNT",
+            "annotation": "ElementParentCount(dimension, hierarchy, element)",
+            "contents": "ELEMENTPARENTCOUNT(${1:sDim}, ${2:sHier}, ${3:sEle})",
+            "kind": "function",
+            "details": "ElementParentCount returns the number of parents of an element in a specified dimension.\n\nThis function is valid in TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "ELEMENTTYPE",
+            "annotation": "ElementType(dimension, hierarchy, element)",
+            "contents": "ELEMENTTYPE(${1:sDim}, ${2:sHier}, ${3:sEle})",
+            "kind": "function",
+            "details": "ElementType returns information about the element type of a specified element.\nElementType returns N if the element is a numeric element, S if the element is a string element, and\nC if the element is a consolidated element.\nThis function is valid in TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "ELEMENTWEIGHT",
+            "annotation": "ElementWeight(dimension, hierarchy, element1, element2)",
+            "contents": "ELEMENTWEIGHT(${1:sDim}, ${2:sHier}, ${3:sEle1}, ${4:sEle2})",
+            "kind": "function",
+            "details": "ElementWeight returns the weight of a child in a consolidated element.\nThis function is valid in TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "ELISANC",
+            "annotation": "ELISANC(dimension, element1, element2)",
+            "contents": "ELISANC(${1:sDim}, ${2:sEle1}, ${3:sEle2})",
+            "kind": "function",
+            "details": "ELISANC determines whether element1 is an ancestor of element2 in the specified\ndimension. The function returns 1 if element1 is an ancestor of element2, otherwise the function\nreturns 0.\nThis function is valid in TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "ELISCOMP",
+            "annotation": "ELISCOMP(dimension, element1, element2)",
+            "contents": "ELISCOMP(${1:sDim}, ${2:sEle1}, ${3:sEle2})",
+            "kind": "function",
+            "details": "ELISCOMP determines whether element1 is a child of element2 in the specified dimension.\nThe function returns 1 if element1 is a child of element2, otherwise the function returns 0. \nThis function is valid in TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "ELISPAR",
+            "annotation": "ELISPAR(dimension, element1, element2)",
+            "contents": "ELISPAR(${1:sDim}, ${2:sEle1}, ${3:sEle2})",
+            "kind": "function",
+            "details": "ELISPAR determines whether element1 is a parent of element2 in the specified dimension.\nThe function returns 1 if element1 is a parent of element2, otherwise the function returns 0. \nThis function is valid in TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "ELLEV",
+            "annotation": "ELLEV(dimension, element)",
+            "contents": "ELLEV(${1:sDim}, ${2:sEle})",
+            "kind": "function",
+            "details": "ELLEV returns the level of an element within a dimension.\nThis function is valid in TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "ELPAR",
+            "annotation": "ELPAR(dimension, element, index)",
+            "contents": "ELPAR(${1:sDim}, ${2:sEle}, ${3:nIndex})",
+            "kind": "function",
+            "details": "ELPAR returns the parent of an element in a specified dimension. \nThis function is valid in TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "ELPARN",
+            "annotation": "ELPARN(dimension, element)",
+            "contents": "ELPARN(${1:sDim}, ${2:sEle})",
+            "kind": "function",
+            "details": "ELPARN returns the number of parents of an element in a specified dimension. \nThis function is valid in TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "ELWEIGHT",
+            "annotation": "ELWEIGHT(dimension, element1, element2)",
+            "contents": "ELWEIGHT(${1:sDim}, ${2:sEle1}, ${3:sEle2})",
+            "kind": "function",
+            "details": "ELWEIGHT returns the weight of a child in a consolidated element.\nThis function is valid in TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "LEVELCOUNT",
+            "annotation": "LevelCount(dimension, hierarchy)",
+            "contents": "LEVELCOUNT(${1:sDim}, ${2:sHier})",
+            "kind": "function",
+            "details": "LevelCount returns the number levels in a dimension.\nThis function is valid in TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "FV",
+            "annotation": "FV(payment, interest, periods)",
+            "contents": "FV(${1:nPayment}, ${2:nInterst}, ${3:nPeriods})",
+            "kind": "function",
+            "details": "FV returns the value of an annuity at the time of the last payment. An annuity is a\nseries of payments made at equal intervals of time. Payments are assumed to be made at the end of\neach period.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "PAYMT",
+            "annotation": "PAYMT(principal, interest, periods)",
+            "contents": "PAYMT(${1:nPrincipal}, ${2:nInterst}, ${3:nPeriods})",
+            "kind": "function",
+            "details": "PAYMT returns the payment amount of an annuity based on a given initial value or\nprincipal, an interest rate, and a number of periods. An annuity is a series of payments made at\nequal intervals of time.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "PV",
+            "annotation": "PV(payment, interest, periods)",
+            "contents": "PV(${1:nPayment}, ${2:nInterst}, ${3:nPeriods})",
+            "kind": "function",
+            "details": "PV returns the initial or principal value of an annuity.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "CONTINUE",
+            "annotation": "CONTINUE",
+            "contents": "CONTINUE()",
+            "kind": "function",
+            "details": "When included as part of a rules expression, CONTINUE allows a subsequent rule with the\nsame area definition to be executed. Normally, TM1 only\nexecutes the first rule encountered for a given area.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "ABS",
+            "annotation": "ABS(x)",
+            "contents": "ABS(${1:nValue})",
+            "kind": "function",
+            "details": "ABS returns the absolute value of a number.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "ACOS",
+            "annotation": "ACOS(x)",
+            "contents": "ACOS(${1:nValue})",
+            "kind": "function",
+            "details": "ACOS returns the angle, in radians, whose cosine is x.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "ASIN",
+            "annotation": "ASIN(x)",
+            "contents": "ASIN(${1:nValue})",
+            "kind": "function",
+            "details": "ASIN returns the angle, in radians, whose sine is x.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "ATAN",
+            "annotation": "ATAN(x)",
+            "contents": "ATAN(${1:nValue})",
+            "kind": "function",
+            "details": "ATAN returns the angle, in radians, whose tangent is x. The result is between -pi/2 and\n+pi/2.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "COS",
+            "annotation": "COS(x)",
+            "contents": "COS(${1:nValue})",
+            "kind": "function",
+            "details": "COS returns the cosine of an angle expressed in radians.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "EXP",
+            "annotation": "EXP(x)",
+            "contents": "EXP(${1:nValue})",
+            "kind": "function",
+            "details": "EXP returns the natural anti-log of a number.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "INT",
+            "annotation": "INT(x)",
+            "contents": "INT(${1:nValue})",
+            "kind": "function",
+            "details": "INT returns the largest integer that is less than or equal to a specified\nvalue.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "ISUND",
+            "annotation": "ISUND(x)",
+            "contents": "ISUND(${1:nValue})",
+            "kind": "function",
+            "details": "ISUND returns 1 if a specified value is undefined; otherwise it returns 0.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "LN",
+            "annotation": "LN(x)",
+            "contents": "LN(${1:nValue})",
+            "kind": "function",
+            "details": "LN returns the natural logarithm (base e) of a number. \nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "LOG",
+            "annotation": "LOG(x)",
+            "contents": "LOG(${1:nValue})",
+            "kind": "function",
+            "details": "LOG returns the base 10 logarithm of a positive number. \nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "MAX",
+            "annotation": "MAX(num1, num2)",
+            "contents": "MAX(${1:nValue1}, ${2:nValue2})",
+            "kind": "function",
+            "details": "MAX returns the largest number in a pair of values.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "MIN",
+            "annotation": "MIN(num1, num2)",
+            "contents": "MIN(${1:nValue1}, ${2:nValue2})",
+            "kind": "function",
+            "details": "MIN returns the smallest number in a pair of values.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "MOD",
+            "annotation": "MOD(number, divisor)",
+            "contents": "MOD(${1:nValue}, ${2:nDivisor})",
+            "kind": "function",
+            "details": "MOD returns the remainder of dividing a number by a divisor.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "RAND",
+            "annotation": "RAND.",
+            "contents": "RAND()",
+            "kind": "function",
+            "details": "RAND generates a random number that is uniformly distributed between 0 and 1. The random\nnumber generator is seeded when TM1 is loaded.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "ROUND",
+            "annotation": "ROUND(number)",
+            "contents": "ROUND(${1:nValue})",
+            "kind": "function",
+            "details": "ROUND rounds a given number to the nearest integer. Rounding can be done in a variety of\nvalid ways.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "ROUNDP",
+            "annotation": "ROUNDP(number, decimal)",
+            "contents": "ROUNDP(${1:nValue}, ${2:nDecimal})",
+            "kind": "function",
+            "details": "ROUNDP rounds a given number at a specified decimal precision.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "SIGN",
+            "annotation": "SIGN(number)",
+            "contents": "SIGN(${1:nValue})",
+            "kind": "function",
+            "details": "SIGN determines if a number is positive, negative, or zero. The function returns 1 if the\nnumber is positive, -1 if the number is negative, and 0 if the number is zero.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "SIN",
+            "annotation": "SIN(x)",
+            "contents": "SIN(${1:nValue})",
+            "kind": "function",
+            "details": "SIN returns the sine of a given angle.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "SQRT",
+            "annotation": "SQRT(x)",
+            "contents": "SQRT(${1:nValue})",
+            "kind": "function",
+            "details": "SQRT returns the square root of a given value.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "TAN",
+            "annotation": "TAN(x)",
+            "contents": "TAN(${1:nValue})",
+            "kind": "function",
+            "details": "TAN returns the tangent of a given angle.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "CAPIT",
+            "annotation": "CAPIT(string)",
+            "contents": "CAPIT(${1:sString})",
+            "kind": "function",
+            "details": "CAPIT applies initial capitalization to every word in a string.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "CHAR",
+            "annotation": "CHAR(number)",
+            "contents": "CHAR(${1:nValue})",
+            "kind": "function",
+            "details": "CHAR returns the character identified by a given ASCII numeric code.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "CODE",
+            "annotation": "CODE(string, location)",
+            "contents": "CODE(${1:sString}, ${2:nLocation})",
+            "kind": "function",
+            "details": "CODE returns the ASCII numeric code for a specified character within a\nstring.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "CODEW",
+            "annotation": "CODEW(string, location)",
+            "contents": "CODEW(${1:sString}, ${2:nLocation})",
+            "kind": "function",
+            "details": "CODEW returns the UTF-8 numeric code for a specified character within a\nstring.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "DELET",
+            "annotation": "DELET(string, start, number)",
+            "contents": "DELET(${1:sString}, ${2:nStart}, ${3:nValue})",
+            "kind": "function",
+            "details": "DELET returns the result of deleting a specified number of characters from a specified\nstarting point within a string.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "FILL",
+            "annotation": "FILL(string, length)",
+            "contents": "FILL(${1:sString}, ${2:nLength})",
+            "kind": "function",
+            "details": "FILL repeats a given string as necessary to return a string of a specified\nlength.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "INSRT",
+            "annotation": "INSRT(string1, string2, location)",
+            "contents": "INSRT(${1:sString1}, ${2:sString2}, ${3:nLocation})",
+            "kind": "function",
+            "details": "INSRT inserts one string into another string at a specified insertion point.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "LONG",
+            "annotation": "LONG(string)",
+            "contents": "LONG(${1:sString})",
+            "kind": "function",
+            "details": "LONG returns the length of a string.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "LOWER",
+            "annotation": "LOWER(string)",
+            "contents": "LOWER(${1:sString})",
+            "kind": "function",
+            "details": "LOWER converts all upper case characters in a string to lower case.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "NUMBR",
+            "annotation": "NUMBR(string)",
+            "contents": "NUMBR(${1:sString})",
+            "kind": "function",
+            "details": "NUMBR converts a string to a number. The string passed to the NUMBR function must use.\n(period) as the decimal separator and , (comma) as the thousand separator. Any other\ndecimal/thousand separators will cause incorrect results.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "SCAN",
+            "annotation": "SCAN(substring, string)",
+            "contents": "SCAN(${1:sSubstring}, ${2:sString})",
+            "kind": "function",
+            "details": "SCAN returns a number indicating the starting location of the first occurrence of a\nspecified substring within a string. If the substring does not occur in the given string, the\nfunction returns 0.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "STR",
+            "annotation": "STR(number, length, decimal)",
+            "contents": "STR(${1:nValue}, ${2:nLength}, ${3:nDecimal})",
+            "kind": "function",
+            "details": "STR converts a floating point number to a string representing the value in decimal\nnotation.\nThe number passed to the STR function must use . (period) as the decimal separator and\n, (comma) as the thousand separator. Any other decimal or thousand separators will cause\nincorrect results.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "SUBST",
+            "annotation": "SUBST(string, beginning, length)",
+            "contents": "SUBST(${1:sString}, ${2:nStart}, ${3:nLength})",
+            "kind": "function",
+            "details": "SUBST returns a substring of a given string. \nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "TRIM",
+            "annotation": "TRIM(string)",
+            "contents": "TRIM(${1:sString})",
+            "kind": "function",
+            "details": "TRIM returns the result of trimming any leading and trailing blanks from a\nstring.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        },
+        {
+            "trigger": "UPPER",
+            "annotation": "UPPER(string)",
+            "contents": "UPPER(${1:sString})",
+            "kind": "function",
+            "details": "UPPER converts a text string to upper case.\nThis function is valid in both TM1 rules and TurboIntegrator processes."
+        }
+    ]
+}

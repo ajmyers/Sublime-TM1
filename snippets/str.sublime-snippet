@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[STR(${1:nValue}, ${2:nLength}, ${3:nDecimal})]]></content>
-   <tabTrigger>STR</tabTrigger>
-   <scope>source.tm1</scope>
-   <description></description>
-</snippet>

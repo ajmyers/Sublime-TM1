@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[NUMBERTOSTRINGEX(${1:nValue}, ${2:sFormat}, ${3:sDecimalSeperator}, ${4:sThousandsSeperator})]]></content>
-   <tabTrigger>NUMBERTOSTRINGEX</tabTrigger>
-   <scope>source.tm1.ti</scope>
-   <description></description>
-</snippet>

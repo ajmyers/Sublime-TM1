@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[DIMENSIONELEMENTINSERTDIRECT(${1:sDim}, ${2:''}, ${3:sEle}, ${4:'N'});]]></content>
-   <tabTrigger>DIMENSIONELEMENTINSERTDIRECT</tabTrigger>
-   <scope>source.tm1.ti</scope>
-   <description></description>
-</snippet>

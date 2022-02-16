@@ -1,0 +1,75 @@
+{
+    "scope": "source.tm1.rule",
+    "completions": [
+        {
+            "trigger": "CONSOLIDATECHILDREN",
+            "annotation": "ConsolidateChildren(DimName1, DimName2, ...)",
+            "contents": "CONSOLIDATECHILDREN(${1:sDim1}, ${2:sDim2}, ${3:...})",
+            "kind": "function",
+            "details": "ConsolidateChildren forces consolidated values to be calculated by summing immediate\nchildren along a specified dimension. ConsolidateChildren is useful when intermediate consolidations\nare calculated by rules and you want a parent consolidation to be calculated by summing the\nintermediate consolidations rather than by summing the underlying leaf values.\nThis function is valid in TM1 rules only."
+        },
+        {
+            "trigger": "CELLVALUEN",
+            "annotation": "CellValueN(cube, element1, ..., elementN);",
+            "contents": "CELLVALUEN(${1:sCube}, ${2:sEle1}, ${3:...}, ${4:sEleN});",
+            "kind": "function",
+            "details": "CellValueN returns the numeric value of the specified element(s) in a cube. This is a TM1 rules function, valid in TM1 rules only. Use of this function in a TurboIntegrator process will result in an\nerror."
+        },
+        {
+            "trigger": "CELLVALUES",
+            "annotation": "CellValueS(cube, element1, ..., elementN);",
+            "contents": "CELLVALUES(${1:sCube}, ${2:sEle1}, ${3:...}, ${4:sEleN});",
+            "kind": "function",
+            "details": "CellValueS returns the string value of the specified element(s) in a cube. This is a TM1 rules function, valid in TM1 rules only. Use of this function in a TurboIntegrator process will result in an\nerror."
+        },
+        {
+            "trigger": "DB",
+            "annotation": "DB(cube, e1, e2, [...e256])",
+            "contents": "DB(${1:sCube}, ${2:sEle1}, ${3:sEle2}, ${4:sEleN})",
+            "kind": "function",
+            "details": "DB returns a value from a cube in a TM1  database.\nDB returns a numeric value if used in a numeric expression and a string value if used in a string\nexpression.\nDB is a TM1 rules function, valid in TM1 rules only. Use of this function in a TurboIntegrator process causes an\nerror."
+        },
+        {
+            "trigger": "ISLEAF",
+            "annotation": "ISLEAF",
+            "contents": "ISLEAF()",
+            "kind": "function",
+            "details": "ISLEAF returns 1 if a specified cell is a leaf cell (identified solely by leaf/simple\nelements). If the specified cell is identified by any consolidated elements, the function returns\n0.\nThis function is valid in TM1 rules only.\nThe ISLEAF function cannot be used in TurboIntegrator processes. The presence of this function in\na process will prevent the process from compiling."
+        },
+        {
+            "trigger": "UNDEFVALS",
+            "annotation": "NoCellVal=UndefinedCellValue('cube-name');If(vv=NoCellVal);",
+            "contents": "UNDEFVALS(${1:'cube-name' );If ( vv = NoCellVal});",
+            "kind": "function",
+            "details": "Putting UNDEFVALS in the rules for a cube changes the default value for the cube from\nzero to a special undefined value. Like other rules functions, UNDEFVALS applies only to the\ncube associated with the rule in which the function appears."
+        },
+        {
+            "trigger": "HIERARCHY",
+            "annotation": "Hierarchy(DimName);",
+            "contents": "HIERARCHY(${1:sDim});",
+            "kind": "function",
+            "details": "If there is only one hierarchy included in the supplied dimension, Hierarchy returns the\nname of the hierarchy. Otherwise, it returns an empty string. Hierarchy is valid in TM1 rules only."
+        },
+        {
+            "trigger": "HIERARCHYCOUNT",
+            "annotation": "HierarchyCount(DimName);",
+            "contents": "HIERARCHYCOUNT(${1:sDim});",
+            "kind": "function",
+            "details": "HierarchyCount returns the number of hierarchies in the supplied dimension.\nHierarchyCount is valid in TM1 rules only."
+        },
+        {
+            "trigger": "HIERARCHYINDEX",
+            "annotation": "HierarchyIndex(DimName, HierName);",
+            "contents": "HIERARCHYINDEX(${1:sDim}, ${2:sHier});",
+            "kind": "function",
+            "details": "HierarchyIndex returns a 1-based index if the hierarchy is in the supplied dimension, 0\notherwise. HierarchyIndex is valid in TM1 rules\nonly."
+        },
+        {
+            "trigger": "HIERARCHYN",
+            "annotation": "HierarchyN(DimName, index);",
+            "contents": "HIERARCHYN(${1:sDim}, ${2:nIndex});",
+            "kind": "function",
+            "details": "HierarchyN returns the name of the hierarchy at a specified position in the supplied\ndimension and an empty string if the index is out of scope. HierarchyN is valid in TM1 rules only."
+        }
+    ]
+}

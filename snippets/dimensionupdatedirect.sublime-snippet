@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[DIMENSIONUPDATEDIRECT(${1:sDim});]]></content>
-   <tabTrigger>DIMENSIONUPDATEDIRECT</tabTrigger>
-   <scope>source.tm1.ti</scope>
-   <description></description>
-</snippet>

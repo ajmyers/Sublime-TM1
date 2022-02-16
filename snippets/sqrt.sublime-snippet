@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[SQRT(${1:nValue})]]></content>
-   <tabTrigger>SQRT</tabTrigger>
-   <scope>source.tm1</scope>
-   <description></description>
-</snippet>

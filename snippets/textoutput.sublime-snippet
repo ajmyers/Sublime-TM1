@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[TEXTOUTPUT(${1:sFile}, ${2:sString}${3:, ...});]]></content>
-   <tabTrigger>TEXTOUTPUT</tabTrigger>
-   <scope>source.tm1.ti</scope>
-   <description></description>
-</snippet>

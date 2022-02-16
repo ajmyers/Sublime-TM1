@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[ASCIIDELETE(${1:sFile});]]></content>
-   <tabTrigger>ASCIIDELETE</tabTrigger>
-   <scope>source.tm1.ti</scope>
-   <description></description>
-</snippet>

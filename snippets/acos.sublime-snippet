@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[ACOS(${1:nValue})]]></content>
-   <tabTrigger>ACOS</tabTrigger>
-   <scope>source.tm1</scope>
-   <description></description>
-</snippet>

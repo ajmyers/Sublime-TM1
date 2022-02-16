@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[DIMENSIONELEMENTDELETE(${1:sDim}, ${2:sEle});]]></content>
-   <tabTrigger>DIMENSIONELEMENTDELETE</tabTrigger>
-   <scope>source.tm1.ti</scope>
-   <description></description>
-</snippet>

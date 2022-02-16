@@ -1,1 +1,4 @@
 .DS_Store
+env/
+scrape_tm1_docs/venv
+scrape_tm1_docs/.idea

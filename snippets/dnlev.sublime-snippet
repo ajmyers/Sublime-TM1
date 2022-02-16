@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[DNLEV(${1:sDim})]]></content>
-   <tabTrigger>DNLEV</tabTrigger>
-   <scope>source.tm1</scope>
-   <description></description>
-</snippet>

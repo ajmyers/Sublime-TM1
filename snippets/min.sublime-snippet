@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[MIN(${1:nValue1}, ${2:nValue2})]]></content>
-   <tabTrigger>MIN</tabTrigger>
-   <scope>source.tm1</scope>
-   <description></description>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[PV(${1:nPayment}, ${2:nInterest}, ${3:nPeriods})]]></content>
-   <tabTrigger>PV</tabTrigger>
-   <scope>source.tm1</scope>
-   <description></description>
-</snippet>

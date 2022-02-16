@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[ASCIIOUTPUT(${1:sFile}, ${2});]]></content>
-   <tabTrigger>ASCIIOUTPUT</tabTrigger>
-   <scope>source.tm1.ti</scope>
-   <description></description>
-</snippet>

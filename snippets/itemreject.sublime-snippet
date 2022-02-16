@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[ITEMREJECT(${1:sError})]]></content>
-   <tabTrigger>ITEMREJECT</tabTrigger>
-   <scope>source.tm1.ti</scope>
-   <description></description>
-</snippet>

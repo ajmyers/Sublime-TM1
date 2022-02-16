@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[STRINGTONUMBEREX(${1:sValue}, ${2:sDecimalSeperator}, ${3:sThousandsSeperator})]]></content>
-   <tabTrigger>STRINGTONUMBEREX</tabTrigger>
-   <scope>source.tm1.ti</scope>
-   <description></description>
-</snippet>

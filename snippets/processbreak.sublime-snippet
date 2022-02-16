@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[PROCESSBREAK();]]></content>
-   <tabTrigger>PROCESSBREAK</tabTrigger>
-   <scope>source.tm1.ti</scope>
-   <description></description>
-</snippet>

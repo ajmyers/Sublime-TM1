@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[INSRT(${1:sInsertString}, ${2:sString}, ${3:nPos})]]></content>
-   <tabTrigger>INSRT</tabTrigger>
-   <scope>source.tm1</scope>
-   <description></description>
-</snippet>

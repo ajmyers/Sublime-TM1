@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[FV(${1:payment}, ${2:interest}, ${3:periods})]]></content>
-   <tabTrigger>FV</tabTrigger>
-   <scope>source.tm1</scope>
-   <description></description>
-</snippet>

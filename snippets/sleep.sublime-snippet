@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[SLEEP(${1:nSeconds} * 1000);]]></content>
-   <tabTrigger>SLEEP</tabTrigger>
-   <scope>source.tm1.ti</scope>
-   <description></description>
-</snippet>

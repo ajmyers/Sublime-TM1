@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[CELLPUTN(${1:nValue}, ${2:sCube}, ${3:sEle1}, ${4:sEle2}${5:, ...});]]></content>
-   <tabTrigger>CELLPUTN</tabTrigger>
-   <scope>source.tm1.ti</scope>
-   <description></description>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[DAYNO(${1:sDate})]]></content>
-   <tabTrigger>DAYNO</tabTrigger>
-   <scope>source.tm1</scope>
-   <description>sDate: YYYY-MM-DD</description>
-</snippet>

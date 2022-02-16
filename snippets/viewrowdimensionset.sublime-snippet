@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[VIEWROWDIMENSIONSET(${1:sCube}, ${2:sView}, ${3:sDim}, ${4:nStackPosition});]]></content>
-   <tabTrigger>VIEWROWDIMENSIONSET</tabTrigger>
-   <scope>source.tm1.ti</scope>
-   <description></description>
-</snippet>

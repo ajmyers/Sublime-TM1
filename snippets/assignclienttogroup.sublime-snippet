@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[ASSIGNCLIENTTOGROUP(${1:sClient}, ${2:sGroup});]]></content>
-   <tabTrigger>ASSIGNCLIENTTOGROUP</tabTrigger>
-   <scope>source.tm1.ti</scope>
-   <description></description>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[ODBCOUTPUT(${1:sSource}, ${2:sQuery}${3:, sQuery2}${4:, ...});]]></content>
-   <tabTrigger>ODBCOUTPUT</tabTrigger>
-   <scope>source.tm1.ti</scope>
-   <description></description>
-</snippet>

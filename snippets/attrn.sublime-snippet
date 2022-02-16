@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[ATTRN(${1:sDim}, ${2:sEle}, ${3:sAttr})]]></content>
-   <tabTrigger>ATTRN</tabTrigger>
-   <scope>source.tm1</scope>
-   <description></description>
-</snippet>

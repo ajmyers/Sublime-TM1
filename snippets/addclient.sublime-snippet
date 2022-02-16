@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[ADDCLIENT(${1:sClient});]]></content>
-   <tabTrigger>ADDCLIENT</tabTrigger>
-   <scope>source.tm1.ti</scope>
-   <description></description>
-</snippet>

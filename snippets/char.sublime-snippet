@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[CHAR(${1:nValue})]]></content>
-   <tabTrigger>CHAR</tabTrigger>
-   <scope>source.tm1</scope>
-   <description></description>
-</snippet>

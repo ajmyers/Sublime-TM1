@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[SUBSETCREATE(${1:sDim}, ${2:sSub});]]></content>
-   <tabTrigger>SUBSETCREATE</tabTrigger>
-   <scope>source.tm1.ti</scope>
-   <description></description>
-</snippet>

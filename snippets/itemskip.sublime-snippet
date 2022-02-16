@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[ITEMSKIP();]]></content>
-   <tabTrigger>ITEMSKIP</tabTrigger>
-   <scope>source.tm1.ti</scope>
-   <description></description>
-</snippet>

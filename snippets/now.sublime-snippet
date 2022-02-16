@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[NOW()]]></content>
-   <tabTrigger>NOW</tabTrigger>
-   <scope>source.tm1</scope>
-   <description></description>
-</snippet>

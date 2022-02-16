@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[DIMENSIONELEMENTCOMPONENTADD(${1:sDim}, ${2:sElePar}, ${3:sEle}, ${4:1});]]></content>
-   <tabTrigger>DIMENSIONELEMENTCOMPONENTADD</tabTrigger>
-   <scope>source.tm1.ti</scope>
-   <description></description>
-</snippet>

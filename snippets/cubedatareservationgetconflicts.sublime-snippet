@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[CUBEDATARESERVATIONGETCONFLICTS(${1:Index}, ${2:Cube}, ${3:User}, ${4:Address}, ${5:[AddressDelimiter]})]]></content>
-   <tabTrigger>CUBEDATARESERVATIONGETCONFLICTS</tabTrigger>
-   <scope>source.tm1.ti</scope>
-   <description></description>
-</snippet>

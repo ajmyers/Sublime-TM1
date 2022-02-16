@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[FILL(${1:sString}, ${2:nLen})]]></content>
-   <tabTrigger>FILL</tabTrigger>
-   <scope>source.tm1</scope>
-   <description></description>
-</snippet>

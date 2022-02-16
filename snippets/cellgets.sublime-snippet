@@ -1,6 +1,0 @@
-<snippet>
-   <content><![CDATA[CELLGETS(${1:sCube}, ${2:sEle1}, ${3:sEle2}${4:, ...})]]></content>
-   <tabTrigger>CELLGETS</tabTrigger>
-   <scope>source.tm1.ti</scope>
-   <description></description>
-</snippet>
