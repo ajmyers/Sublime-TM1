@@ -11,11 +11,11 @@ SESSION_DEFAULT = {
     'ServerAddress': '',
     'UseSSL': 'F',
     'UserName': '',
-    'UseAsync': 'F'
+    'UseAsync': 'T'
 }
 
 
-class UpdateTm1ProjectSettings(sublime_plugin.WindowCommand):
+class updateTm1ProjectSettings(sublime_plugin.WindowCommand):
     def run(self):
         self.active_project = sublime.active_window().project_data()
         self.project_settings = self.active_project.get('settings', {})
@@ -55,13 +55,13 @@ class UpdateTm1ProjectSettings(sublime_plugin.WindowCommand):
         for counter in range(0, len(self.prompts)):
             self.session_settings[self.prompts[counter]] = self.input_values[counter]
 
-        self.session_settings['Password'] = self.encode("1234567890", self.session_settings['Password'])
+        self.session_settings['Password'] = self._encode("1234567890", self.session_settings['Password'])
         self.active_project['settings'] = self.project_settings
         self.active_project['settings']['TM1ConnectionSettings'] = self.session_settings
 
         sublime.active_window().set_project_data(self.active_project)
 
-    def encode(self, key, clear):
+    def _encode(self, key, clear):
         enc = []
         for i in range(len(clear)):
             key_c = key[i % len(key)]

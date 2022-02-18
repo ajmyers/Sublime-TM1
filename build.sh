@@ -4,3 +4,7 @@ zip -rv "/Users/andrewmyers/Library/Application Support/Sublime Text 3/Installed
 
 rm -rf "/Users/andrewmyers/Library/Application Support/Sublime Text 3/Packages/TM1py" || true
 cp -Rv "/Users/andrewmyers/Documents/Projects/TM1py" "/Users/andrewmyers/Library/Application Support/Sublime Text 3/Packages/TM1py"
+
+killall sublime_text
+sleep .5
+open -a 'Sublime Text'

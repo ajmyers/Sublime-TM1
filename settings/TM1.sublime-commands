@@ -9,4 +9,5 @@
     { "caption": "TM1: Config - Enable Format Process on Save", "command": "enable_format_process_on_save"},
     { "caption": "TM1: Config - Disable Format Process on Save", "command": "disable_format_process_on_save"},
     { "caption": "TM1: Format - Format Active Process", "command": "format_turbo_integrator_process"},
+    { "caption": "TM1: Test - Test", "command": "run_test_test_test"},
 ]
