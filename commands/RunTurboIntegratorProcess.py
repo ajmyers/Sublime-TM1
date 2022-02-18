@@ -1,8 +1,9 @@
-
 import os
+from collections import OrderedDict
+
 import sublime
 import sublime_plugin
-from collections import OrderedDict
+
 from ..utils.Session import get_session
 
 
@@ -72,9 +73,3 @@ class runTurboIntegratorProcess(sublime_plugin.WindowCommand):
             parameters[par['Name']] = par['SelectedValue']
 
         self.session.run_process(name, parameters)
-
-
-
-
-
-

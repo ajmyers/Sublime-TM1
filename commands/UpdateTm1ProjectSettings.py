@@ -1,7 +1,7 @@
 import base64
+
 import sublime
 import sublime_plugin
-
 
 SESSION_DEFAULT = {
     'APIString': '/api/v1/',
@@ -22,7 +22,8 @@ class updateTm1ProjectSettings(sublime_plugin.WindowCommand):
         self.session_settings = self.project_settings.get('TM1ConnectionSettings', {})
 
         if not self.active_project:
-            sublime.message_dialog("Active window is not currently configured as a project.\n\nPlease go to Project -> Save Project As to continue")
+            sublime.message_dialog(
+                "Active window is not currently configured as a project.\n\nPlease go to Project -> Save Project As to continue")
             return
 
         self.input_values, self.prompts, self.default_values = [], [], []
@@ -41,7 +42,8 @@ class updateTm1ProjectSettings(sublime_plugin.WindowCommand):
         self.show_prompt()
 
     def show_prompt(self):
-        self.window.show_input_panel(self.prompts[self.counter], self.default_values[self.counter], self.on_done, None, None)
+        self.window.show_input_panel(self.prompts[self.counter], self.default_values[self.counter], self.on_done, None,
+                                     None)
 
     def on_done(self, content):
         self.input_values.append(content)

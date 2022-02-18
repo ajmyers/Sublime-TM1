@@ -1,9 +1,9 @@
 {
-    "*": {
-        ">=3000": [
-            "pyyaml",
-            "requests",
-            "TM1py"
-        ]
-    }
+  "*": {
+    ">=3000": [
+      "pyyaml",
+      "requests",
+      "TM1py"
+    ]
+  }
 }

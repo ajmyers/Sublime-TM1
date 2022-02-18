@@ -2,7 +2,7 @@ import os
 import re
 import threading
 import time
-from base64 import urlsafe_b64decode, urlsafe_b64encode
+from base64 import urlsafe_b64decode
 
 import sublime as sublime
 import yaml
@@ -32,6 +32,7 @@ def cleanup_settings(connection_settings):
         'async_requests_mode': True if connection_settings.get('UseAsync', 'F') == 'T' else False
     }
 
+
 def cube_rule_to_text(cube):
     dimensions = '\n'.join([RuleTemplate.DIMENSION_ROW.format(index=index, dimension=dimension) for index, dimension in
                             enumerate((dim for dim in cube.dimensions if dim != 'Sandboxes'), start=1)])
@@ -40,6 +41,7 @@ def cube_rule_to_text(cube):
     content = RuleTemplate.TEMPLATE.format(header=header, body=body)
 
     return content
+
 
 def process_to_text(process):
     procedure = {
@@ -65,7 +67,7 @@ def process_to_text(process):
     return content
 
 
-def generate_completion(process):
+def generate_turbo_integrator_completion(process):
     output = []
     if not process.parameters:
         output.append('EXECUTEPROCESS(\'{}\');'.format(process.name))
@@ -86,6 +88,27 @@ def generate_completion(process):
         name = name.replace(k, v)
 
     return ["_TI-{}".format(name), '\n'.join(output)]
+
+
+def generate_rule_completion(cube):
+    output = []
+    output.append('DB(\'{}\', '.format(cube.name))
+
+    params = []
+    for index, dimension in enumerate([dim for dim in cube.dimensions if dim != 'Sandboxes'], start=1):
+        param_name = dimension.replace(' ', '')
+        param_name = '\\' + param_name if param_name.startswith('}') else param_name
+        params.append('${%s:!%s}' % (str(index), param_name))
+
+    output.append(', '.join(params))
+    output.append(')')
+
+    clean = [(' ', '_'), ('.', '-'), ('}', '')]
+    name = cube.name.upper()
+    for k, v in clean:
+        name = name.replace(k, v)
+
+    return ["_DB-{}".format(name), ''.join(output)]
 
 
 def view_to_process(view, process):
@@ -180,7 +203,8 @@ def highlight_errors(view, popup_message, line_number, procedure):
             highlight_region = view.find('(.*?)(\n)', highlight_region.b)
         highlight_region = sublime.Region(highlight_region.a, highlight_region.b - 1)
     else:
-        highlight_region = view.line(sublime.Region(view.text_point(line_number - 1, 0), view.text_point(line_number - 1, 0)))
+        highlight_region = view.line(
+            sublime.Region(view.text_point(line_number - 1, 0), view.text_point(line_number - 1, 0)))
 
     view.add_regions('error', [highlight_region], "invalid")
     view.show(highlight_region, True)
@@ -193,4 +217,3 @@ def highlight_errors(view, popup_message, line_number, procedure):
 
 def run_async(runnable):
     threading.Thread(daemon=True, target=runnable).start()
-

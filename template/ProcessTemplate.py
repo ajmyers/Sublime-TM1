@@ -142,5 +142,3 @@ def generate_variables(variables):
             output.append(VARIABLES_ROW.format(variable['Name'], variable['Type']))
 
     return '\n'.join(output)
-
-

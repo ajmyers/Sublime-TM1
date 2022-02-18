@@ -13,11 +13,12 @@ DESC_REPLACE = [
 
 
 class TM1Function:
-    def __init__(self, func, desc, example, func_type):
+    def __init__(self, func, desc, example, func_type, url):
         self.func = func.strip()
         self.desc = desc.strip()
         self.example = example.strip()
         self._func_type = func_type
+        self.url = url
 
         if func_type == 'variable':
             self.type = func_type
@@ -25,6 +26,9 @@ class TM1Function:
             self.type = 'function'
             self.func = self.func.upper()
 
+        self.refresh()
+
+    def refresh(self):
         self._set_desc()
         self._set_scope()
         self._set_params()
@@ -38,8 +42,10 @@ class TM1Function:
             self.content = self.func + '(' + ', '.join(param_content) + ')'
             if self.example.endswith(';'):
                 self.content = self.content + ';'
+        elif self.type == 'variable':
+            self.content = self.func + ' = ' + '${1:}'
         else:
-            self.content = self.func + '=' + '${1:}'
+            self.content = self.func
 
     def _set_xml_output(self):
         out = [
@@ -57,7 +63,7 @@ class TM1Function:
         is_rule = True if self._func_type == 'rule' else False
         is_process = True if self._func_type == 'process' else False
 
-        if self._func_type == 'variable':
+        if self._func_type.startswith('variable'):
             self.scope = 'source.tm1.ti'
             return
 
@@ -98,4 +104,7 @@ class TM1Function:
         for rep in DESC_REPLACE:
             self.desc = self.desc.replace(rep[0], rep[1])
 
-        self.desc = self.desc.strip('\n')
+        self.desc = '<a href="{}">Documentation</a> '.format(self.url) + self.desc.strip('\n')
+
+    def __repr__(self):
+        return f'<TM1: {self.func} ({self.scope})>'

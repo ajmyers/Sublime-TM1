@@ -6,70 +6,98 @@
             "annotation": "ConsolidateChildren(DimName1, DimName2, ...)",
             "contents": "CONSOLIDATECHILDREN(${1:sDim1}, ${2:sDim2}, ${3:...})",
             "kind": "function",
-            "details": "ConsolidateChildren forces consolidated values to be calculated by summing immediate\nchildren along a specified dimension. ConsolidateChildren is useful when intermediate consolidations\nare calculated by rules and you want a parent consolidation to be calculated by summing the\nintermediate consolidations rather than by summing the underlying leaf values.\nThis function is valid in TM1 rules only."
+            "details": "<a href=\"https://www.ibm.com/docs/api/v1/content/SSD29G_2.0.0/com.ibm.swg.ba.cognos.tm1_ref.2.0.0.doc/r_tm1_ref_consolidatechildren.html\">Documentation</a> ConsolidateChildren forces consolidated values to be calculated by summing immediate\nchildren along a specified dimension. ConsolidateChildren is useful when intermediate consolidations\nare calculated by rules and you want a parent consolidation to be calculated by summing the\nintermediate consolidations rather than by summing the underlying leaf values.\nThis function is valid in TM1 rules only."
         },
         {
             "trigger": "CELLVALUEN",
             "annotation": "CellValueN(cube, element1, ..., elementN);",
             "contents": "CELLVALUEN(${1:sCube}, ${2:sEle1}, ${3:...}, ${4:sEleN});",
             "kind": "function",
-            "details": "CellValueN returns the numeric value of the specified element(s) in a cube. This is a TM1 rules function, valid in TM1 rules only. Use of this function in a TurboIntegrator process will result in an\nerror."
+            "details": "<a href=\"https://www.ibm.com/docs/api/v1/content/SSD29G_2.0.0/com.ibm.swg.ba.cognos.tm1_ref.2.0.0.doc/r_tm1_ref_cellvaluen.html\">Documentation</a> CellValueN returns the numeric value of the specified element(s) in a cube. This is a TM1 rules function, valid in TM1 rules only. Use of this function in a TurboIntegrator process will result in an\nerror."
         },
         {
             "trigger": "CELLVALUES",
             "annotation": "CellValueS(cube, element1, ..., elementN);",
             "contents": "CELLVALUES(${1:sCube}, ${2:sEle1}, ${3:...}, ${4:sEleN});",
             "kind": "function",
-            "details": "CellValueS returns the string value of the specified element(s) in a cube. This is a TM1 rules function, valid in TM1 rules only. Use of this function in a TurboIntegrator process will result in an\nerror."
+            "details": "<a href=\"https://www.ibm.com/docs/api/v1/content/SSD29G_2.0.0/com.ibm.swg.ba.cognos.tm1_ref.2.0.0.doc/r_tm1_ref_cellvalues.html\">Documentation</a> CellValueS returns the string value of the specified element(s) in a cube. This is a TM1 rules function, valid in TM1 rules only. Use of this function in a TurboIntegrator process will result in an\nerror."
         },
         {
             "trigger": "DB",
             "annotation": "DB(cube, e1, e2, [...e256])",
             "contents": "DB(${1:sCube}, ${2:sEle1}, ${3:sEle2}, ${4:sEleN})",
             "kind": "function",
-            "details": "DB returns a value from a cube in a TM1  database.\nDB returns a numeric value if used in a numeric expression and a string value if used in a string\nexpression.\nDB is a TM1 rules function, valid in TM1 rules only. Use of this function in a TurboIntegrator process causes an\nerror."
+            "details": "<a href=\"https://www.ibm.com/docs/api/v1/content/SSD29G_2.0.0/com.ibm.swg.ba.cognos.tm1_ref.2.0.0.doc/r_tm1_ref_db.html\">Documentation</a> DB returns a value from a cube in a TM1  database.\nDB returns a numeric value if used in a numeric expression and a string value if used in a string\nexpression.\nDB is a TM1 rules function, valid in TM1 rules only. Use of this function in a TurboIntegrator process causes an\nerror."
         },
         {
             "trigger": "ISLEAF",
             "annotation": "ISLEAF",
             "contents": "ISLEAF()",
             "kind": "function",
-            "details": "ISLEAF returns 1 if a specified cell is a leaf cell (identified solely by leaf/simple\nelements). If the specified cell is identified by any consolidated elements, the function returns\n0.\nThis function is valid in TM1 rules only.\nThe ISLEAF function cannot be used in TurboIntegrator processes. The presence of this function in\na process will prevent the process from compiling."
+            "details": "<a href=\"https://www.ibm.com/docs/api/v1/content/SSD29G_2.0.0/com.ibm.swg.ba.cognos.tm1_ref.2.0.0.doc/r_tm1_ref_isleaf.html\">Documentation</a> ISLEAF returns 1 if a specified cell is a leaf cell (identified solely by leaf/simple\nelements). If the specified cell is identified by any consolidated elements, the function returns\n0.\nThis function is valid in TM1 rules only.\nThe ISLEAF function cannot be used in TurboIntegrator processes. The presence of this function in\na process will prevent the process from compiling."
         },
         {
             "trigger": "UNDEFVALS",
             "annotation": "NoCellVal=UndefinedCellValue('cube-name');If(vv=NoCellVal);",
             "contents": "UNDEFVALS(${1:'cube-name' );If ( vv = NoCellVal});",
             "kind": "function",
-            "details": "Putting UNDEFVALS in the rules for a cube changes the default value for the cube from\nzero to a special undefined value. Like other rules functions, UNDEFVALS applies only to the\ncube associated with the rule in which the function appears."
+            "details": "<a href=\"https://www.ibm.com/docs/api/v1/content/SSD29G_2.0.0/com.ibm.swg.ba.cognos.tm1_ref.2.0.0.doc/r_tm1_ref_undefvals.html\">Documentation</a> Putting UNDEFVALS in the rules for a cube changes the default value for the cube from\nzero to a special undefined value. Like other rules functions, UNDEFVALS applies only to the\ncube associated with the rule in which the function appears."
         },
         {
             "trigger": "HIERARCHY",
             "annotation": "Hierarchy(DimName);",
             "contents": "HIERARCHY(${1:sDim});",
             "kind": "function",
-            "details": "If there is only one hierarchy included in the supplied dimension, Hierarchy returns the\nname of the hierarchy. Otherwise, it returns an empty string. Hierarchy is valid in TM1 rules only."
+            "details": "<a href=\"https://www.ibm.com/docs/api/v1/content/SSD29G_2.0.0/com.ibm.swg.ba.cognos.tm1_ref.2.0.0.doc/r_tm1_rules_func_hierarchy.html\">Documentation</a> If there is only one hierarchy included in the supplied dimension, Hierarchy returns the\nname of the hierarchy. Otherwise, it returns an empty string. Hierarchy is valid in TM1 rules only."
         },
         {
             "trigger": "HIERARCHYCOUNT",
             "annotation": "HierarchyCount(DimName);",
             "contents": "HIERARCHYCOUNT(${1:sDim});",
             "kind": "function",
-            "details": "HierarchyCount returns the number of hierarchies in the supplied dimension.\nHierarchyCount is valid in TM1 rules only."
+            "details": "<a href=\"https://www.ibm.com/docs/api/v1/content/SSD29G_2.0.0/com.ibm.swg.ba.cognos.tm1_ref.2.0.0.doc/r_tm1_rules_func_hierarchycount.html\">Documentation</a> HierarchyCount returns the number of hierarchies in the supplied dimension.\nHierarchyCount is valid in TM1 rules only."
         },
         {
             "trigger": "HIERARCHYINDEX",
             "annotation": "HierarchyIndex(DimName, HierName);",
             "contents": "HIERARCHYINDEX(${1:sDim}, ${2:sHier});",
             "kind": "function",
-            "details": "HierarchyIndex returns a 1-based index if the hierarchy is in the supplied dimension, 0\notherwise. HierarchyIndex is valid in TM1 rules\nonly."
+            "details": "<a href=\"https://www.ibm.com/docs/api/v1/content/SSD29G_2.0.0/com.ibm.swg.ba.cognos.tm1_ref.2.0.0.doc/r_tm1_rules_func_hierarchyindex.html\">Documentation</a> HierarchyIndex returns a 1-based index if the hierarchy is in the supplied dimension, 0\notherwise. HierarchyIndex is valid in TM1 rules\nonly."
         },
         {
             "trigger": "HIERARCHYN",
             "annotation": "HierarchyN(DimName, index);",
             "contents": "HIERARCHYN(${1:sDim}, ${2:nIndex});",
             "kind": "function",
-            "details": "HierarchyN returns the name of the hierarchy at a specified position in the supplied\ndimension and an empty string if the index is out of scope. HierarchyN is valid in TM1 rules only."
+            "details": "<a href=\"https://www.ibm.com/docs/api/v1/content/SSD29G_2.0.0/com.ibm.swg.ba.cognos.tm1_ref.2.0.0.doc/r_tm1_rules_func_hierarchyn.html\">Documentation</a> HierarchyN returns the name of the hierarchy at a specified position in the supplied\ndimension and an empty string if the index is out of scope. HierarchyN is valid in TM1 rules only."
+        },
+        {
+            "trigger": "STET",
+            "annotation": "STET",
+            "contents": "STET",
+            "kind": "function",
+            "details": "<a href=\"https://www.ibm.com/docs/api/v1/content/SSD29G_2.0.0/com.ibm.swg.ba.cognos.tm1_ref.2.0.0.doc/r_tm1_ref_stet.html\">Documentation</a> The STET function cancels the effect of a rule for a particular element.\nThis is a TM1 rules function, valid only in TM1 rules. This function cannot be used in TurboIntegrator\nprocesses."
+        },
+        {
+            "trigger": "FEEDERS",
+            "annotation": "FEEDERS;",
+            "contents": "FEEDERS;",
+            "kind": "function",
+            "details": "<a href=\"https://www.ibm.com/docs/api/v1/content/SSD29G_2.0.0/com.ibm.swg.ba.cognos.tm1_ref.2.0.0.doc/r_tm1_ref_feeders.html\">Documentation</a> When you use a SKIPCHECK declaration to restore the sparse consolidation in a TM1 rule, you must also ensure that all rules-derived cells are\nidentified by feeder statements. To do this, insert a FEEDERS declaration immediately following all\nrules statements:"
+        },
+        {
+            "trigger": "FEEDSTRINGS",
+            "annotation": "FEEDSTRINGS;",
+            "contents": "FEEDSTRINGS;",
+            "kind": "function",
+            "details": "<a href=\"https://www.ibm.com/docs/api/v1/content/SSD29G_2.0.0/com.ibm.swg.ba.cognos.tm1_ref.2.0.0.doc/r_tm1_ref_feedstrings.html\">Documentation</a> Rule-generated string values are not displayed when a view is zero-suppressed unless the\nstring resides in a cell that is fed. To enable feeding of string cells, insert the FEEDSTRINGS\ndeclaration as the first line of your rule."
+        },
+        {
+            "trigger": "SKIPCHECK",
+            "annotation": "SKIPCHECK;",
+            "contents": "SKIPCHECK;",
+            "kind": "function",
+            "details": "<a href=\"https://www.ibm.com/docs/api/v1/content/SSD29G_2.0.0/com.ibm.swg.ba.cognos.tm1_ref.2.0.0.doc/r_tm1_ref_skipcheck.html\">Documentation</a> You can restore sparse consolidation and improve performance by inserting a SKIPCHECK\ndeclaration at the beginning of the TM1 rule."
         }
     ]
 }

@@ -2,19 +2,21 @@ import glob
 import json
 import os
 import re
-import sublime
 import tempfile
 import time
 import traceback
 
-from . import Utils
+import sublime
 from TM1py import TM1Service, Process, Cube, ServerService
 from TM1py.Exceptions import TM1pyException
+
+from . import Utils
 from ..prettytable.prettytable import PrettyTable
 
 SESSIONS = {}
 
 TI_LOG_FOLDER = 'Turbo Integrator Logs'
+
 
 def get_session(window):
     if not window.project_file_name():
@@ -69,13 +71,12 @@ class TM1Session:
 
         # Get objects from server
         cubes = self.tm1.cubes.get_all()
-        cubes = [x for x in cubes if x.has_rules]
         processes = self.tm1.processes.get_all()
 
         # Write cube rules to files
         folder = os.path.join(main_folder, 'rules')
         if not os.path.exists(folder): os.mkdir(folder)
-        for cube in cubes:
+        for cube in [x for x in cubes if x.has_rules]:
             file = os.path.join(folder, cube.name + '.rux')
             content = Utils.cube_rule_to_text(cube)
             with open(file, 'w', encoding='utf-8') as f:
@@ -90,9 +91,16 @@ class TM1Session:
             with open(file, 'w', encoding='utf-8') as f:
                 f.write(content)
 
-        # Populate completions
-        completions = [Utils.generate_completion(process) for process in processes]
-        self.project_settings['completions'] = {'source.tm1.ti': completions}
+        self.project_settings['completions'] = {}
+
+        # Populate Rule completions
+        completions = [Utils.generate_rule_completion(cube) for cube in cubes]
+        self.project_settings['completions']['source.tm1.rule'] = completions
+
+        # Populate TI completions
+        completions = [Utils.generate_turbo_integrator_completion(process) for process in processes]
+        self.project_settings['completions']['source.tm1.ti'] = completions
+
         self.window.set_project_data(self.project_settings)
 
     def update_object(self, view):

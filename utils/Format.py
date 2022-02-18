@@ -1,4 +1,3 @@
-
 import random
 import re
 import string
@@ -141,7 +140,7 @@ def _detokenize(text, token_dict):
 def _tokenize(text, token_dict):
     # Replace comments with tokens
     found_string = re.search(RE_TOKENIZE_COMMENT, text, flags=re.MULTILINE)
-    while(found_string):
+    while found_string:
 
         start = found_string.start(0)
         end = found_string.end(0)
@@ -160,7 +159,7 @@ def _tokenize(text, token_dict):
 
     # Replace strings with tokens
     found_string = re.search(RE_TOKENIZE_STRING, text, flags=re.DOTALL)
-    while(found_string):
+    while found_string:
         start = found_string.start(0)
         end = found_string.end(0)
 

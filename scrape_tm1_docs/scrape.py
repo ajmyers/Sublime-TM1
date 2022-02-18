@@ -1,10 +1,10 @@
 import json
 import traceback
 
-from bs4 import BeautifulSoup
-from TM1Function import TM1Function
-
 import requests
+from bs4 import BeautifulSoup
+
+from TM1Function import TM1Function
 
 FUNCS = []
 
@@ -12,14 +12,10 @@ SKIP = [
     'Arithmetic Operators in TM1 Rules',
     'Comparison Operators in TM1 Rules',
     'Logical Operators in TM1 Rules',
-    'IF',
     'TM1ProcessError.log file',
     'TURBOINTEGRATOR RESERVED WORDS',
-    'STET',
-    'FEEDERS',
-    'FEEDSTRINGS',
-    'SKIPCHECK',
     'TurboIntegrator User Variables',
+    'IF',
     'WHILE'
 ]
 
@@ -61,7 +57,7 @@ def parse(prefix, url, suffix, func_type):
             print(traceback.print_exc())
             return
 
-        FUNCS.append(TM1Function(func, desc, example, func_type))
+        FUNCS.append(TM1Function(func, desc, example, func_type, prefix + url))
 
 
 def generate_completion(scope):
@@ -86,6 +82,23 @@ def generate_completion(scope):
         f.write(json.dumps(completion, sort_keys=False, indent=4))
 
 
+def cleanup():
+    for func in FUNCS:
+        if func.func in ['NumericGlobalVariable(\'VariableName\');', 'StringGlobalVariable(\'VariableName\');']:
+            func.func = func.func.split('(')[0].upper()
+            func.params = ['\'\'']
+            func.type = 'function'
+            func.refresh()
+        elif func.func in ['NValue', 'SValue', 'Value_Is_String', 'DataMinorErrorCount', 'MetadataMinorErrorCount',
+                           'ProcessReturnCode', 'PrologMinorErrorCount']:
+            func.type = 'variable2'
+            func.example = func.func
+            func.params = []
+            func.refresh()
+        elif func.func in ['FEEDERS', 'FEEDSTRINGS', 'SKIPCHECK', 'STET']:
+            func.content = func.example
+
+
 if __name__ == '__main__':
     prefix = 'https://www.ibm.com/docs/api/v1/content/SSD29G_2.0.0/com.ibm.swg.ba.cognos.tm1_ref.2.0.0.doc/'
     suffix = '?parsebody=false&lang=en'
@@ -99,13 +112,19 @@ if __name__ == '__main__':
     url = 'c_variables_n8000f.html'
     parse(prefix, url, suffix, 'variable')
 
+    cleanup()
+
     generate_completion('source.tm1')
     generate_completion('source.tm1.rule')
     generate_completion('source.tm1.ti')
 
     with open('rule_functions.txt', 'w') as f:
-        f.write('|'.join([func.func.lower() for func in FUNCS if func.type == 'function' and func.scope != 'source.tm1.ti']))
+        f.write('\n'.join(
+            [func.func.lower() for func in FUNCS if func.type == 'function' and func.scope != 'source.tm1.ti']))
 
     with open('ti_functions.txt', 'w') as f:
-        f.write('|'.join([func.func.lower() for func in FUNCS if func.type == 'function' and func.scope != 'source.tm1.rule']))
+        f.write('\n'.join(
+            [func.func.lower() for func in FUNCS if func.type == 'function' and func.scope != 'source.tm1.rule']))
 
+    with open('ti_variables.txt', 'w') as f:
+        f.write('\n'.join([func.func for func in FUNCS if func.type.startswith('variable')]))

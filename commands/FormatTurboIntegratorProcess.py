@@ -1,17 +1,8 @@
-
-import json
-import os
-import re
 import sublime
 import sublime_plugin
-import yaml
 
 from ..utils.Format import format_procedure
 from ..utils.Utils import process_to_text, view_to_process
-
-from TM1py import Process
-
-
 
 
 def set_config(value):
@@ -19,7 +10,8 @@ def set_config(value):
     project_settings = active_project.get('settings', {})
 
     if not active_project:
-        sublime.message_dialog("Active window is not currently configured as a project.\n\nPlease go to Project -> Save Project As to continue")
+        sublime.message_dialog(
+            "Active window is not currently configured as a project.\n\nPlease go to Project -> Save Project As to continue")
         return
 
     project_settings['format_process_on_update'] = value
@@ -64,7 +56,6 @@ class formatTurboIntegratorProcess(sublime_plugin.WindowCommand):
 
 class formatTurboIntegratorProcessCommand(sublime_plugin.TextCommand):
     def run(self, edit):
-
         process = view_to_process(self.view, None)
 
         process.prolog_procedure = format_procedure(process.prolog_procedure)
@@ -85,4 +76,3 @@ class formatTurboIntegratorProcessCommand(sublime_plugin.TextCommand):
 
         for sel in selections:
             self.view.sel().add(sel)
-

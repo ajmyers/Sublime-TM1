@@ -1,9 +1,8 @@
-
 import sublime
 import sublime_plugin
 
-from ..utils.Session import get_session
 from ..prettytable.prettytable import PrettyTable
+from ..utils.Session import get_session
 
 
 class refreshTm1OpsConsoleCommand(sublime_plugin.TextCommand):
