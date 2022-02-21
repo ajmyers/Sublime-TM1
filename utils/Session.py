@@ -150,7 +150,7 @@ class TM1Session:
             self.tm1.cubes.update(cube)
             errors = self.tm1.cubes.check_rules(cube.name)
             if errors:
-                self.highlight_errors(view, errors[0]['Message'], errors[0]['LineNumber'], None)
+                Utils.highlight_errors(view, errors[0]['Message'], errors[0]['LineNumber'], None)
             else:
                 sublime.message_dialog('Updated {} Rule Successfully'.format(cube.name))
 

@@ -34,6 +34,8 @@ class OnSaveListener(sublime_plugin.EventListener):
         active_project = sublime.active_window().project_data()
         project_settings = active_project.get('settings', {})
 
+        view.erase_regions('error')
+
         if not view.file_name().endswith(".pro"):
             return
 
