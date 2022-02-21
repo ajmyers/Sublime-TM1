@@ -10,4 +10,4 @@ from .commands.RefreshTm1OpsConsole import RefreshTm1OpsConsoleCommand
 from .commands.FormatTurboIntegratorProcess import *
 from .commands.ProjectCompletions import ProjectCompletions
 from .commands.CreateNewTm1Project import CreateNewTm1Project
-from .commands.Test import RunTest
+# from .commands.Test import RunTest
