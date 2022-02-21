@@ -2,7 +2,7 @@ import os
 import re
 import threading
 import time
-from base64 import urlsafe_b64decode
+from base64 import urlsafe_b64decode, urlsafe_b64encode
 
 import sublime as sublime
 import yaml
@@ -10,8 +10,11 @@ from TM1py import Process
 
 from ..template import RuleTemplate, ProcessTemplate
 
+ENCODE_KEY = '1234567890'
 
-def _decode(key, enc):
+
+def decode(enc):
+    key = ENCODE_KEY
     dec = []
     enc = urlsafe_b64decode(enc).decode()
     for i in range(len(enc)):
@@ -21,13 +24,23 @@ def _decode(key, enc):
     return "".join(dec)
 
 
-def cleanup_settings(connection_settings):
+def encode(clear):
+    key = ENCODE_KEY
+    enc = []
+    for i in range(len(clear)):
+        key_c = key[i % len(key)]
+        enc_c = chr((ord(clear[i]) + ord(key_c)) % 256)
+        enc.append(enc_c)
+    return urlsafe_b64encode("".join(enc).encode()).decode()
+
+
+def cleanup_old_settings(connection_settings):
     return {
         'address': connection_settings['ServerAddress'],
         'port': connection_settings['PortNumber'],
         'user': connection_settings['UserName'],
         'ssl': True if connection_settings['UseSSL'] == 'T' else False,
-        'password': _decode("1234567890", connection_settings['Password']),
+        'password': connection_settings['Password'],
         'namespace': connection_settings['CAMNamespaceID'],
         'async_requests_mode': True if connection_settings.get('UseAsync', 'F') == 'T' else False
     }

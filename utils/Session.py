@@ -44,14 +44,19 @@ class TM1Session:
         self.connection_settings = self.plugin_settings.get('TM1ConnectionSettings', None)
 
         if not self.connection_settings:
+            self.connection_settings = self.plugin_settings.get('tm1_connection')
+        else:
+            self.connection_settings = Utils.cleanup_old_settings(self.connection_settings)
+
+        if not self.connection_settings:
             sublime.message_dialog(
                 'No TM1 connection settings. Please run TM1 Config Setup command from command palette')
             raise Exception()
 
-        self.connection_settings = Utils.cleanup_settings(self.connection_settings)
-
         try:
-            self.tm1 = TM1Service(**self.connection_settings)
+            settings = self.connection_settings.copy()
+            settings['password'] = Utils.decode(settings['password'])
+            self.tm1 = TM1Service(**settings)
         except Exception as e:
             traceback.print_exc()
             sublime.message_dialog('Unable to establish TM1 session with message: \n\n' + str(e))
