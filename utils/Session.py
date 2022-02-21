@@ -41,11 +41,11 @@ class TM1Session:
 
         self.project_settings = window.project_data()
         self.plugin_settings = self.project_settings.get('settings', {})
-        self.connection_settings = self.plugin_settings.get('TM1ConnectionSettings', None)
+        self.connection_settings = self.plugin_settings.get('tm1_connection')
 
+        # Legacy
         if not self.connection_settings:
-            self.connection_settings = self.plugin_settings.get('tm1_connection')
-        else:
+            self.connection_settings = self.plugin_settings.get('TM1ConnectionSettings', None)
             self.connection_settings = Utils.cleanup_old_settings(self.connection_settings)
 
         if not self.connection_settings:

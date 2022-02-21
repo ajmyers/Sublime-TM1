@@ -228,14 +228,13 @@ class ConfirmInputHandler(sublime_plugin.ListInputHandler):
         return 'Confirm correct settings'
 
     def preview(self, text):
-        print(self.args)
         output = ''
         output += 'Please confirm settings are correct'
         output += '<ul>'
         output += '<li><b>Project Path:</b> {}</li>'.format(
             os.path.join(self.args['project_path'], self.args['project_name']))
 
-        output += '<li><b>Is Cloud:</b> {}</li>'.format(self.args['is_cloud'])
+        output += '<li><b>Is IBM Cloud:</b> {}</li>'.format(self.args['is_cloud'])
         output += '<li><b>Server:</b> {}</li>'.format(self.args['address'])
         if self.args['is_cloud'] == 'No':
             output += '<li><b>Port:</b> {}</li>'.format(self.args['port'])

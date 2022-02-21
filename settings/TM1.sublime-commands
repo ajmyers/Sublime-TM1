@@ -6,7 +6,7 @@
     { "caption": "TM1: Console - Show Console", "command": "display_tm1_ops_console"},
     { "caption": "TM1: Console - Kill Thread", "command": "kill_tm1_thread"},
     { "caption": "TM1: Config - Create New TM1 Project", "command": "create_new_tm1_project"},
-    { "caption": "TM1: Config - Update Current TM1 Project", "command": "update_tm1_project_settings"},
+    { "caption": "TM1: Config - Update Current TM1 Project", "command": "update_tm1_project"},
     { "caption": "TM1: Config - Enable Format Process on Save", "command": "enable_format_process_on_save"},
     { "caption": "TM1: Config - Disable Format Process on Save", "command": "disable_format_process_on_save"},
     { "caption": "TM1: Format - Format Active Process", "command": "format_turbo_integrator_process"},
