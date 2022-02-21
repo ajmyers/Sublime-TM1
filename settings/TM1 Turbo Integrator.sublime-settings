@@ -5,6 +5,5 @@
     "use_tab_stops": true,
     "indent_to_bracket": true,
     "trim_trailing_white_space_on_save": true,
-    "auto_complete_use_index": false,
-	"auto_complete_commit_on_tab": true,
+    "auto_complete_use_index": false
 }

@@ -149,7 +149,7 @@ def generate_turbo_integrator_cube_completion(cube, func):
         name = name.replace(k, v)
 
     completion = {
-        'trigger': '{}-{}'.format(func, name),
+        'trigger': '{}-{}'.format(func, cube.name),
         'annotation': '{}(\'{}\', ...)'.format(func, cube.name),
         'completion': ''.join(output),
         'completion_format': sublime.COMPLETION_FORMAT_SNIPPET,
