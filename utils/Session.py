@@ -98,7 +98,14 @@ class TM1Session:
         self.project_settings['completions']['source.tm1.rule'] = completions
 
         # Populate TI completions
-        completions = [Utils.generate_turbo_integrator_completion(process) for process in processes]
+        completions = [Utils.generate_turbo_integrator_completion(process) for process in processes] + \
+                      [Utils.generate_turbo_integrator_cube_completion(cube, 'CELLGETN') for cube in cubes] + \
+                      [Utils.generate_turbo_integrator_cube_completion(cube, 'CELLPUTN') for cube in cubes] + \
+                      [Utils.generate_turbo_integrator_cube_completion(cube, 'CELLINCREMENTN') for cube in cubes] + \
+                      [Utils.generate_turbo_integrator_cube_completion(cube, 'CELLGETS') for cube in cubes] + \
+                      [Utils.generate_turbo_integrator_cube_completion(cube, 'CELLPUTS') for cube in cubes] + \
+                      [Utils.generate_turbo_integrator_cube_locals_completion(cube) for cube in cubes]
+
         self.project_settings['completions']['source.tm1.ti'] = completions
 
         self.window.set_project_data(self.project_settings)

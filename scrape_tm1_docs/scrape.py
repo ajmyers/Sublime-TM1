@@ -73,7 +73,7 @@ def generate_completion(scope):
             'trigger': func.func,
             'annotation': func.example.replace(' ', '').replace(',', ', '),
             'contents': func.content,
-            'kind': func.type,
+            'kind': 'variable' if func.type.startswith('variable') else func.type,
             'details': func.desc
         }
         completion['completions'].append(comp)

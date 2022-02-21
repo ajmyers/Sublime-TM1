@@ -4,12 +4,12 @@ ${6:sUserName} = ${2:cUserName};
 ${7:sPassword} = ${3:cPassword};
 ${8:sQuery} = ${4:EXPAND(cQuery)};
 
-DATASOURCETYPE = 'ODBC';
-DATASOURCENAMEFORSERVER = ${5};
-DATASOURCENAMEFORCLIENT = ${5};
-DATASOURCEUSERNAME = ${6}
-DATASOURCEPASSWORD = ${7};
-DATASOURCEQUERY = ${8};]]></content>
+DatasourceType = 'ODBC';
+DatasourceNameForServer = ${5};
+DatasourceNameForClient = ${5};
+DatasourceUserName = ${6}
+DatasourcePassword = ${7};
+DatasourceQuery = ${8};]]></content>
    <tabTrigger>_DEFINE-DATASOURCE-ODBC</tabTrigger>
    <scope>source.tm1.ti</scope>
    <description>Code creates datasource variables for an ODBC connection</description>

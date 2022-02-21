@@ -2189,7 +2189,7 @@
             "trigger": "NValue",
             "annotation": "NValue",
             "contents": "NValue",
-            "kind": "variable2",
+            "kind": "variable",
             "details": "<a href=\"https://www.ibm.com/docs/api/v1/content/SSD29G_2.0.0/com.ibm.swg.ba.cognos.tm1_ref.2.0.0.doc/r_tm1_ref_nvalue.html\">Documentation</a> <a href=\"https://www.ibm.com/docs/api/v1/content/SSD29G_2.0.0/com.ibm.swg.ba.cognos.tm1_ref.2.0.0.doc/r_tm1_ref_nvalue.html\">Documentation</a> When the DatasourceType is 'VIEW', this TurboIntegrator local variable determines the\nvalue of the current cell when Value_Is_String is 0. (That is, when the current cell is\nnumeric.)"
         },
         {
@@ -2203,14 +2203,14 @@
             "trigger": "SValue",
             "annotation": "SValue",
             "contents": "SValue",
-            "kind": "variable2",
+            "kind": "variable",
             "details": "<a href=\"https://www.ibm.com/docs/api/v1/content/SSD29G_2.0.0/com.ibm.swg.ba.cognos.tm1_ref.2.0.0.doc/r_tm1_ref_svalue.html\">Documentation</a> <a href=\"https://www.ibm.com/docs/api/v1/content/SSD29G_2.0.0/com.ibm.swg.ba.cognos.tm1_ref.2.0.0.doc/r_tm1_ref_svalue.html\">Documentation</a> When the DatasourceType is 'VIEW', this TurboIntegrator local variable determines the\nvalue of the current cell when Value_Is_String is not 0. (That is, when the current cell contains a\nstring.)"
         },
         {
             "trigger": "Value_Is_String",
             "annotation": "Value_Is_String",
             "contents": "Value_Is_String",
-            "kind": "variable2",
+            "kind": "variable",
             "details": "<a href=\"https://www.ibm.com/docs/api/v1/content/SSD29G_2.0.0/com.ibm.swg.ba.cognos.tm1_ref.2.0.0.doc/r_tm1_ref_value_is_string.html\">Documentation</a> <a href=\"https://www.ibm.com/docs/api/v1/content/SSD29G_2.0.0/com.ibm.swg.ba.cognos.tm1_ref.2.0.0.doc/r_tm1_ref_value_is_string.html\">Documentation</a> When the DatasourceType is 'VIEW', this TurboIntegrator local variable determines whether\nthe current cell should be treated as a string or a numeric value."
         },
         {
@@ -2231,28 +2231,28 @@
             "trigger": "DataMinorErrorCount",
             "annotation": "DataMinorErrorCount",
             "contents": "DataMinorErrorCount",
-            "kind": "variable2",
+            "kind": "variable",
             "details": "<a href=\"https://www.ibm.com/docs/api/v1/content/SSD29G_2.0.0/com.ibm.swg.ba.cognos.tm1_ref.2.0.0.doc/r_tm1_ref_dataminorerrorcount.html\">Documentation</a> <a href=\"https://www.ibm.com/docs/api/v1/content/SSD29G_2.0.0/com.ibm.swg.ba.cognos.tm1_ref.2.0.0.doc/r_tm1_ref_dataminorerrorcount.html\">Documentation</a> This TurboIntegrator global variable counts the minor errors that occur in the Data\nportion of a TurboIntegrator process. For each minor error encountered, the variable value is\nincremented by 1."
         },
         {
             "trigger": "MetadataMinorErrorCount",
             "annotation": "MetadataMinorErrorCount",
             "contents": "MetadataMinorErrorCount",
-            "kind": "variable2",
+            "kind": "variable",
             "details": "<a href=\"https://www.ibm.com/docs/api/v1/content/SSD29G_2.0.0/com.ibm.swg.ba.cognos.tm1_ref.2.0.0.doc/r_tm1_ref_metadataminorerrorcount.html\">Documentation</a> <a href=\"https://www.ibm.com/docs/api/v1/content/SSD29G_2.0.0/com.ibm.swg.ba.cognos.tm1_ref.2.0.0.doc/r_tm1_ref_metadataminorerrorcount.html\">Documentation</a> This TurboIntegrator global variable counts the minor errors that occur in the Metadata\nportion of a TurboIntegrator process. For each minor error encountered, the variable value is\nincremented by 1."
         },
         {
             "trigger": "ProcessReturnCode",
             "annotation": "ProcessReturnCode",
             "contents": "ProcessReturnCode",
-            "kind": "variable2",
+            "kind": "variable",
             "details": "<a href=\"https://www.ibm.com/docs/api/v1/content/SSD29G_2.0.0/com.ibm.swg.ba.cognos.tm1_ref.2.0.0.doc/r_tm1_ref_processreturncode.html\">Documentation</a> <a href=\"https://www.ibm.com/docs/api/v1/content/SSD29G_2.0.0/com.ibm.swg.ba.cognos.tm1_ref.2.0.0.doc/r_tm1_ref_processreturncode.html\">Documentation</a> This TurboIntegrator global variable stores the exit status of the most recently executed\nTurboIntegrator process."
         },
         {
             "trigger": "PrologMinorErrorCount",
             "annotation": "PrologMinorErrorCount",
             "contents": "PrologMinorErrorCount",
-            "kind": "variable2",
+            "kind": "variable",
             "details": "<a href=\"https://www.ibm.com/docs/api/v1/content/SSD29G_2.0.0/com.ibm.swg.ba.cognos.tm1_ref.2.0.0.doc/r_tm1_ref_prologminorerrorcount.html\">Documentation</a> <a href=\"https://www.ibm.com/docs/api/v1/content/SSD29G_2.0.0/com.ibm.swg.ba.cognos.tm1_ref.2.0.0.doc/r_tm1_ref_prologminorerrorcount.html\">Documentation</a> This TurboIntegrator global variable counts the minor errors that occur in the Prolog\nportion of a TurboIntegrator process. For each minor error encountered, the variable value is\nincremented by 1."
         }
     ]

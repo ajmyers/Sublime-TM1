@@ -8,5 +8,5 @@ from .commands.DisplayTm1OpsConsoleCommand import DisplayTm1OpsConsole
 from .commands.DisplayTm1OpsConsoleCommand import KillTm1ThreadCommand
 from .commands.RefreshTm1OpsConsole import RefreshTm1OpsConsoleCommand
 from .commands.FormatTurboIntegratorProcess import *
-from .commands.Test import RunTestTestTest
-
+from .commands.ProjectCompletions import ProjectCompletions
+# from .commands.Test import RunTest

@@ -36,5 +36,5 @@
 ###############################################################################]]></content>
    <tabTrigger>_TEMPLATE-VARIABLES</tabTrigger>
    <scope>source.tm1</scope>
-   <description>Inserts a TI template block for defining datasoure variables</description>
+   <description>Inserts a TI template block for defining datasource variables</description>
 </snippet>

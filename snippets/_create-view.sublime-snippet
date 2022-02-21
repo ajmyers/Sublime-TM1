@@ -16,10 +16,10 @@
 # Dim 10: ${23:none} - ${24:Element|N-Level|Children|Subset|All}
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> #
 
-sCube = ${1/(^s.+$)|(.+)/(?1:$0)(?2:'$0')/};
+sCube = ${1/(^[sc].+$)|(.+)/(?1:$0)(?2:'$0')/};
 
-sView = ${2/(^s.+$)|(.+)/(?1:$0)(?2:'$0')/};
-sSub = ${3/(^s.+$)|(.+)/(?1:$0)(?2:'$0')/};
+sView = ${2/(^[sc].+$)|(.+)/(?1:$0)(?2:'$0')/};
+sSub = ${3/(^[sc].+$)|(.+)/(?1:$0)(?2:'$0')/};
 
 IF(VIEWEXISTS(sCube, sView) = 1);
    VIEWDESTROY(sCube, sView);
@@ -47,7 +47,7 @@ WHILE(TABDIM(sCube, i) @<> '');
    i = i + 1;
 END;
 
-${4/(^DS$|^datasource$|^ds$|^data$)|(^ZO$|^zo$|^zero$|^zeroout$|^ZeroOut$)|(.*)/(?1:DATASOURCENAMEFORSERVER = sCube;\nDATASOURCENAMEFORCLIENT = sCube;\nDATASOURCECUBEVIEW = sView;)(?2:VIEWZEROOUT\(sCube, sView\);)/}]]></content>
+${4/(^DS$|^datasource$|^ds$|^data$)|(^ZO$|^zo$|^zero$|^zeroout$|^ZeroOut$)|(.*)/(?1:DatasourceNameForServer = sCube;\DatasourceNameForClient = sCube;\DatasourceCubeView = sView;)(?2:VIEWZEROOUT\(sCube, sView\);)/}]]></content>
    <tabTrigger>_CREATE-VIEW</tabTrigger>
    <scope>source.tm1.ti</scope>
    <description></description>

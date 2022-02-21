@@ -55,7 +55,7 @@ def process_to_text(process):
     procedure = {k: ProcessTemplate.clean_procedure(v) for k, v in procedure.items()}
 
     # Set parameters, datasource, variables
-    parameters = ProcessTemplate.generate_parameters(process.parameter)
+    parameters = ProcessTemplate.generate_parameters(process.parameters)
     datasource = ProcessTemplate.generate_datasource(process)
     variables = ProcessTemplate.generate_variables(process.variables)
 
@@ -69,11 +69,11 @@ def process_to_text(process):
 
 def generate_turbo_integrator_completion(process):
     output = []
-    if not process.parameter:
+    if not process.parameters:
         output.append('EXECUTEPROCESS(\'{}\');'.format(process.name))
     else:
         output.append('EXECUTEPROCESS(\'{}\''.format(process.name))
-        for index, parameter in enumerate(process.parameter, start=1):
+        for index, parameter in enumerate(process.parameters, start=1):
             name = parameter['Name']
             value = parameter['Value']
             if isinstance(parameter['Value'], str):
@@ -83,11 +83,108 @@ def generate_turbo_integrator_completion(process):
         output.append(');')
 
     clean = [(' ', '_'), ('.', '-'), ('}', '')]
-    name = process.name.upper()
+    name = process.name
     for k, v in clean:
         name = name.replace(k, v)
 
-    return ["_TI-{}".format(name), '\n'.join(output)]
+    completion = {
+        'trigger': 'EXECUTEPROCESS-{}'.format(process.name),
+        'annotation': 'EXECUTEPROCESS(\'{}\', ...)'.format(process.name),
+        'completion': '\n'.join(output),
+        'completion_format': sublime.COMPLETION_FORMAT_SNIPPET,
+        'kind': sublime.KIND_SNIPPET,
+        'details': 'Auto-generated EXECUTEPROCESS() for ' + process.name
+    }
+
+    return completion
+
+
+def generate_turbo_integrator_cube_completion(cube, func):
+    output = []
+    output.append('{}('.format(func))
+
+    start = 1
+    params = []
+    if 'PUTN' in func or 'INCREMENTN' in func:
+        param_name = 'nValue'
+        params.append('${%s:%s}' % (str(start), param_name))
+        start = start + 1
+    elif 'PUTS' in func:
+        param_name = 'sValue'
+        params.append('${%s:%s}' % (str(start), param_name))
+        start = start + 1
+
+    param_name = cube.name
+    param_name = '\\' + param_name if param_name.startswith('}') else param_name
+    params.append('${%s:\'%s\'}' % (str(start), param_name))
+    start = start + 1
+
+    for index, dimension in enumerate([dim for dim in cube.dimensions if dim != 'Sandboxes'], start=start):
+        param_name = dimension.replace(' ', '').replace('}', '').replace('_', '')
+        match = re.search(r'([A-Z0-9])(.*?)($)', param_name)
+        if match:
+            param_name = match.group(0)
+        param_name = 's' + param_name + '_l'
+        params.append('${%s:%s}' % (str(index), param_name))
+
+    output.append(', '.join(params))
+    output.append(');')
+
+    clean = [(' ', '_'), ('.', '-'), ('}', '')]
+    name = cube.name
+    for k, v in clean:
+        name = name.replace(k, v)
+
+    completion = {
+        'trigger': '{}-{}'.format(func, name),
+        'annotation': '{}(\'{}\', ...)'.format(func, cube.name),
+        'completion': ''.join(output),
+        'completion_format': sublime.COMPLETION_FORMAT_SNIPPET,
+        'kind': sublime.KIND_SNIPPET,
+        'details': 'Auto-generated {}() for {}'.format(func, cube.name)
+    }
+
+    return completion
+
+
+def generate_turbo_integrator_cube_locals_completion(cube):
+    output = []
+    output.append('# ==================================================================== #')
+    output.append('# Locals -- ' + cube.name)
+    output.append('# ==================================================================== #')
+    output.append('')
+
+    for index, dimension in enumerate([dim for dim in cube.dimensions if dim != 'Sandboxes'], start=1):
+        param_name = dimension.replace(' ', '').replace('}', '').replace('_', '')
+        match = re.search(r'([A-Z0-9])(.*?)($)', param_name)
+        if match:
+            param_name = match.group(0)
+        param_name = 's' + param_name
+        param = r'${%s:%s}_l = ${%s/(^s.*?$)|(^n.*?$)/(?1:TRIM\(V%s\))(?2:NUMBR\(V%s\))/};'
+        output.append(param % (str(index), param_name, str(index), str(index), str(index)))
+
+    index = index + 1
+    param_name = 'Value'
+    param_name = 'n' + param_name
+    param = r'${%s:%s}_l = ${%s/(^s.*?$)|(^n.*?$)/(?1:TRIM\(V%s\))(?2:NUMBR\(V%s\))/};'
+    output.append(param % (str(index), param_name, str(index), str(index), str(index)))
+    output.append('')
+
+    clean = [(' ', '_'), ('.', '-'), ('}', '')]
+    name = cube.name
+    for k, v in clean:
+        name = name.replace(k, v)
+
+    completion = {
+        'trigger': '_LOCALS-{}'.format(cube.name),
+        'annotation': cube.name,
+        'completion': '\n'.join(output),
+        'completion_format': sublime.COMPLETION_FORMAT_SNIPPET,
+        'kind': sublime.KIND_SNIPPET,
+        'details': 'Auto-generated locals for cube {}'.format(cube.name)
+    }
+
+    return completion
 
 
 def generate_rule_completion(cube):
@@ -104,11 +201,20 @@ def generate_rule_completion(cube):
     output.append(')')
 
     clean = [(' ', '_'), ('.', '-'), ('}', '')]
-    name = cube.name.upper()
+    name = cube.name
     for k, v in clean:
         name = name.replace(k, v)
 
-    return ["_DB-{}".format(name), ''.join(output)]
+    completion = {
+        'trigger': 'DB-{}'.format(name),
+        'annotation': 'DB(\'{}\', ...)'.format(cube.name),
+        'completion': ''.join(output),
+        'completion_format': sublime.COMPLETION_FORMAT_SNIPPET,
+        'kind': sublime.KIND_SNIPPET,
+        'details': 'Auto-generated DB() for ' + cube.name
+    }
+
+    return completion
 
 
 def view_to_process(view, process):

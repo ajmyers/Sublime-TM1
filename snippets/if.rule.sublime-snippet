@@ -1,0 +1,12 @@
+<snippet>
+   <content><![CDATA[IF(
+   ${1}
+,
+   ${2}
+,
+   ${3}
+)${4}]]></content>
+   <tabTrigger>IF</tabTrigger>
+   <scope>source.tm1.rule</scope>
+   <description></description>
+</snippet>

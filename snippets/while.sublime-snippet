@@ -1,0 +1,8 @@
+<snippet>
+   <content><![CDATA[WHILE(${1});
+   ${2}
+END;${3}]]></content>
+   <tabTrigger>WHILE</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description></description>
+</snippet>

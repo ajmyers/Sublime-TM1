@@ -1,5 +1,9 @@
 <snippet>
-   <content><![CDATA[${1:sLocal1}_l = ${1/(^s.*?$)|(^n.*?$)/(?1:TRIM\(V1\))(?2:NUMBR\(V1\))/};
+   <content><![CDATA[# ==================================================================== #
+# Locals
+# ==================================================================== #
+
+${1:sLocal1}_l = ${1/(^s.*?$)|(^n.*?$)/(?1:TRIM\(V1\))(?2:NUMBR\(V1\))/};
 ${2:sLocal2}_l = ${2/(^s.*?$)|(^n.*?$)/(?1:TRIM\(V2\))(?2:NUMBR\(V2\))/};
 ${3:sLocal3}_l = ${3/(^s.*?$)|(^n.*?$)/(?1:TRIM\(V3\))(?2:NUMBR\(V3\))/};
 ${4:sLocal4}_l = ${4/(^s.*?$)|(^n.*?$)/(?1:TRIM\(V4\))(?2:NUMBR\(V4\))/};
@@ -29,7 +33,7 @@ ${27:sLocal27}_l = ${27/(^s.*?$)|(^n.*?$)/(?1:TRIM\(V27\))(?2:NUMBR\(V27\))/};
 ${28:sLocal28}_l = ${28/(^s.*?$)|(^n.*?$)/(?1:TRIM\(V28\))(?2:NUMBR\(V28\))/};
 ${29:sLocal29}_l = ${29/(^s.*?$)|(^n.*?$)/(?1:TRIM\(V29\))(?2:NUMBR\(V29\))/};
 ${30:sLocal30}_l = ${30/(^s.*?$)|(^n.*?$)/(?1:TRIM\(V30\))(?2:NUMBR\(V30\))/};]]></content>
-   <tabTrigger>_DEFINE-LOCAL-VARIABLES</tabTrigger>
+   <tabTrigger>_LOCALS</tabTrigger>
    <scope>source.tm1.ti</scope>
    <description>Code creates local variables</description>
 </snippet>

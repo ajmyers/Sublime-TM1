@@ -1,0 +1,8 @@
+<snippet>
+   <content><![CDATA[IF(${1});
+   ${2}
+ENDIF;]]></content>
+   <tabTrigger>IF</tabTrigger>
+   <scope>source.tm1.ti</scope>
+   <description></description>
+</snippet>

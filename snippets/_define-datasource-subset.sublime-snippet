@@ -6,10 +6,10 @@ IF(SUBSETEXISTS(${3}, sSub) = 0 % SUBSETGETSIZE(${3}, ${4}) = 0);
    PROCESSERROR();
 ENDIF;
 
-DATASOURCETYPE = 'SUBSET';
-DATASOURCENAMEFORSERVER = ${3};
-DATASOURCENAMEFORCLIENT = ${3};
-DATASOURCEDIMENSIONSUBSET = ${4};]]></content>
+DatasourceType = 'SUBSET';
+DatasourceNameForServer = ${3};
+DatasourceNameForClient = ${3};
+DatasourceDimensionSubset = ${4};]]></content>
    <tabTrigger>_DEFINE-DATASOURCE-SUBSET</tabTrigger>
    <scope>source.tm1.ti</scope>
    <description>Code creates datasource variables for a subset.</description>
