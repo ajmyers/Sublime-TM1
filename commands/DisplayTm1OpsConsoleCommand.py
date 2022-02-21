@@ -9,7 +9,7 @@ from ..utils.Session import get_session
 DEFAULT_REFRESH = 2.5
 
 
-class displayTm1OpsConsole(sublime_plugin.WindowCommand):
+class DisplayTm1OpsConsole(sublime_plugin.WindowCommand):
 
     def run(self):
         self.active_project = sublime.active_window().project_data()
@@ -40,7 +40,7 @@ class displayTm1OpsConsole(sublime_plugin.WindowCommand):
             time.sleep(float(refresh_time))
 
 
-class killTm1ThreadCommand(sublime_plugin.WindowCommand):
+class KillTm1ThreadCommand(sublime_plugin.WindowCommand):
     def run(self):
         self.window.show_input_panel('Thread ID:', '', self.killThread, None, None)
 

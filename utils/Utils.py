@@ -55,7 +55,7 @@ def process_to_text(process):
     procedure = {k: ProcessTemplate.clean_procedure(v) for k, v in procedure.items()}
 
     # Set parameters, datasource, variables
-    parameters = ProcessTemplate.generate_parameters(process.parameters)
+    parameters = ProcessTemplate.generate_parameters(process.parameter)
     datasource = ProcessTemplate.generate_datasource(process)
     variables = ProcessTemplate.generate_variables(process.variables)
 
@@ -69,11 +69,11 @@ def process_to_text(process):
 
 def generate_turbo_integrator_completion(process):
     output = []
-    if not process.parameters:
+    if not process.parameter:
         output.append('EXECUTEPROCESS(\'{}\');'.format(process.name))
     else:
         output.append('EXECUTEPROCESS(\'{}\''.format(process.name))
-        for index, parameter in enumerate(process.parameters, start=1):
+        for index, parameter in enumerate(process.parameter, start=1):
             name = parameter['Name']
             value = parameter['Value']
             if isinstance(parameter['Value'], str):

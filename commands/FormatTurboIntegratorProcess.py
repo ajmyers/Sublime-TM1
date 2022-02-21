@@ -19,17 +19,17 @@ def set_config(value):
     sublime.active_window().set_project_data(active_project)
 
 
-class enableFormatProcessOnSave(sublime_plugin.WindowCommand):
+class EnableFormatProcessOnSave(sublime_plugin.WindowCommand):
     def run(self):
         set_config(True)
 
 
-class disableFormatProcessOnSave(sublime_plugin.WindowCommand):
+class DisableFormatProcessOnSave(sublime_plugin.WindowCommand):
     def run(self):
         set_config(False)
 
 
-class onSaveListener(sublime_plugin.EventListener):
+class OnSaveListener(sublime_plugin.EventListener):
     def on_pre_save(self, view):
         active_project = sublime.active_window().project_data()
         project_settings = active_project.get('settings', {})
@@ -46,7 +46,7 @@ class onSaveListener(sublime_plugin.EventListener):
             print(e)
 
 
-class formatTurboIntegratorProcess(sublime_plugin.WindowCommand):
+class FormatTurboIntegratorProcess(sublime_plugin.WindowCommand):
     def run(self):
         if not self.view.file_name().endswith(".pro"):
             return
@@ -54,7 +54,7 @@ class formatTurboIntegratorProcess(sublime_plugin.WindowCommand):
         self.view.run_command('format_turbo_integrator_process')
 
 
-class formatTurboIntegratorProcessCommand(sublime_plugin.TextCommand):
+class FormatTurboIntegratorProcessCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         process = view_to_process(self.view, None)
 

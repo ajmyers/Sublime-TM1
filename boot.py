@@ -1,10 +1,12 @@
 
-from .commands.GetObjectsFromServer import getObjectsFromServer
-from .commands.PutObjectToServer import putObjectToServer
-from .commands.RunTurboIntegratorProcess import runTurboIntegratorProcess
-from .commands.UpdateTm1ProjectSettings import updateTm1ProjectSettings
-from .commands.ClearTurboIntegratorLogs import clearTurboIntegratorLogs
-from .commands.DisplayTm1OpsConsoleCommand import displayTm1OpsConsole
-from .commands.DisplayTm1OpsConsoleCommand import killTm1ThreadCommand
-from .commands.RefreshTm1OpsConsole import refreshTm1OpsConsoleCommand
+from .commands.GetObjectsFromServer import GetObjectsFromServer
+from .commands.PutObjectToServer import PutObjectToServer
+from .commands.RunTurboIntegratorProcess import RunTurboIntegratorProcess
+from .commands.UpdateTm1ProjectSettings import UpdateTm1ProjectSettings
+from .commands.ClearTurboIntegratorLogs import ClearTurboIntegratorLogs
+from .commands.DisplayTm1OpsConsoleCommand import DisplayTm1OpsConsole
+from .commands.DisplayTm1OpsConsoleCommand import KillTm1ThreadCommand
+from .commands.RefreshTm1OpsConsole import RefreshTm1OpsConsoleCommand
 from .commands.FormatTurboIntegratorProcess import *
+from .commands.Test import RunTestTestTest
+

@@ -5,7 +5,7 @@ from ..prettytable.prettytable import PrettyTable
 from ..utils.Session import get_session
 
 
-class refreshTm1OpsConsoleCommand(sublime_plugin.TextCommand):
+class RefreshTm1OpsConsoleCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         session = get_session(sublime.active_window())
 

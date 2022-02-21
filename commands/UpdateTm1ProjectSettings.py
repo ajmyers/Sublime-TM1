@@ -15,7 +15,7 @@ SESSION_DEFAULT = {
 }
 
 
-class updateTm1ProjectSettings(sublime_plugin.WindowCommand):
+class UpdateTm1ProjectSettings(sublime_plugin.WindowCommand):
     def run(self):
         self.active_project = sublime.active_window().project_data()
         self.project_settings = self.active_project.get('settings', {})

@@ -187,7 +187,7 @@ class TM1Session:
 
         ot = []
         ot.append('---------------------------------------------------')
-        ot.append('Process: ' + name)
+        ot.append('Process : ' + name)
         ot.append('Run Time: ' + time.strftime('%a, %d %b %Y %H:%M:%S', run_time))
 
         if parameters:
@@ -254,7 +254,7 @@ class TM1Session:
 
     def clear_turbo_integrator_logs(self):
         folders = self.project_settings.get('folders', [])
-        folders = [f for f in folders if os.path.exists(f['path']) and f['name'] != TI_LOG_FOLDER]
+        folders = [f for f in folders if os.path.exists(f['path']) and f.get('name', '') != TI_LOG_FOLDER]
         self.project_settings['folders'] = folders
         sublime.active_window().set_project_data(self.project_settings)
 
@@ -268,7 +268,7 @@ class TM1Session:
     def _get_temp_dir(self, name):
         folders = self.project_settings['folders']
         folders = [f for f in folders if os.path.exists(f['path'])]
-        folder = [f for f in folders if f['name'] == name]
+        folder = [f for f in folders if f.get('name', '') == name]
         if not folder:
             path = tempfile.mkdtemp(prefix='sublime-tm1-ti-logs-')
             folders.append({'name': name, 'path': path})
