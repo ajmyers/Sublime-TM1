@@ -264,7 +264,7 @@ def view_to_process(view, process):
     for section in ['PARAMETERS', 'DATASOURCE', 'VARIABLES']:
         section_text[section] = section_text[section].replace("### ", "")
 
-    parameters = yaml.load(section_text['PARAMETERS'])
+    parameters = yaml.safe_load(section_text['PARAMETERS'])
     if parameters == 'None':
         parameters = []
 
@@ -274,7 +274,7 @@ def view_to_process(view, process):
     for parameter in parameters:
         process.add_parameter(parameter['name'], parameter['prompt'], parameter['value'])
 
-    datasource = yaml.load(section_text['DATASOURCE'])
+    datasource = yaml.safe_load(section_text['DATASOURCE'])
 
     if datasource == 'None':
         datasource = {'type': 'None'}
@@ -291,7 +291,7 @@ def view_to_process(view, process):
             raise
 
     # Variables
-    variables = yaml.load(section_text['VARIABLES'])
+    variables = yaml.safe_load(section_text['VARIABLES'])
     for variable in process.variables.copy():
         process.remove_variable(variable['Name'])
 

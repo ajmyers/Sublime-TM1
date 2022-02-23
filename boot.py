@@ -16,7 +16,7 @@ sys.path.insert(0, os.path.join(base_path, 'include', 'charset_normalizer'))
 sys.path.insert(0, os.path.join(base_path, 'include', 'idna'))
 sys.path.insert(0, os.path.join(base_path, 'include', 'ijson'))
 sys.path.insert(0, os.path.join(base_path, 'include', 'pytz', 'src'))
-sys.path.insert(0, os.path.join(base_path, 'include', 'pyyaml'))
+sys.path.insert(0, os.path.join(base_path, 'include', 'pyyaml', 'lib'))
 
 from .commands.GetObjectsFromServer import GetObjectsFromServer
 from .commands.PutObjectToServer import PutObjectToServer
