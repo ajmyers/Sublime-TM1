@@ -28,13 +28,13 @@ def get_session(window):
 
     session = SESSIONS.get(session_name)
     if not session:
-        session = TM1Session(window, session_name)
+        session = PelleSession(window, session_name)
         SESSIONS[session_name] = session
 
     return session
 
 
-class TM1Session:
+class PelleSession:
     def __init__(self, window, name):
         self.window = window
         self.name = name
