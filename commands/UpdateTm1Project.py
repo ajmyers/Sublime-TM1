@@ -3,7 +3,7 @@ import traceback
 import sublime
 import sublime_plugin
 
-from ..utils.Utils import encode
+from ..utils import Utils
 
 
 class UpdateTm1Project(sublime_plugin.TextCommand):
@@ -13,7 +13,9 @@ class UpdateTm1Project(sublime_plugin.TextCommand):
             return
 
         try:
-            args['password'] = encode(args['password'])
+            args['password'] = Utils.encode(args['password'])
+            args['ssl'] = True if args['ssl'] == 'Yes' else False
+            args['async_requests_mode'] = True if args['async_requests_mode'] == 'Yes' else False
 
             if not self.project_settings.get('settings'):
                 self.project_settings['settings'] = {}
@@ -72,6 +74,10 @@ class UpdateTm1Project(sublime_plugin.TextCommand):
         if 'namespace' not in args:
             selected = self.connection_settings.get('namespace')
             return NamespaceInputHandler(selected)
+
+        if 'async_requests_mode' not in args:
+            selected = 'Yes' if self.connection_settings.get('async_requests_mode') else None
+            return AsyncRequestsModeInputHandler(selected)
 
         if 'confirm' not in args:
             return ConfirmInputHandler(args)
@@ -167,6 +173,23 @@ class NamespaceInputHandler(sublime_plugin.TextInputHandler):
         return self.selected
 
 
+class AsyncRequestsModeInputHandler(sublime_plugin.ListInputHandler):
+    def __init__(self, selected):
+        self.selected = selected
+
+    def list_items(self):
+        return ['No', 'Yes']
+
+    def placeholder(self):
+        return 'Use async requests mode? (Recommended if supported)'
+
+    def preview(self, text):
+        return self.placeholder()
+
+    def initial_text(self):
+        return self.selected
+
+
 class ConfirmInputHandler(sublime_plugin.ListInputHandler):
     def __init__(self, args):
         self.args = args
@@ -187,6 +210,7 @@ class ConfirmInputHandler(sublime_plugin.ListInputHandler):
         output += '<li><b>User:</b> {}</li>'.format(self.args['user'])
         output += '<li><b>Password:</b> {}</li>'.format(self.args['password'])
         output += '<li><b>CAM Namespace:</b> {}</li>'.format(self.args['namespace'])
+        output += '<li><b>Async Requests:</b> {}</li>'.format(self.args['async_requests_mode'])
         output += '</ul>'
 
         return sublime.Html(output)
