@@ -8,7 +8,7 @@ import sublime as sublime
 import yaml
 from TM1py import Process
 
-from ..template import RuleTemplate, ProcessTemplate
+from pelle.template import RuleTemplate, ProcessTemplate
 
 ENCODE_KEY = '1234567890'
 

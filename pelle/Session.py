@@ -9,9 +9,9 @@ import traceback
 import sublime
 from TM1py import TM1Service, Process, Cube, ServerService
 from TM1py.Exceptions import TM1pyException
+from prettytable import PrettyTable
 
-from . import Utils
-from ..prettytable.prettytable import PrettyTable
+from pelle import Utils
 
 SESSIONS = {}
 

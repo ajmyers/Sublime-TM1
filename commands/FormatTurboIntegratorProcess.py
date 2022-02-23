@@ -1,8 +1,8 @@
 import sublime
 import sublime_plugin
 
-from ..utils.Format import format_procedure
-from ..utils.Utils import process_to_text, view_to_process
+from pelle.Format import format_procedure
+from pelle.Utils import process_to_text, view_to_process
 
 
 def set_config(value):

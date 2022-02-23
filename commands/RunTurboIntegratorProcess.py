@@ -4,7 +4,7 @@ import re
 import sublime
 import sublime_plugin
 
-from ..utils.Session import get_session
+from pelle.Session import get_session
 
 
 class RunTurboIntegratorProcess(sublime_plugin.TextCommand):

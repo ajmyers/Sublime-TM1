@@ -6,6 +6,7 @@ import os
 base_path = os.path.realpath(__file__)
 base_path = os.path.split(base_path)[0]
 
+sys.path.insert(0, os.path.join(base_path))
 sys.path.insert(0, os.path.join(base_path, 'include', 'wcwidth'))
 sys.path.insert(0, os.path.join(base_path, 'include', 'prettytable', 'src', 'prettytable'))
 sys.path.insert(0, os.path.join(base_path, 'include', 'TM1py'))
