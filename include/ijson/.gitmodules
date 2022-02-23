@@ -1,0 +1,3 @@
+[submodule "cextern/yajl"]
+	path = cextern/yajl
+	url = https://github.com/lloyd/yajl

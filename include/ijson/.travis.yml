@@ -1,0 +1,128 @@
+version: ~> 1.0
+
+language: python
+dist: xenial
+addons:
+  apt:
+    packages: [libyajl-dev]
+install:
+  - |
+    if [ -n "$YAJL_VERSION" ]; then
+      sudo apt purge -y libyajl-dev libyajl2
+      if [ "$YAJL_VERSION" = cant_find_it ]; then
+        export YAJL_DLL=/usr/lib/libyajl_cannot_be_found.so
+      elif [ "$YAJL_VERSION" != none ]; then
+        wget https://github.com/lloyd/yajl/archive/${YAJL_VERSION}.zip
+        unzip ${YAJL_VERSION}.zip
+        cd yajl-${YAJL_VERSION}
+        ./configure && make all && sudo make install
+        sudo ldconfig
+        cd ..
+      fi
+    fi
+  - pip install cffi pytest-cov
+  - CFLAGS='--coverage' LDFLAGS='--coverage' python setup.py develop
+script:
+  - python -mdoctest ijson/common.py
+  - pytest -v --cov
+  - test "`IJSON_BACKEND=python coverage run -a <(echo 'import ijson; print(ijson.backend)')`" == python
+after_success:
+ - |
+   if [ "$UPLOAD_C_COVERAGE" = yes ]; then
+     pip install cpp-coveralls
+     coveralls --gcov-options '\-lp'
+   else
+     pip install coveralls
+     coveralls
+   fi
+
+stages:
+  - test
+  - buildwheels
+
+env:
+  global:
+    - CIBW_SKIP="cp27-win*"
+    - CIBW_TEST_REQUIRES=pytest cffi
+    - CIBW_BEFORE_ALL="bash -c 'cmake --help || yum install -y cmake; cd \"{project}\"; sh .github/tools/install_yajl.sh'"
+    - CIBW_TEST_COMMAND="bash -c 'cd \"{project}\"; pytest -vv'"
+    - CIBW_ENVIRONMENT_WINDOWS="IJSON_EMBED_YAJL=1"
+    - TWINE_USERNAME=__token__
+
+_cibuildwheel: &cibuildwheel
+  stage: buildwheels
+  python: "3.8"
+  install:
+    - python3 -m pip install cibuildwheel
+  script:
+    # build the wheels, put them into './wheelhouse'
+    - python3 -m cibuildwheel --output-dir wheelhouse
+  after_success:
+    # if the release was tagged, upload them to PyPI
+    - |
+      if [[ -n "$TRAVIS_TAG" ]]; then
+        python3 -m pip install twine
+        python3 -m twine upload wheelhouse/*.whl
+      fi
+
+jobs:
+  include:
+    # test
+    - python: "2.7"
+      env: YAJL_VERSION=1.0.12
+    - python: "2.7"
+    - python: "3.4"
+      env: YAJL_VERSION=1.0.9
+    - python: "3.4"
+    - python: "3.5"
+      env: UPLOAD_C_COVERAGE=yes
+    - python: "3.5"
+      env: YAJL_VERSION=cant_find_it
+    - python: "3.6"
+    - python: "3.7"
+    - python: "3.7"
+      env: YAJL_VERSION=none
+    - python: "3.8"
+    - python: "3.9-dev"
+    - python: "pypy"
+
+    #build wheels
+    - name: linux wheels build
+      <<: *cibuildwheel
+      services: docker
+    # perform a linux arm64 build
+    - name: linux arm64 wheels build
+      <<: *cibuildwheel
+      services: docker
+      arch: arm64
+      group: edge
+      virt: lxd
+    # and a mac build
+    - name: mac wheels build
+      <<: *cibuildwheel
+      os: osx
+      osx_image: xcode10.2
+      language: shell
+    # and a windows build
+    - name: windows wheels build
+      <<: *cibuildwheel
+      os: windows
+      language: shell
+      before_install:
+        - choco install python --version 3.8.0
+        - export PATH="/c/Python38:/c/Python38/Scripts:$PATH"
+        # make sure it's on PATH as 'python3'
+        - ln -s /c/Python38/python.exe /c/Python38/python3.exe
+    # and a source distribution
+    - name: Source distribution
+      stage: buildwheels
+      python: "3.8"
+      script:
+        - python3 setup.py sdist
+      after_success:
+        # if the release was tagged, upload it to PyPI
+        - |
+          if [[ -n "$TRAVIS_TAG" ]]; then
+            python3 -m pip install twine
+            python3 -m twine upload dist/*.tar.gz
+          fi

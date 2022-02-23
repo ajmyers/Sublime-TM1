@@ -1,0 +1,14 @@
+*.pyc
+.tox
+ijson.egg-info
+*.so
+build
+*.whl
+*.egg
+.coverage
+dist
+.project
+.pydevproject
+.settings
+.cproject
+.autotools
