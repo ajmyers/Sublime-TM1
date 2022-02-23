@@ -1,0 +1,10 @@
+.*
+!/.github/
+*.py[co]
+*.egg
+*.egg-info
+*.log
+/dist
+/build
+/docs/_build
+coverage.xml
