@@ -4,7 +4,7 @@ import time
 import sublime
 import sublime_plugin
 
-from pelle.Session import get_session
+from pelle.Pelle import get_session
 
 DEFAULT_REFRESH = 2.5
 

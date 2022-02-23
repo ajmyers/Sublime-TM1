@@ -2,7 +2,7 @@ import sublime
 import sublime_plugin
 from prettytable import PrettyTable
 
-from pelle.Session import get_session
+from pelle.Pelle import get_session
 
 
 class RefreshTm1OpsConsoleCommand(sublime_plugin.TextCommand):
