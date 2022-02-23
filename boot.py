@@ -1,3 +1,22 @@
+import sublime_plugin
+
+import sys
+import os
+
+base_path = os.path.realpath(__file__)
+base_path = os.path.split(base_path)[0]
+
+sys.path.insert(0, os.path.join(base_path, 'include', 'wcwidth'))
+sys.path.insert(0, os.path.join(base_path, 'include', 'prettytable', 'src', 'prettytable'))
+sys.path.insert(0, os.path.join(base_path, 'include', 'TM1py'))
+sys.path.insert(0, os.path.join(base_path, 'include', 'mdxpy'))
+sys.path.insert(0, os.path.join(base_path, 'include', 'urllib3', 'src'))
+sys.path.insert(0, os.path.join(base_path, 'include', 'requests'))
+sys.path.insert(0, os.path.join(base_path, 'include', 'charset_normalizer'))
+sys.path.insert(0, os.path.join(base_path, 'include', 'idna'))
+sys.path.insert(0, os.path.join(base_path, 'include', 'ijson'))
+sys.path.insert(0, os.path.join(base_path, 'include', 'pytz', 'src'))
+sys.path.insert(0, os.path.join(base_path, 'include', 'pyyaml'))
 
 from .commands.GetObjectsFromServer import GetObjectsFromServer
 from .commands.PutObjectToServer import PutObjectToServer
