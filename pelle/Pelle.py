@@ -30,6 +30,8 @@ def get_session(window):
     if not session:
         session = PelleSession(window, session_name)
         SESSIONS[session_name] = session
+    elif not session.is_connected():
+        session.connect()
 
     return session
 
@@ -42,6 +44,7 @@ class PelleSession:
         self.project_settings = window.project_data()
         self.plugin_settings = self.project_settings.get('settings', {})
         self.connection_settings = self.plugin_settings.get('tm1_connection')
+        self.tm1 = None
 
         # Legacy
         if not self.connection_settings:
@@ -53,6 +56,9 @@ class PelleSession:
                 'No TM1 connection settings. Please run TM1 Config Setup command from command palette')
             raise Exception()
 
+        self.connect()
+
+    def connect(self):
         try:
             settings = self.connection_settings.copy()
             settings['password'] = Utils.decode(settings['password'])
@@ -290,3 +296,9 @@ class PelleSession:
             path = folder[0].get('path')
 
         return path
+
+    def is_connected(self):
+        try:
+            return self.tm1._tm1_rest.is_connected()
+        except TM1pyException:
+            return False
