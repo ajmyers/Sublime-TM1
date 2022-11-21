@@ -7,7 +7,10 @@ from pelle.Pelle import get_session
 
 class RefreshTm1OpsConsoleCommand(sublime_plugin.TextCommand):
     def run(self, edit):
-        session = get_session(sublime.active_window())
+        try:
+            session = get_session(sublime.active_window(), quiet=True)
+        except Exception:
+            return
 
         threads = session.tm1.monitoring.get_threads()
 
