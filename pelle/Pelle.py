@@ -1,12 +1,12 @@
-import glob
 import json
 import os
 import re
 import tempfile
 import time
-import traceback
 
+import glob
 import sublime
+import traceback
 from TM1py import TM1Service, Process, Cube, ServerService
 from TM1py.Exceptions import TM1pyException
 from prettytable import PrettyTable
@@ -18,10 +18,12 @@ SESSIONS = {}
 TI_LOG_FOLDER = 'Turbo Integrator Logs'
 
 
-def get_session(window):
+def get_session(window, quiet=False):
     if not window.project_file_name():
-        sublime.message_dialog('There is no project opened in this current window')
-        raise Exception()
+        message = 'There is no project opened in this current window'
+        if not quiet:
+            sublime.message_dialog(message)
+        raise Exception(message)
 
     session_name = os.path.split(window.project_file_name())
     session_name = os.path.splitext(session_name[1])[0]
