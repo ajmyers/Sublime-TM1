@@ -1,8 +1,8 @@
 import sublime
 import sublime_plugin
 
-from pelle.Format import format_procedure
-from pelle.Utils import process_to_text, view_to_process
+from ..pelle.Format import format_procedure
+from ..pelle.Utils import process_to_text, view_to_process
 
 TM1_EXTENSIONS = ('.pro', '.rux')
 

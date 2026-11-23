@@ -3,7 +3,7 @@
 import pytest
 
 import samples
-from pelle import Utils
+from tm1pkg.pelle import Utils
 from snapshot import matches_snapshot
 
 CUBES = {f.__name__: f for f in samples.ALL_CUBES}

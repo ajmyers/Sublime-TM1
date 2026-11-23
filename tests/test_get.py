@@ -3,7 +3,7 @@
 import os
 
 import samples
-from pelle.Pelle import mirror_objects
+from tm1pkg.pelle.Pelle import mirror_objects
 
 
 def files(folder):

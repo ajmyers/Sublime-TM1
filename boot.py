@@ -1,33 +1,47 @@
-import sublime_plugin
+# Sublime Text loads this module and registers the command and listener classes it finds in its
+# namespace, so each one the package defines is imported here.
+# ruff: noqa: E402 (the imports below need the libraries in include/ on sys.path first)
 
-import sys
 import os
+import sys
 
-base_path = os.path.realpath(__file__)
-base_path = os.path.split(base_path)[0]
+base_path = os.path.split(os.path.realpath(__file__))[0]
 
-sys.path.insert(0, os.path.join(base_path))
-sys.path.insert(0, os.path.join(base_path, 'include', 'wcwidth'))
-sys.path.insert(0, os.path.join(base_path, 'include', 'prettytable', 'src', 'prettytable'))
-sys.path.insert(0, os.path.join(base_path, 'include', 'TM1py'))
-sys.path.insert(0, os.path.join(base_path, 'include', 'mdxpy'))
-sys.path.insert(0, os.path.join(base_path, 'include', 'urllib3', 'src'))
-sys.path.insert(0, os.path.join(base_path, 'include', 'requests'))
-sys.path.insert(0, os.path.join(base_path, 'include', 'charset_normalizer'))
-sys.path.insert(0, os.path.join(base_path, 'include', 'idna'))
-sys.path.insert(0, os.path.join(base_path, 'include', 'ijson'))
-sys.path.insert(0, os.path.join(base_path, 'include', 'pytz', 'src'))
-sys.path.insert(0, os.path.join(base_path, 'include', 'pyyaml', 'lib'))
+# The libraries copied into include/. They go once the package's dependencies come from Package
+# Control (#22); until then they're put first on the plugin host's shared sys.path.
+for path in ['wcwidth', 'prettytable/src/prettytable', 'TM1py', 'mdxpy', 'urllib3/src', 'requests',
+             'charset_normalizer', 'idna', 'ijson', 'pytz/src', 'pyyaml/lib']:
+    sys.path.insert(0, os.path.join(base_path, 'include', *path.split('/')))
 
+from .commands.ClearTurboIntegratorLogs import ClearTurboIntegratorLogs
+from .commands.CreateNewTm1Project import CreateNewTm1Project
+from .commands.DisplayTm1OpsConsoleCommand import DisplayTm1OpsConsole, KillTm1ThreadCommand
+from .commands.FormatTurboIntegratorProcess import (
+    DisableFormatProcessOnSave,
+    EnableFormatProcessOnSave,
+    FormatTurboIntegratorProcessCommand,
+    OnSaveListener,
+)
 from .commands.GetObjectsFromServer import GetObjectsFromServer
+from .commands.ProjectCompletions import ProjectCompletions
 from .commands.PutObjectToServer import PutObjectToServer
+from .commands.RefreshTm1OpsConsole import RefreshTm1OpsConsoleCommand
 from .commands.RunTurboIntegratorProcess import RunTurboIntegratorProcess
 from .commands.UpdateTm1Project import UpdateTm1Project
-from .commands.ClearTurboIntegratorLogs import ClearTurboIntegratorLogs
-from .commands.DisplayTm1OpsConsoleCommand import DisplayTm1OpsConsole
-from .commands.DisplayTm1OpsConsoleCommand import KillTm1ThreadCommand
-from .commands.RefreshTm1OpsConsole import RefreshTm1OpsConsoleCommand
-from .commands.FormatTurboIntegratorProcess import *
-from .commands.ProjectCompletions import ProjectCompletions
-from .commands.CreateNewTm1Project import CreateNewTm1Project
-# from .commands.Test import RunTest
+
+__all__ = [
+    'ClearTurboIntegratorLogs',
+    'CreateNewTm1Project',
+    'DisableFormatProcessOnSave',
+    'DisplayTm1OpsConsole',
+    'EnableFormatProcessOnSave',
+    'FormatTurboIntegratorProcessCommand',
+    'GetObjectsFromServer',
+    'KillTm1ThreadCommand',
+    'OnSaveListener',
+    'ProjectCompletions',
+    'PutObjectToServer',
+    'RefreshTm1OpsConsoleCommand',
+    'RunTurboIntegratorProcess',
+    'UpdateTm1Project',
+]

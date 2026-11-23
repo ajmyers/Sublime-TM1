@@ -3,7 +3,7 @@ import traceback
 import sublime
 import sublime_plugin
 
-from pelle import Utils
+from ..pelle import Utils
 
 
 class UpdateTm1Project(sublime_plugin.TextCommand):
