@@ -16,3 +16,6 @@
 # The snapshots are compared byte for byte, with LF line endings: keep Git on Windows from
 # checking them out with CRLF
 /tests/snapshots/** text eol=lf
+
+# Sublime Text rejects .python-version with a line ending after the version (tests/test_package_files.py)
+/.python-version -text
