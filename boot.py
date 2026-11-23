@@ -18,12 +18,6 @@ from .plugin.python_host import work_around_missing_sysconfigdata
 work_around_missing_sysconfigdata()
 
 from .commands.CreateNewTm1Project import CreateNewTm1Project
-from .commands.FormatTurboIntegratorProcess import (
-    DisableFormatProcessOnSave,
-    EnableFormatProcessOnSave,
-    FormatTurboIntegratorProcessCommand,
-    OnSaveListener,
-)
 from .commands.UpdateTm1Project import UpdateTm1Project
 from .plugin import gateway
 from .plugin.completions import ProjectCompletions
@@ -36,6 +30,12 @@ from .plugin.console import (
 )
 from .plugin.credentials import Tm1ReplaceInputTextCommand
 from .plugin.diagnostics import Tm1DiagnosticsListener
+from .plugin.format import (
+    DisableFormatProcessOnSave,
+    EnableFormatProcessOnSave,
+    FormatTurboIntegratorProcessCommand,
+    OnSaveListener,
+)
 from .plugin.get import GetObjectsFromServer
 from .plugin.put import PutObjectToServer
 from .plugin.run import ClearTurboIntegratorLogs, RunTurboIntegratorProcess

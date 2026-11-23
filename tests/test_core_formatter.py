@@ -1,6 +1,6 @@
 """The Turbo Integrator formatter (format on save, and TM1: Format)."""
 
-from tm1pkg.pelle.Format import format_procedure
+from tm1pkg.core.formatter import format_procedure
 
 
 def test_upper_cases_functions_and_spaces_operators():

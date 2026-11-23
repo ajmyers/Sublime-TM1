@@ -259,3 +259,27 @@ def error_line(text, procedure, line_number):
                 first += 1
             return min(first + line_number - 1, len(lines) - 1)
     return None
+
+
+PROCEDURES = ('PROLOG', 'METADATA', 'DATA', 'EPILOG')
+
+
+def format_procedures(text, formatter):
+    """The file with the code of its four procedures passed through ``formatter``, and every
+    other line as it was: the header sections, the separators, the blank lines around the code."""
+    newline = '\r\n' if '\r\n' in text else '\n'
+    lines = text.replace('\r\n', '\n').split('\n')
+    headers = [i for i, line in enumerate(lines) if SECTION_START.search(line)]
+    for position, header in reversed(list(enumerate(headers))):
+        if SECTION_START.search(lines[header]).group(2) not in PROCEDURES:
+            continue
+        end = headers[position + 1] if position + 1 < len(headers) else len(lines)
+        start = header + 1
+        while start < end and not lines[start].strip():
+            start += 1
+        stop = end
+        while stop > start and (not lines[stop - 1].strip() or lines[stop - 1].rstrip() == COMMENT):
+            stop -= 1
+        if start < stop:
+            lines[start:stop] = formatter('\n'.join(lines[start:stop])).split('\n')
+    return newline.join(lines)
