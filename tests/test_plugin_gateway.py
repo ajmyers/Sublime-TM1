@@ -138,16 +138,16 @@ def test_an_unhandled_error_is_shown_not_lost(h, capsys):
 
 
 def test_an_untrusted_certificate_says_how_to_fix_it():
-    import httpx
+    import httpx2
 
     from tm1pkg.core.connection import build_client
 
     def handler(request):
-        raise httpx.ConnectError('[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed '
+        raise httpx2.ConnectError('[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed '
                                  'certificate', request=request)
 
     secure = Connection(address='tm1', port='8010', user='admin', ssl=True)
-    client = build_client(secure, 'apple', http_client=httpx.Client(transport=httpx.MockTransport(handler)))
+    client = build_client(secure, 'apple', http_client=httpx2.Client(transport=httpx2.MockTransport(handler)))
     with pytest.raises(Exception) as raised:
         client.processes.list(select='Name')
     client.close()
