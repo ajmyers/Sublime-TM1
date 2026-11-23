@@ -243,3 +243,19 @@ def _variable(variable, position):
     else:
         kind, name = ProcessVariableType.STRING, name.replace('(String)', '')
     return ProcessVariable(name=name.strip(), type=kind, position=position, start_byte=0, end_byte=0)
+
+
+def error_line(text, procedure, line_number):
+    """The 0-based line of the file that TM1's compile error points at: ``line_number`` of the
+    procedure (Prolog, Metadata, Data, Epilog), counted from its first line as the file holds it
+    (after the blank lines that follow the section's header). None if the file has no such section."""
+    lines = text.replace('\r\n', '\n').split('\n')
+    section = str(procedure).upper()
+    for index, line in enumerate(lines):
+        match = SECTION_START.search(line)
+        if match and match.group(2) == section:
+            first = index + 1
+            while first < len(lines) and not lines[first].strip():
+                first += 1
+            return min(first + line_number - 1, len(lines) - 1)
+    return None

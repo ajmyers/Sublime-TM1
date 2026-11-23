@@ -27,6 +27,31 @@ class FakeView:
 
     def erase_regions(self, key):
         self.erased.append(key)
+        getattr(self, 'regions', {}).pop(key, None)
+
+    def is_dirty(self):
+        return getattr(self, 'dirty', False)
+
+    def text_point(self, row, col):
+        lines = self.text.split('\n')
+        return sum(len(line) + 1 for line in lines[:row]) + col
+
+    def line(self, point):
+        import sublime
+
+        start = self.text.rfind('\n', 0, point) + 1
+        end = self.text.find('\n', point)
+        return sublime.Region(start, len(self.text) if end < 0 else end)
+
+    def add_regions(self, key, regions, scope='', flags=0, annotations=None, annotation_color=''):
+        self.regions = getattr(self, 'regions', {})
+        self.regions[key] = {'regions': regions, 'annotations': annotations or []}
+
+    def show_at_center(self, region):
+        self.shown = region
+
+    def region_text(self, key):
+        return [self.substr(r) for r in self.regions[key]['regions']]
 
     def run_command(self, name, args=None):
         self.commands.append(name)
