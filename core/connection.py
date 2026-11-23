@@ -32,6 +32,17 @@ class Connection:
     verify: object = True
     # Run processes asynchronously and poll (TM1 11.x and later), rather than in one long request
     async_requests: bool = True
+    # How to log in: "basic" (TM1's own security), "cam" (a password TM1 checks with Cognos), "cognos"
+    # (a password Cognos checks, for a passport) or "oidc" (sign in in the browser, for a passport).
+    # Empty: "cam" when there's a namespace, else "basic", as 0.2.x did
+    auth: str = ''
+    # Cognos's dispatcher, such as http://cognos:9300, for "cognos" and "oidc"
+    dispatcher: str = ''
+    # The OpenID Connect provider, for "oidc"
+    issuer: str = ''
+    client_id: str = ''
+    client_secret: str = ''
+    scopes: str = 'openid'
 
     @property
     def base_url(self):
@@ -40,10 +51,20 @@ class Connection:
         return '{}://{}:{}/api/v1/'.format(scheme, self.address, self.port)
 
     @property
+    def method(self):
+        return self.auth or ('cam' if self.namespace else 'basic')
+
+    @property
     def uses_cam(self):
-        return bool(self.namespace)
+        return self.method != 'basic'
+
+    @property
+    def needs_password(self):
+        return self.method != 'oidc'
 
     def describe(self):
+        if self.method == 'oidc':
+            return '{} sign-in at {}'.format(self.namespace or 'OIDC', self.base_url)
         who = '{}\\{}'.format(self.namespace, self.user) if self.uses_cam else self.user
         return '{} at {}'.format(who, self.base_url)
 
@@ -98,6 +119,9 @@ def _from_current(data):
         address=data['address'], port=str(data['port']), user=data.get('user', ''),
         ssl=bool(data.get('ssl', False)), namespace=data.get('namespace') or '',
         verify=data.get('verify', True), async_requests=bool(data.get('async_requests', True)),
+        auth=data.get('auth') or '', dispatcher=data.get('dispatcher') or '', issuer=data.get('issuer') or '',
+        client_id=data.get('client_id') or '', client_secret=data.get('client_secret') or '',
+        scopes=data.get('scopes') or 'openid',
     )
 
 
@@ -117,16 +141,42 @@ def _from_tm1_connection_settings(data):
     )
 
 
-def build_client(connection, password, http_client=None):
+class Misconfigured(Exception):
+    """The connection's settings don't add up, such as "oidc" without an issuer."""
+
+
+def authenticator(connection, password, on_browser=None, open_browser=None):
+    """The skipcheck-tm1 authenticator for the connection's method."""
+    from skipcheck_tm1.auth import basic, cam_namespace, cognos_id_token, cognos_logon
+
+    method = connection.method
+    if method == 'basic':
+        return basic(connection.user, password)
+    if method == 'cam':
+        return cam_namespace(connection.user, password or '', connection.namespace)
+    missing = [name for name in ('dispatcher', 'namespace') + (('issuer', 'client_id') if method == 'oidc' else ())
+               if not getattr(connection, name)]
+    if missing:
+        raise Misconfigured('"{}" sign-in needs {} under "tm1" in the project settings.'.format(
+            method, ', '.join('"{}"'.format(m) for m in missing)))
+    if method == 'cognos':
+        return cognos_logon(connection.dispatcher, connection.namespace, connection.user, password or '')
+    if method == 'oidc':
+        from .oidc import OidcSignIn
+
+        options = {'open_browser': open_browser} if open_browser else {}
+        sign_in = OidcSignIn(connection.issuer, connection.client_id, connection.client_secret, connection.scopes,
+                             verify=connection.verify, on_browser=on_browser, **options)
+        return cognos_id_token(connection.dispatcher, connection.namespace, sign_in.id_token)
+    raise Misconfigured('Unknown sign-in "{}": use "basic", "cam", "cognos" or "oidc".'.format(method))
+
+
+def build_client(connection, password, http_client=None, on_browser=None, open_browser=None):
     """A skipcheck-tm1 client for the connection. Nothing is sent until its first request."""
     from skipcheck_tm1 import Tm1Client
-    from skipcheck_tm1.auth import basic, cam_namespace
 
     builder = Tm1Client.builder().base_url(connection.base_url).session_context(SESSION_CONTEXT)
-    if connection.uses_cam:
-        builder = builder.authenticator(cam_namespace(connection.user, password or '', connection.namespace))
-    else:
-        builder = builder.authenticator(basic(connection.user, password))
+    builder = builder.authenticator(authenticator(connection, password, on_browser, open_browser))
     builder = builder.verify(connection.verify)
     if http_client is not None:
         builder = builder.http_client(http_client)

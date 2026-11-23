@@ -88,10 +88,10 @@ def describe_error(connection, error):
 
 
 class Gateway:
-    def __init__(self, key, connection, connect=build_client, submit=None, on_ui=None):
+    def __init__(self, key, connection, connect=None, submit=None, on_ui=None):
         self.key = key
         self.connection = connection
-        self._connect = connect
+        self._connect = connect or (lambda c, password: build_client(c, password, on_browser=self._browser_opened))
         self._submit = submit or _submit
         self._on_ui = on_ui or (lambda fn: sublime.set_timeout(fn, 0))
         self._client = None
@@ -107,7 +107,11 @@ class Gateway:
         def start(password):
             self._submit(self._work, window, work, password, on_done, on_error, retry)
 
-        credentials.with_password(window, self.key, self.connection, start)
+        self._window = window
+        if self.connection.needs_password:
+            credentials.with_password(window, self.key, self.connection, start)
+        else:
+            start(None)
 
     def _work(self, window, work, password, on_done, on_error, retry):
         from skipcheck_tm1.errors import Tm1AuthenticationError, Tm1ErrorKind
@@ -127,6 +131,15 @@ class Gateway:
         else:
             if on_done is not None:
                 self._on_ui(lambda: on_done(result))
+
+    def _browser_opened(self, url):
+        window = getattr(self, '_window', None)
+
+        def show():
+            if window is not None:
+                window.status_message('TM1: sign in in your browser to connect to ' + self.connection.base_url)
+
+        self._on_ui(show)
 
     def _fail(self, error, on_error):
         trace = traceback.format_exc()
