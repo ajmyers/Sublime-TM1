@@ -18,17 +18,22 @@ from .plugin.python_host import work_around_missing_sysconfigdata
 work_around_missing_sysconfigdata()
 
 from .commands.CreateNewTm1Project import CreateNewTm1Project
-from .commands.DisplayTm1OpsConsoleCommand import DisplayTm1OpsConsole, KillTm1ThreadCommand
 from .commands.FormatTurboIntegratorProcess import (
     DisableFormatProcessOnSave,
     EnableFormatProcessOnSave,
     FormatTurboIntegratorProcessCommand,
     OnSaveListener,
 )
-from .commands.RefreshTm1OpsConsole import RefreshTm1OpsConsoleCommand
 from .commands.UpdateTm1Project import UpdateTm1Project
 from .plugin import gateway
 from .plugin.completions import ProjectCompletions
+from .plugin.console import (
+    DisplayTm1OpsConsole,
+    KillTm1ThreadCommand,
+    RefreshTm1OpsConsoleCommand,
+    Tm1SetPanelTextCommand,
+    Tm1TailServerLogCommand,
+)
 from .plugin.credentials import Tm1ReplaceInputTextCommand
 from .plugin.diagnostics import Tm1DiagnosticsListener
 from .plugin.get import GetObjectsFromServer
@@ -50,6 +55,8 @@ __all__ = [
     'RefreshTm1OpsConsoleCommand',
     'RunTurboIntegratorProcess',
     'Tm1DiagnosticsListener',
+    'Tm1SetPanelTextCommand',
+    'Tm1TailServerLogCommand',
     'Tm1ReplaceInputTextCommand',
     'UpdateTm1Project',
     'plugin_unloaded',
