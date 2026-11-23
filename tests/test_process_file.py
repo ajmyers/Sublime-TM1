@@ -4,7 +4,7 @@ import pytest
 
 import samples
 from fakes import FakeView
-from pelle import Utils
+from tm1pkg.pelle import Utils
 from snapshot import matches_snapshot, read_snapshot
 
 PROCESSES = {f.__name__: f for f in samples.ALL_PROCESSES}

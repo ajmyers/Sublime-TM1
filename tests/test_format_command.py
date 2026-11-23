@@ -2,7 +2,7 @@
 
 import sublime_plugin
 
-from commands import FormatTurboIntegratorProcess as module
+from tm1pkg.commands import FormatTurboIntegratorProcess as module
 from fakes import FakeView, FakeWindow
 
 

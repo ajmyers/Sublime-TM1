@@ -7,7 +7,7 @@ import traceback
 import sublime
 import sublime_plugin
 
-from pelle.Utils import encode
+from ..pelle.Utils import encode
 
 
 class CreateNewTm1Project(sublime_plugin.TextCommand):
