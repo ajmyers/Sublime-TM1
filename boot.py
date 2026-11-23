@@ -28,6 +28,8 @@ from .commands.PutObjectToServer import PutObjectToServer
 from .commands.RefreshTm1OpsConsole import RefreshTm1OpsConsoleCommand
 from .commands.RunTurboIntegratorProcess import RunTurboIntegratorProcess
 from .commands.UpdateTm1Project import UpdateTm1Project
+from .plugin import gateway
+from .plugin.credentials import Tm1ReplaceInputTextCommand
 
 __all__ = [
     'ClearTurboIntegratorLogs',
@@ -43,5 +45,13 @@ __all__ = [
     'PutObjectToServer',
     'RefreshTm1OpsConsoleCommand',
     'RunTurboIntegratorProcess',
+    'Tm1ReplaceInputTextCommand',
     'UpdateTm1Project',
+    'plugin_unloaded',
 ]
+
+
+def plugin_unloaded():
+    # Close TM1 sessions and stop the gateway's threads, and forget passwords, when Sublime
+    # unloads the package (quitting, upgrading, disabling it)
+    gateway.shutdown()
