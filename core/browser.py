@@ -19,6 +19,7 @@ Safety:
 import base64
 import json
 import os
+import posixpath
 import shutil
 import socket
 import struct
@@ -102,10 +103,11 @@ def find_browser(setting=None, platform=None, env=None, exists=os.path.exists, w
                     return path
         return None
     if platform == 'darwin':
+        # posixpath, not os.path: the platform asked about needn't be the one running
         home = home or os.path.expanduser('~')
-        for folder in ('/Applications', os.path.join(home, 'Applications')):
+        for folder in ('/Applications', posixpath.join(home, 'Applications')):
             for app in MAC_APPS:
-                path = os.path.join(folder, app + '.app', 'Contents', 'MacOS', app)
+                path = posixpath.join(folder, app + '.app', 'Contents', 'MacOS', app)
                 if exists(path):
                     return path
         return None
@@ -129,12 +131,18 @@ class _Pipe:
 
     def send(self, message):
         data = json.dumps(message).encode('utf-8') + b'\0'
-        while data:
-            data = data[os.write(self._write, data):]
+        try:
+            while data:
+                data = data[os.write(self._write, data):]
+        except OSError as e:
+            raise SignInCancelled('The browser closed.') from e
 
     def receive(self):
         while b'\0' not in self._buffer:
-            chunk = os.read(self._read, 65536)
+            try:
+                chunk = os.read(self._read, 65536)
+            except OSError as e:
+                raise SignInCancelled('The browser closed.') from e
             if not chunk:
                 raise SignInCancelled('The browser closed.')
             self._buffer += chunk
@@ -171,7 +179,11 @@ class _WebSocket:
     def _exactly(self, count):
         data = b''
         while len(data) < count:
-            chunk = self._socket.recv(count - len(data))
+            try:
+                chunk = self._socket.recv(count - len(data))
+            except OSError as e:
+                # Windows resets the connection when the browser is killed (WinError 10054)
+                raise SignInCancelled('The browser closed.') from e
             if not chunk:
                 raise SignInCancelled('The browser closed.')
             data += chunk
@@ -186,7 +198,10 @@ class _WebSocket:
             head = struct.pack('!BBH', 0x81, 0x80 | 126, size)
         else:
             head = struct.pack('!BBQ', 0x81, 0x80 | 127, size)
-        self._socket.sendall(head + mask + bytes(b ^ mask[i % 4] for i, b in enumerate(data)))
+        try:
+            self._socket.sendall(head + mask + bytes(b ^ mask[i % 4] for i, b in enumerate(data)))
+        except OSError as e:
+            raise SignInCancelled('The browser closed.') from e
 
     def receive(self):
         while True:
