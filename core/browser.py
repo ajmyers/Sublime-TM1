@@ -52,6 +52,10 @@ class SignInTimedOut(BrowserError):
     """No passport came back in time."""
 
 
+class NotAnswering(BrowserError):
+    """The browser stopped answering on its debugging connection."""
+
+
 class DebuggingBlocked(BrowserError):
     """The browser started but never answered on its debugging connection: most often an
     organisation's browser policy (RemoteDebuggingAllowed) turning it off."""
@@ -196,6 +200,9 @@ class _WebSocket:
         while len(data) < count:
             try:
                 chunk = self._socket.recv(count - len(data))
+            except TimeoutError:
+                # socket.timeout is TimeoutError, an OSError: not to be taken for a closed browser
+                raise
             except OSError as e:
                 # Windows resets the connection when the browser is killed (WinError 10054)
                 raise SignInCancelled('The browser closed.') from e
@@ -223,7 +230,7 @@ class _WebSocket:
         while True:
             try:
                 first, second = self._exactly(2)
-            except socket.timeout as e:
+            except TimeoutError as e:
                 raise TimeoutError('The browser did not answer in {} seconds.'.format(timeout)) from e
             size = second & 0x7f
             if size == 126:
@@ -255,21 +262,32 @@ class Browser:
             os.chmod(profile, 0o700)
         transport = transport or ('port' if os.name == 'nt' else 'pipe')
         self.host = urlsplit(url).hostname
+        self._hidden = hidden
         args = [executable, '--user-data-dir=' + profile] + COMMON_ARGS
         # Both start on a blank page, so a passport left in the profile is gone before the sign-in
         args += ['--headless=new', 'about:blank'] if hidden else ['--app=about:blank', '--window-size=520,720']
+        self._channel = None
+        self._pid = None
+        self._process = None
+        try:
+            self._start(args, transport, profile, url)
+        except BaseException:
+            # Whatever failed once the browser was started, it doesn't outlive the failure
+            self.close()
+            raise
+
+    def _start(self, args, transport, profile, url):
         if transport == 'pipe':
             self._start_with_pipe(args + ['--remote-debugging-pipe'])
         else:
             self._start_with_port(args + ['--remote-debugging-port=0'], profile)
         try:
             self.call('Browser.getVersion', timeout=START_TIMEOUT)
-        except TimeoutError as e:
-            self.close()
+        except NotAnswering as e:
             raise DebuggingBlocked(
                 "The browser started but didn't let TM1 read the sign-in: its debugging connection is "
                 "probably turned off by your organisation's browser policy (RemoteDebuggingAllowed).") from e
-        if hidden:
+        if self._hidden:
             self._target = self.call('Target.createTarget', {'url': 'about:blank'}).get('targetId')
         else:
             pages = [t for t in self.call('Target.getTargets').get('targetInfos', []) if t.get('type') == 'page']
@@ -345,7 +363,10 @@ class Browser:
                 message['sessionId'] = session
             self._channel.send(message)
             while True:
-                message = self._channel.receive(timeout)
+                try:
+                    message = self._channel.receive(timeout)
+                except TimeoutError as e:
+                    raise NotAnswering('The browser stopped answering ({}).'.format(method)) from e
                 if message.get('id') == ident:
                     if 'error' in message:
                         raise BrowserError('{}: {}'.format(method, message['error'].get('message')))
@@ -397,6 +418,8 @@ class Browser:
                 pass
 
     def running(self):
+        if self._pid is None:
+            return False
         if self._process is not None:
             return self._process.poll() is None
         try:
@@ -406,11 +429,14 @@ class Browser:
             return False
 
     def close(self):
-        try:
-            self.call('Browser.close')
-        except Exception:
-            pass
-        self._channel.close()
+        if self._channel is not None:
+            try:
+                self.call('Browser.close', timeout=5)
+            except Exception:
+                pass
+            self._channel.close()
+        if self._pid is None:
+            return
         deadline = time.monotonic() + 5
         while self.running() and time.monotonic() < deadline:
             time.sleep(0.05)

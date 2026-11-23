@@ -182,3 +182,53 @@ def test_the_pipe_works_from_a_fresh_process(server, tmp_path):
     ).format(root=root, exe=EXECUTABLE, profile=str(tmp_path / 'profile'), url=server.url)
     result = subprocess.run([sys.executable, '-c', script], capture_output=True, text=True, timeout=60)
     assert result.stdout.strip() == 'MTsxMDE6passport', result.stderr[-2000:]
+
+
+class SilentEndpoint:
+    """A debugging endpoint that completes the WebSocket handshake and then says nothing, or hangs up."""
+
+    def __init__(self, hang_up=False):
+        import socket
+
+        self.listener = socket.socket()
+        self.listener.bind(('127.0.0.1', 0))
+        self.listener.listen(1)
+        self.port = self.listener.getsockname()[1]
+        self.hang_up = hang_up
+        threading.Thread(target=self.serve, daemon=True).start()
+
+    def serve(self):
+        connection, _ = self.listener.accept()
+        request = b''
+        while b'\r\n\r\n' not in request:
+            request += connection.recv(1024)
+        connection.sendall(b'HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\n\r\n')
+        if self.hang_up:
+            connection.close()
+        else:
+            time.sleep(10)
+
+
+def test_a_browser_that_stops_answering_times_out_rather_than_seeming_closed():
+    # socket.timeout is an OSError: it mustn't be mistaken for the browser closing (Windows)
+    channel = browser._WebSocket(SilentEndpoint().port, '/devtools/browser/x')
+    with pytest.raises(TimeoutError):
+        channel.receive(timeout=0.5)
+
+
+def test_a_browser_that_hangs_up_is_closed():
+    channel = browser._WebSocket(SilentEndpoint(hang_up=True).port, '/devtools/browser/x')
+    with pytest.raises(SignInCancelled):
+        channel.receive(timeout=5)
+
+
+@needs_browser
+@pytest.mark.parametrize('transport', TRANSPORTS)
+def test_a_failure_after_the_browser_started_leaves_no_browser(server, tmp_path, transport, monkeypatch):
+    def fails(self, name, host=None):
+        raise browser.BrowserError('a step after the start failed')
+
+    monkeypatch.setattr(Browser, 'forget_cookie', fails)
+    with pytest.raises(browser.BrowserError, match='after the start'):
+        Browser(EXECUTABLE, str(tmp_path / 'profile'), server.url, hidden=True, transport=transport)
+    assert not processes_using(tmp_path / 'profile')
