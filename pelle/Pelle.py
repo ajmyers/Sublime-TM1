@@ -38,6 +38,34 @@ def get_session(window, quiet=False):
     return session
 
 
+def mirror_objects(main_folder, cubes, processes):
+    """Writes the cubes' rules to rules/*.rux and the processes to processes/*.pro, and deletes the
+    files there that are no longer on the server. Only the plugin's own files: .rux in rules/ and
+    .pro in processes/, and those left in the project's root folder by earlier versions."""
+    wanted = {}
+    for cube in [x for x in cubes if x.has_rules]:
+        wanted[os.path.join(main_folder, 'rules', cube.name + '.rux')] = Utils.cube_rule_to_text(cube)
+    for process in processes:
+        wanted[os.path.join(main_folder, 'processes', process.name + '.pro')] = Utils.process_to_text(process)
+
+    existing = glob.glob(os.path.join(main_folder, 'rules', '*.rux')) + \
+        glob.glob(os.path.join(main_folder, 'processes', '*.pro')) + \
+        glob.glob(os.path.join(main_folder, '*.rux')) + \
+        glob.glob(os.path.join(main_folder, '*.pro'))
+
+    for file in existing:
+        if file not in wanted:
+            try:
+                os.remove(file)
+            except OSError:
+                traceback.print_exc()
+
+    for file, content in wanted.items():
+        os.makedirs(os.path.dirname(file), exist_ok=True)
+        with open(file, 'w', encoding='utf-8') as f:
+            f.write(content)
+
+
 class PelleSession:
     def __init__(self, window, name):
         self.window = window
@@ -72,37 +100,12 @@ class PelleSession:
 
     def refresh_objects(self):
         main_folder = self.project_settings['folders'][0]['path']
-        existing = glob.glob(os.path.join(main_folder, '*.pro')) + \
-                   glob.glob(os.path.join(main_folder, '*.rux'))
 
-        # Clear existing files from project folder
-        for file in existing:
-            try:
-                os.remove(file)
-            except Exception:
-                traceback.print_exc()
-
-        # Get objects from server
+        # Get objects from server first, so a failed Get leaves the project as it was
         cubes = self.tm1.cubes.get_all()
         processes = self.tm1.processes.get_all()
 
-        # Write cube rules to files
-        folder = os.path.join(main_folder, 'rules')
-        if not os.path.exists(folder): os.mkdir(folder)
-        for cube in [x for x in cubes if x.has_rules]:
-            file = os.path.join(folder, cube.name + '.rux')
-            content = Utils.cube_rule_to_text(cube)
-            with open(file, 'w', encoding='utf-8') as f:
-                f.write(content)
-
-        # Write processes to files
-        folder = os.path.join(main_folder, 'processes')
-        if not os.path.exists(folder): os.mkdir(folder)
-        for process in processes:
-            file = os.path.join(folder, process.name + '.pro')
-            content = Utils.process_to_text(process)
-            with open(file, 'w', encoding='utf-8') as f:
-                f.write(content)
+        mirror_objects(main_folder, cubes, processes)
 
         self.project_settings['completions'] = {}
 

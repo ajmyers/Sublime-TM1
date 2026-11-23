@@ -4,59 +4,60 @@ import sublime_plugin
 from pelle.Format import format_procedure
 from pelle.Utils import process_to_text, view_to_process
 
+TM1_EXTENSIONS = ('.pro', '.rux')
 
-def set_config(value):
-    active_project = sublime.active_window().project_data()
-    project_settings = active_project.get('settings', {})
 
-    if not active_project:
+def is_process(view):
+    file_name = view.file_name()
+    return bool(file_name) and file_name.endswith('.pro')
+
+
+def is_tm1_file(view):
+    file_name = view.file_name()
+    return bool(file_name) and file_name.endswith(TM1_EXTENSIONS)
+
+
+def set_config(window, value):
+    project = window.project_data()
+    if not project:
         sublime.message_dialog(
-            "Active window is not currently configured as a project.\n\nPlease go to Project -> Save Project As to continue")
+            "Active window is not currently configured as a project.\n\n"
+            "Please go to Project -> Save Project As to continue")
         return
 
-    project_settings['format_process_on_update'] = value
-
-    sublime.active_window().set_project_data(active_project)
+    project.setdefault('settings', {})['format_process_on_update'] = value
+    window.set_project_data(project)
 
 
 class EnableFormatProcessOnSave(sublime_plugin.WindowCommand):
     def run(self):
-        set_config(True)
+        set_config(self.window, True)
 
 
 class DisableFormatProcessOnSave(sublime_plugin.WindowCommand):
     def run(self):
-        set_config(False)
+        set_config(self.window, False)
 
 
 class OnSaveListener(sublime_plugin.EventListener):
     def on_pre_save(self, view):
-        active_project = sublime.active_window().project_data()
-        project_settings = active_project.get('settings', {})
+        if not is_tm1_file(view):
+            return
 
         view.erase_regions('error')
 
-        if not view.file_name().endswith(".pro"):
+        window = view.window()
+        project = window.project_data() if window else None
+        if not is_process(view) or not (project or {}).get('settings', {}).get('format_process_on_update', False):
             return
 
-        if not project_settings.get('format_process_on_update', False):
-            return
-
-        try:
-            view.run_command('format_turbo_integrator_process')
-        except Exception as e:
-            print(e)
-
-
-class FormatTurboIntegratorProcess(sublime_plugin.WindowCommand):
-    def run(self):
-        if not self.view.file_name().endswith(".pro"):
-            return
-
-        self.view.run_command('format_turbo_integrator_process')
+        view.run_command('format_turbo_integrator_process')
 
 
 class FormatTurboIntegratorProcessCommand(sublime_plugin.TextCommand):
+    def is_enabled(self):
+        return is_process(self.view)
+
     def run(self, edit):
         process = view_to_process(self.view, None)
 
