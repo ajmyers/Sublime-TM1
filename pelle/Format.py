@@ -6,7 +6,8 @@ INDENT = ' ' * 3
 
 RE_TOKENIZE_STRING = r'(\')(.*?)(\')'
 RE_TOKENIZE_COMMENT = r'^([ \t]*?)(#)(.*?)(?=\n|$)'
-RE_FUNC = r'(?<=[^\w\d])({})(?=[^\w\d])'
+# A whole word: no word character on either side, which also matches at the start or end of the text
+RE_FUNC = r'(?<!\w)({})(?!\w)'
 RE_FUNC_PAREN = r'(?<=[^\w\d])({})(\s*)([^\w\d\(])'
 RE_OPERATOR = r'(\s*)(\@\<\=|\@\>\=|\@\<\>|\@\=|\@\<|\@\>|\<\=|\>\=|\<\>|\+|\-|\/|\\|\*|\<|\>|\~|\||=|\&|\%)(\s*)'
 RE_PARAM_PAREN = r'(\s*)(\(|\))(\s*)'
