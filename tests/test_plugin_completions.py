@@ -58,6 +58,25 @@ def test_still_offers_the_projects_own_completions_as_0_2_did():
     assert offered('source.tm1.ti', {'completions': [{'trigger': 'anywhere', 'completion': 'y'}]}) == ['anywhere']
 
 
+def test_offers_sublimes_classic_pairs_from_the_project_as_snippets():
+    # 0.2.x handed a list form to Sublime as it was, and Sublime takes these pairs
+    own = {'completions': [['vYear\tvariable', 'vYear = ${1:2024};'], 'plain', {'trigger': 'd', 'completion': 'x'}]}
+    window = FakeWindow(project=own, project_file=PROJECT)
+    view = FakeView(window=window, scope='source.tm1.ti')
+    items = completions.ProjectCompletions().on_query_completions(view, '', [0])
+    pair = items[0]
+    assert [i.trigger for i in items] == ['vYear', 'plain', 'd']
+    assert pair.annotation == 'variable' and pair.completion == 'vYear = ${1:2024};'
+    assert pair.completion_format == sublime.COMPLETION_FORMAT_SNIPPET
+
+
+def test_a_malformed_completion_is_skipped_not_the_rest(capsys):
+    store_sales()
+    own = {'completions': {'source.tm1.rule': [42, ['ok\thint', 'ok'], {'no': 'trigger'}]}}
+    assert offered('source.tm1.rule', own) == ['DB-Sales', 'ok']
+    assert 'skipping a completion' in capsys.readouterr().out
+
+
 def test_a_window_without_a_project_gets_nothing():
     view = FakeView(window=FakeWindow(), scope='source.tm1.rule')
     assert completions.ProjectCompletions().on_query_completions(view, '', [0]) is None

@@ -40,8 +40,16 @@ def store(project_file, by_selector):
 
 
 def _item(completion):
+    """A CompletionItem from any form a project's completions take: a string, Sublime's classic
+    ["trigger\\tannotation", "contents"] pair (contents are a snippet, as Sublime reads them), or a
+    dict of CompletionItem's arguments."""
     if isinstance(completion, str):
         return sublime.CompletionItem(completion)
+    if isinstance(completion, (list, tuple)):
+        trigger, _, annotation = str(completion[0]).partition('\t')
+        contents = completion[1] if len(completion) > 1 else trigger
+        return sublime.CompletionItem(trigger, annotation=annotation, completion=contents,
+                                      completion_format=sublime.COMPLETION_FORMAT_SNIPPET)
     fields = dict(completion)
     if fields.get('completion_format') == 'snippet':
         fields['completion_format'] = sublime.COMPLETION_FORMAT_SNIPPET
@@ -108,5 +116,18 @@ class ProjectCompletions(sublime_plugin.EventListener):
                 items += selector_items
         for selector, own in _by_selector((window.project_data() or {}).get('completions')).items():
             if isinstance(own, list) and _matches(view, locations, selector):
-                items += [_item(c) for c in own]
+                items += _items_of(own)
         return items or None
+
+
+def _items_of(completions):
+    """The project's own completions as items, skipping any Sublime couldn't use rather than
+    offering none."""
+    items = []
+    for completion in completions:
+        try:
+            items.append(_item(completion))
+        except (TypeError, ValueError, IndexError):
+            print('TM1: skipping a completion in the project file that isn\'t a string, a pair or a dict:',
+                  repr(completion)[:200])
+    return items
