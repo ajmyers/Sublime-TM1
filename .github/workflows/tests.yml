@@ -1,5 +1,9 @@
 # The package's tests and lint, outside Sublime Text: tests/stubs stands in for Sublime's modules.
 # Python 3.14 is the plugin host of Sublime Text 4213 and later.
+#
+# On Windows, macOS and Linux, as the package runs on all three. The runners have Chrome (and
+# Windows has Edge), so the browser sign-in's tests (tests/test_core_browser.py) run on each,
+# through the platform's own transport: a pipe on macOS and Linux, a port on Windows.
 name: Tests
 
 on:
@@ -12,14 +16,23 @@ permissions:
 
 jobs:
   tests:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
         with:
           python-version: "3.14"
       - run: pip install -r tests/requirements.txt
+      # Ubuntu 24.04 stops unprivileged user namespaces, which Chrome's sandbox needs. Allow them
+      # rather than run the browser with --no-sandbox, so the tests run it as users do
+      - if: runner.os == 'Linux'
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
       - run: pytest
       # The rewritten code, tools and tests; the legacy commands aren't linted, as they're being replaced
-      - run: ruff check core plugin tools tests
+      - if: runner.os == 'Linux'
+        run: ruff check core plugin tools tests
