@@ -1,0 +1,214 @@
+{
+ "source.tm1.rule": [
+  {
+   "trigger": "DB-Sales",
+   "annotation": "DB('Sales', ...)",
+   "completion": "DB('Sales', ${1:!Region}, ${2:!Year}, ${3:!Measure})",
+   "completion_format": "snippet",
+   "kind": "snippet",
+   "details": "Auto-generated DB() for Sales"
+  },
+  {
+   "trigger": "DB-ClientGroups",
+   "annotation": "DB('}ClientGroups', ...)",
+   "completion": "DB('}ClientGroups', ${1:!\\}Clients}, ${2:!\\}Groups})",
+   "completion_format": "snippet",
+   "kind": "snippet",
+   "details": "Auto-generated DB() for }ClientGroups"
+  },
+  {
+   "trigger": "DB-P&L_Report",
+   "annotation": "DB('P&L Report', ...)",
+   "completion": "DB('P&L Report', ${1:!Cost_Center}, ${2:!AccountLines}, ${3:!\\}Version})",
+   "completion_format": "snippet",
+   "kind": "snippet",
+   "details": "Auto-generated DB() for P&L Report"
+  }
+ ],
+ "source.tm1.ti": [
+  {
+   "trigger": "EXECUTEPROCESS-}tm1.Housekeeping",
+   "annotation": "EXECUTEPROCESS('}tm1.Housekeeping', ...)",
+   "completion": "EXECUTEPROCESS('}tm1.Housekeeping');",
+   "completion_format": "snippet",
+   "kind": "snippet",
+   "details": "Auto-generated EXECUTEPROCESS() for }tm1.Housekeeping"
+  },
+  {
+   "trigger": "EXECUTEPROCESS-Load Sales",
+   "annotation": "EXECUTEPROCESS('Load Sales', ...)",
+   "completion": "EXECUTEPROCESS('Load Sales'\n   , 'pYear', ${1:'2024'}\n   , 'pScale', ${2:1000}\n);",
+   "completion_format": "snippet",
+   "kind": "snippet",
+   "details": "Auto-generated EXECUTEPROCESS() for Load Sales"
+  },
+  {
+   "trigger": "EXECUTEPROCESS-Copy Plan",
+   "annotation": "EXECUTEPROCESS('Copy Plan', ...)",
+   "completion": "EXECUTEPROCESS('Copy Plan');",
+   "completion_format": "snippet",
+   "kind": "snippet",
+   "details": "Auto-generated EXECUTEPROCESS() for Copy Plan"
+  },
+  {
+   "trigger": "EXECUTEPROCESS-Extract Orders",
+   "annotation": "EXECUTEPROCESS('Extract Orders', ...)",
+   "completion": "EXECUTEPROCESS('Extract Orders');",
+   "completion_format": "snippet",
+   "kind": "snippet",
+   "details": "Auto-generated EXECUTEPROCESS() for Extract Orders"
+  },
+  {
+   "trigger": "EXECUTEPROCESS-Iterate Regions",
+   "annotation": "EXECUTEPROCESS('Iterate Regions', ...)",
+   "completion": "EXECUTEPROCESS('Iterate Regions');",
+   "completion_format": "snippet",
+   "kind": "snippet",
+   "details": "Auto-generated EXECUTEPROCESS() for Iterate Regions"
+  },
+  {
+   "trigger": "CELLGETN-Sales",
+   "annotation": "CELLGETN('Sales', ...)",
+   "completion": "CELLGETN(${1:'Sales'}, ${2:sRegion_l}, ${3:sYear_l}, ${4:sMeasure_l});",
+   "completion_format": "snippet",
+   "kind": "snippet",
+   "details": "Auto-generated CELLGETN() for Sales"
+  },
+  {
+   "trigger": "CELLGETN-}ClientGroups",
+   "annotation": "CELLGETN('}ClientGroups', ...)",
+   "completion": "CELLGETN(${1:'\\}ClientGroups'}, ${2:sClients_l}, ${3:sGroups_l});",
+   "completion_format": "snippet",
+   "kind": "snippet",
+   "details": "Auto-generated CELLGETN() for }ClientGroups"
+  },
+  {
+   "trigger": "CELLGETN-P&L Report",
+   "annotation": "CELLGETN('P&L Report', ...)",
+   "completion": "CELLGETN(${1:'P&L Report'}, ${2:sCostCenter_l}, ${3:sAccountLines_l}, ${4:sVersion_l});",
+   "completion_format": "snippet",
+   "kind": "snippet",
+   "details": "Auto-generated CELLGETN() for P&L Report"
+  },
+  {
+   "trigger": "CELLPUTN-Sales",
+   "annotation": "CELLPUTN('Sales', ...)",
+   "completion": "CELLPUTN(${1:nValue}, ${2:'Sales'}, ${3:sRegion_l}, ${4:sYear_l}, ${5:sMeasure_l});",
+   "completion_format": "snippet",
+   "kind": "snippet",
+   "details": "Auto-generated CELLPUTN() for Sales"
+  },
+  {
+   "trigger": "CELLPUTN-}ClientGroups",
+   "annotation": "CELLPUTN('}ClientGroups', ...)",
+   "completion": "CELLPUTN(${1:nValue}, ${2:'\\}ClientGroups'}, ${3:sClients_l}, ${4:sGroups_l});",
+   "completion_format": "snippet",
+   "kind": "snippet",
+   "details": "Auto-generated CELLPUTN() for }ClientGroups"
+  },
+  {
+   "trigger": "CELLPUTN-P&L Report",
+   "annotation": "CELLPUTN('P&L Report', ...)",
+   "completion": "CELLPUTN(${1:nValue}, ${2:'P&L Report'}, ${3:sCostCenter_l}, ${4:sAccountLines_l}, ${5:sVersion_l});",
+   "completion_format": "snippet",
+   "kind": "snippet",
+   "details": "Auto-generated CELLPUTN() for P&L Report"
+  },
+  {
+   "trigger": "CELLINCREMENTN-Sales",
+   "annotation": "CELLINCREMENTN('Sales', ...)",
+   "completion": "CELLINCREMENTN(${1:nValue}, ${2:'Sales'}, ${3:sRegion_l}, ${4:sYear_l}, ${5:sMeasure_l});",
+   "completion_format": "snippet",
+   "kind": "snippet",
+   "details": "Auto-generated CELLINCREMENTN() for Sales"
+  },
+  {
+   "trigger": "CELLINCREMENTN-}ClientGroups",
+   "annotation": "CELLINCREMENTN('}ClientGroups', ...)",
+   "completion": "CELLINCREMENTN(${1:nValue}, ${2:'\\}ClientGroups'}, ${3:sClients_l}, ${4:sGroups_l});",
+   "completion_format": "snippet",
+   "kind": "snippet",
+   "details": "Auto-generated CELLINCREMENTN() for }ClientGroups"
+  },
+  {
+   "trigger": "CELLINCREMENTN-P&L Report",
+   "annotation": "CELLINCREMENTN('P&L Report', ...)",
+   "completion": "CELLINCREMENTN(${1:nValue}, ${2:'P&L Report'}, ${3:sCostCenter_l}, ${4:sAccountLines_l}, ${5:sVersion_l});",
+   "completion_format": "snippet",
+   "kind": "snippet",
+   "details": "Auto-generated CELLINCREMENTN() for P&L Report"
+  },
+  {
+   "trigger": "CELLGETS-Sales",
+   "annotation": "CELLGETS('Sales', ...)",
+   "completion": "CELLGETS(${1:'Sales'}, ${2:sRegion_l}, ${3:sYear_l}, ${4:sMeasure_l});",
+   "completion_format": "snippet",
+   "kind": "snippet",
+   "details": "Auto-generated CELLGETS() for Sales"
+  },
+  {
+   "trigger": "CELLGETS-}ClientGroups",
+   "annotation": "CELLGETS('}ClientGroups', ...)",
+   "completion": "CELLGETS(${1:'\\}ClientGroups'}, ${2:sClients_l}, ${3:sGroups_l});",
+   "completion_format": "snippet",
+   "kind": "snippet",
+   "details": "Auto-generated CELLGETS() for }ClientGroups"
+  },
+  {
+   "trigger": "CELLGETS-P&L Report",
+   "annotation": "CELLGETS('P&L Report', ...)",
+   "completion": "CELLGETS(${1:'P&L Report'}, ${2:sCostCenter_l}, ${3:sAccountLines_l}, ${4:sVersion_l});",
+   "completion_format": "snippet",
+   "kind": "snippet",
+   "details": "Auto-generated CELLGETS() for P&L Report"
+  },
+  {
+   "trigger": "CELLPUTS-Sales",
+   "annotation": "CELLPUTS('Sales', ...)",
+   "completion": "CELLPUTS(${1:sValue}, ${2:'Sales'}, ${3:sRegion_l}, ${4:sYear_l}, ${5:sMeasure_l});",
+   "completion_format": "snippet",
+   "kind": "snippet",
+   "details": "Auto-generated CELLPUTS() for Sales"
+  },
+  {
+   "trigger": "CELLPUTS-}ClientGroups",
+   "annotation": "CELLPUTS('}ClientGroups', ...)",
+   "completion": "CELLPUTS(${1:sValue}, ${2:'\\}ClientGroups'}, ${3:sClients_l}, ${4:sGroups_l});",
+   "completion_format": "snippet",
+   "kind": "snippet",
+   "details": "Auto-generated CELLPUTS() for }ClientGroups"
+  },
+  {
+   "trigger": "CELLPUTS-P&L Report",
+   "annotation": "CELLPUTS('P&L Report', ...)",
+   "completion": "CELLPUTS(${1:sValue}, ${2:'P&L Report'}, ${3:sCostCenter_l}, ${4:sAccountLines_l}, ${5:sVersion_l});",
+   "completion_format": "snippet",
+   "kind": "snippet",
+   "details": "Auto-generated CELLPUTS() for P&L Report"
+  },
+  {
+   "trigger": "_LOCALS-Sales",
+   "annotation": "Sales",
+   "completion": "# ==================================================================== #\n# Locals -- Sales\n# ==================================================================== #\n\n${1:sRegion}_l = ${1/(^s.*?$)|(^n.*?$)/(?1:TRIM\\(V1\\))(?2:NUMBR\\(V1\\))/};\n${2:sYear}_l = ${2/(^s.*?$)|(^n.*?$)/(?1:TRIM\\(V2\\))(?2:NUMBR\\(V2\\))/};\n${3:sMeasure}_l = ${3/(^s.*?$)|(^n.*?$)/(?1:TRIM\\(V3\\))(?2:NUMBR\\(V3\\))/};\n${4:nValue}_l = ${4/(^s.*?$)|(^n.*?$)/(?1:TRIM\\(V4\\))(?2:NUMBR\\(V4\\))/};\n",
+   "completion_format": "snippet",
+   "kind": "snippet",
+   "details": "Auto-generated locals for cube Sales"
+  },
+  {
+   "trigger": "_LOCALS-}ClientGroups",
+   "annotation": "}ClientGroups",
+   "completion": "# ==================================================================== #\n# Locals -- }ClientGroups\n# ==================================================================== #\n\n${1:sClients}_l = ${1/(^s.*?$)|(^n.*?$)/(?1:TRIM\\(V1\\))(?2:NUMBR\\(V1\\))/};\n${2:sGroups}_l = ${2/(^s.*?$)|(^n.*?$)/(?1:TRIM\\(V2\\))(?2:NUMBR\\(V2\\))/};\n${3:nValue}_l = ${3/(^s.*?$)|(^n.*?$)/(?1:TRIM\\(V3\\))(?2:NUMBR\\(V3\\))/};\n",
+   "completion_format": "snippet",
+   "kind": "snippet",
+   "details": "Auto-generated locals for cube }ClientGroups"
+  },
+  {
+   "trigger": "_LOCALS-P&L Report",
+   "annotation": "P&L Report",
+   "completion": "# ==================================================================== #\n# Locals -- P&L Report\n# ==================================================================== #\n\n${1:sCostCenter}_l = ${1/(^s.*?$)|(^n.*?$)/(?1:TRIM\\(V1\\))(?2:NUMBR\\(V1\\))/};\n${2:sAccountLines}_l = ${2/(^s.*?$)|(^n.*?$)/(?1:TRIM\\(V2\\))(?2:NUMBR\\(V2\\))/};\n${3:sVersion}_l = ${3/(^s.*?$)|(^n.*?$)/(?1:TRIM\\(V3\\))(?2:NUMBR\\(V3\\))/};\n${4:nValue}_l = ${4/(^s.*?$)|(^n.*?$)/(?1:TRIM\\(V4\\))(?2:NUMBR\\(V4\\))/};\n",
+   "completion_format": "snippet",
+   "kind": "snippet",
+   "details": "Auto-generated locals for cube P&L Report"
+  }
+ ]
+}

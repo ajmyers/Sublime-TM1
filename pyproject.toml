@@ -3,16 +3,11 @@
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-filterwarnings = [
-    # The libraries copied into include/ (TM1py, urllib3, …) predate Python 3.12's escape warnings
-    "ignore::SyntaxWarning",
-    "ignore::DeprecationWarning",
-]
 
 [tool.ruff]
 line-length = 120
-target-version = "py38"
-extend-exclude = ["include", "scrape_tm1_docs"]
+target-version = "py314"
+extend-exclude = ["scrape_tm1_docs"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W"]
