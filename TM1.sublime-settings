@@ -1,0 +1,8 @@
+// TM1 Planning Analytics Developer Tools: settings for every project. A project's own connection is
+// in its .sublime-project file, under "settings" > "tm1".
+{
+	// The browser to sign in to TM1 with, for a Cognos namespace that signs in in the browser (OpenID
+	// Connect, SAML...). Chrome, Edge, Brave or Chromium: its program's path, or a command on PATH.
+	// Empty: the first of them found.
+	"browser": "",
+}

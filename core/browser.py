@@ -285,11 +285,15 @@ class Browser:
             time.sleep(0.1)
         raise BrowserError('The browser opened no debugging port.')
 
-    def call(self, method, params=None):
+    def call(self, method, params=None, session=None):
+        """A DevTools protocol command: to the browser, or to one page's ``session``."""
         with self._lock:
             self._next_id += 1
             ident = self._next_id
-            self._channel.send({'id': ident, 'method': method, 'params': params or {}})
+            message = {'id': ident, 'method': method, 'params': params or {}}
+            if session:
+                message['sessionId'] = session
+            self._channel.send(message)
             while True:
                 message = self._channel.receive()
                 if message.get('id') == ident:
@@ -304,6 +308,15 @@ class Browser:
             if cookie.get('name') == name and (host == domain or host.endswith('.' + domain)):
                 return cookie.get('value')
         return None
+
+    def page_url(self):
+        """The address of the page the sign-in is on."""
+        target_id = getattr(self, '_target', None)
+        for target in self.call('Target.getTargets').get('targetInfos', []):
+            # Hidden, the browser also has the blank page it started with: follow the sign-in's own
+            if target.get('type') == 'page' and (target_id is None or target.get('targetId') == target_id):
+                return target.get('url', '')
+        return ''
 
     def running(self):
         if self._process is not None:
@@ -340,14 +353,34 @@ class Browser:
                 pass
 
 
-def wait_for_cookie(browser, name, host, timeout, poll=0.5):
+# How long the hidden window may sit on another host's page (the provider's login) before that's
+# taken to mean the user is needed
+SETTLED = 2.0
+
+
+def wait_for_cookie(browser, name, host, timeout, poll=0.5, give_up_when_user_needed=False, home=None):
+    """The cookie once the browser has it, or None after ``timeout``. With
+    ``give_up_when_user_needed``, also None once the page has settled away from ``home`` (the
+    sign-in's host:port; ``host`` by default): a sign-in that needs no user goes straight back."""
+    home = home or host
     deadline = time.monotonic() + timeout
+    away_since, away_url = None, None
     while time.monotonic() < deadline:
         if not browser.running():
             raise SignInCancelled('The sign-in window was closed.')
         value = browser.cookie(name, host)
         if value:
             return value
+        if give_up_when_user_needed:
+            url = browser.page_url()
+            # host and port: a provider can share Cognos's host name (cookies don't care about ports)
+            if url.startswith('http') and urlsplit(url).netloc not in (home, host):
+                if url != away_url:
+                    away_since, away_url = time.monotonic(), url
+                elif time.monotonic() - away_since >= SETTLED:
+                    return None
+            else:
+                away_since, away_url = None, None
         time.sleep(poll)
     return None
 
@@ -361,7 +394,8 @@ def read_cookie(executable, profile, url, name='cam_passport', host=None, hidden
     if hidden_first:
         browser = Browser(executable, profile, url, hidden=True, transport=transport)
         try:
-            value = wait_for_cookie(browser, name, host, silent_timeout)
+            value = wait_for_cookie(browser, name, host, silent_timeout, give_up_when_user_needed=True,
+                                    home=urlsplit(url).netloc)
         except SignInCancelled:
             value = None
         finally:

@@ -15,8 +15,8 @@ from concurrent.futures import ThreadPoolExecutor
 
 import sublime
 
-from ..core.connection import NotConfigured, build_client, from_project_settings
-from . import credentials
+from ..core.connection import NotConfigured, build_client, default_method, from_project_settings
+from . import browser_sign_in, credentials
 
 WORKERS = 4
 
@@ -46,6 +46,7 @@ def shutdown():
     if executor is not None:
         executor.shutdown(wait=False, cancel_futures=True)
     credentials.forget_all()
+    browser_sign_in.forget_all()
 
 
 def for_window(window, quiet=False):
@@ -69,10 +70,27 @@ def for_window(window, quiet=False):
             # The project's connection changed: start again with the new one
             gateway.close()
             credentials.forget(project)
+            browser_sign_in.forget(project)
             gateway = None
         if gateway is None:
             gateway = _gateways[project] = Gateway(project, connection)
     return gateway
+
+
+def _resolve(connection):
+    """The method from TM1 and Cognos; what 0.2.x did when they can't be asked."""
+    from ..core.discovery import DiscoveryError, Method, resolve_method
+
+    try:
+        return resolve_method(connection)
+    except (DiscoveryError, OSError, ValueError) as e:
+        print('TM1: couldn\'t work out how to log in to {} ({}); logging in as 0.2.x did'.format(
+            connection.base_url, e))
+        return Method(default_method(connection), connection.dispatcher)
+    except Exception as e:  # an HTTP error from the probe
+        print('TM1: couldn\'t work out how to log in to {} ({}); logging in as 0.2.x did'.format(
+            connection.base_url, e))
+        return Method(default_method(connection), connection.dispatcher)
 
 
 def describe_error(connection, error):
@@ -88,12 +106,16 @@ def describe_error(connection, error):
 
 
 class Gateway:
-    def __init__(self, key, connection, connect=build_client, submit=None, on_ui=None):
+    def __init__(self, key, connection, connect=build_client, submit=None, on_ui=None, resolve=None,
+                 passport_source=browser_sign_in.passport_source):
         self.key = key
         self.connection = connection
         self._connect = connect
         self._submit = submit or _submit
         self._on_ui = on_ui or (lambda fn: sublime.set_timeout(fn, 0))
+        self._resolve = resolve or _resolve
+        self._passport_source = passport_source
+        self.method = None
         self._client = None
         self._client_password = None
         self._lock = threading.Lock()
@@ -104,19 +126,32 @@ class Gateway:
         self._run(window, work, on_done, on_error, retry=True)
 
     def _run(self, window, work, on_done, on_error, retry):
+        if self.method is None:
+            # How to log in is worked out once, off the UI thread: it asks TM1 and Cognos
+            self._submit(self._find_method, window, work, on_done, on_error, retry)
+            return
+
         def start(password):
             self._submit(self._work, window, work, password, on_done, on_error, retry)
 
-        credentials.with_password(window, self.key, self.connection, start)
+        if self.method.kind == 'browser':
+            start(None)
+        else:
+            credentials.with_password(window, self.key, self.connection, start)
+
+    def _find_method(self, window, work, on_done, on_error, retry):
+        self.method = self._resolve(self.connection)
+        self._on_ui(lambda: self._run(window, work, on_done, on_error, retry))
 
     def _work(self, window, work, password, on_done, on_error, retry):
         from skipcheck_tm1.errors import Tm1AuthenticationError, Tm1ErrorKind
 
         try:
-            result = work(self._client_for(password))
+            result = work(self._client_for(password, window))
         except Tm1AuthenticationError as e:
             if e.kind == Tm1ErrorKind.CREDENTIAL_REJECTED:
                 credentials.forget(self.key)
+                browser_sign_in.forget(self.key)
                 self._drop_client()
                 if retry:
                     self._on_ui(lambda: self._run(window, work, on_done, on_error, retry=False))
@@ -140,14 +175,27 @@ class Gateway:
 
         self._on_ui(show)
 
-    def _client_for(self, password):
+    def _client_for(self, password, window=None):
         with self._lock:
             if self._client is None or self._client_password != password:
                 if self._client is not None:
                     self._client.close()
-                self._client = self._connect(self.connection, password)
+                if self.method is not None and self.method.kind == 'browser':
+                    passport = self._passport_source(self.key, self.method.dispatcher, self.connection.namespace,
+                                                     on_window=lambda: self._waiting_for_browser(window))
+                    self._client = self._connect(self.connection, None, method='browser', passport=passport)
+                else:
+                    method = self.method.kind if self.method is not None else None
+                    self._client = self._connect(self.connection, password, method=method)
                 self._client_password = password
             return self._client
+
+    def _waiting_for_browser(self, window):
+        def show():
+            if window is not None:
+                window.status_message('TM1: sign in in the browser window to connect to {}'.format(
+                    self.connection.base_url))
+        self._on_ui(show)
 
     def _drop_client(self):
         with self._lock:
