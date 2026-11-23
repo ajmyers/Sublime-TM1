@@ -1,0 +1,365 @@
+"""Reading Cognos's CAM passport from a browser window the user signs in in.
+
+TM1 in CAM security accepts a Cognos passport. Cognos's own login page does whatever its namespace
+needs (a form, OpenID Connect through any provider, SAML, Kerberos), and leaves the passport in the
+browser as the cam_passport cookie. The browser keeps cookies to itself, so this starts a
+Chromium-based browser (Chrome, Edge, Brave, Chromium) with its DevTools protocol on, opens the
+login, and reads that one cookie once it's there. Nothing on the server is changed or required.
+
+Safety:
+- The browser runs with its own profile, in a folder only the user can read, never the user's own
+  profile. A provider remembers the user there, so later sign-ins are quick or invisible.
+- On macOS and Linux the protocol runs over a pipe (--remote-debugging-pipe): no port is opened.
+  On Windows, where Python can't hand a process those pipes, it runs over a port: random, on
+  127.0.0.1 only, and open only while the sign-in runs.
+- Only the cookie asked for, on the host asked for, is read.
+- The browser is always closed: when the cookie arrives, on failure, on timeout, and when asked.
+"""
+
+import base64
+import json
+import os
+import shutil
+import socket
+import struct
+import subprocess
+import sys
+import threading
+import time
+from urllib.parse import urlsplit
+
+# Signing in may involve a password, a second factor and an approval on a phone
+SIGN_IN_TIMEOUT = 300
+# How long a hidden window gets to come back with a passport from a provider session still alive
+SILENT_TIMEOUT = 10
+
+COMMON_ARGS = ['--no-first-run', '--no-default-browser-check', '--disable-sync', '--disable-extensions',
+               '--disable-background-networking', '--disable-component-update', '--password-store=basic',
+               '--use-mock-keychain']
+
+
+class BrowserError(Exception):
+    """No browser to sign in with, or the browser failed."""
+
+
+class SignInCancelled(BrowserError):
+    """The user closed the sign-in window."""
+
+
+class SignInTimedOut(BrowserError):
+    """No passport came back in time."""
+
+
+# Finding a browser
+
+WINDOWS_APPS = ['msedge.exe', 'chrome.exe', 'brave.exe']
+WINDOWS_PATHS = [
+    ('ProgramFiles', r'Microsoft\Edge\Application\msedge.exe'),
+    ('ProgramFiles(x86)', r'Microsoft\Edge\Application\msedge.exe'),
+    ('ProgramFiles', r'Google\Chrome\Application\chrome.exe'),
+    ('ProgramFiles(x86)', r'Google\Chrome\Application\chrome.exe'),
+    ('LOCALAPPDATA', r'Google\Chrome\Application\chrome.exe'),
+    ('ProgramFiles', r'BraveSoftware\Brave-Browser\Application\brave.exe'),
+    ('LOCALAPPDATA', r'BraveSoftware\Brave-Browser\Application\brave.exe'),
+    ('LOCALAPPDATA', r'Chromium\Application\chrome.exe'),
+]
+MAC_APPS = ['Google Chrome', 'Microsoft Edge', 'Brave Browser', 'Chromium', 'Vivaldi']
+LINUX_COMMANDS = ['google-chrome', 'google-chrome-stable', 'chromium', 'chromium-browser', 'microsoft-edge',
+                  'microsoft-edge-stable', 'brave-browser', 'vivaldi']
+
+
+def _windows_app_path(name):
+    try:
+        import winreg
+    except ImportError:
+        return None
+    for root in (winreg.HKEY_CURRENT_USER, winreg.HKEY_LOCAL_MACHINE):
+        try:
+            key_path = 'Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\' + name
+            with winreg.OpenKey(root, key_path) as key:
+                return winreg.QueryValue(key, None)
+        except OSError:
+            continue
+    return None
+
+
+def find_browser(setting=None, platform=None, env=None, exists=os.path.exists, which=shutil.which,
+                 app_path=_windows_app_path, home=None):
+    """The path of a Chromium-based browser, or None. ``setting`` (the user's tm1_browser) wins."""
+    platform = platform or sys.platform
+    env = os.environ if env is None else env
+    if setting:
+        return setting if exists(setting) else which(setting)
+    if platform.startswith('win'):
+        for name in WINDOWS_APPS:
+            path = app_path(name)
+            if path and exists(path):
+                return path
+        for variable, tail in WINDOWS_PATHS:
+            if env.get(variable):
+                path = env[variable].rstrip('\\') + '\\' + tail
+                if exists(path):
+                    return path
+        return None
+    if platform == 'darwin':
+        home = home or os.path.expanduser('~')
+        for folder in ('/Applications', os.path.join(home, 'Applications')):
+            for app in MAC_APPS:
+                path = os.path.join(folder, app + '.app', 'Contents', 'MacOS', app)
+                if exists(path):
+                    return path
+        return None
+    for command in LINUX_COMMANDS:
+        path = which(command)
+        if path:
+            return path
+    return None
+
+
+# Talking to it
+
+
+class _Pipe:
+    """The DevTools protocol over --remote-debugging-pipe: JSON messages ending in a NUL byte, the
+    browser reading on its descriptor 3 and writing on 4."""
+
+    def __init__(self, write_fd, read_fd):
+        self._write, self._read = write_fd, read_fd
+        self._buffer = b''
+
+    def send(self, message):
+        data = json.dumps(message).encode('utf-8') + b'\0'
+        while data:
+            data = data[os.write(self._write, data):]
+
+    def receive(self):
+        while b'\0' not in self._buffer:
+            chunk = os.read(self._read, 65536)
+            if not chunk:
+                raise SignInCancelled('The browser closed.')
+            self._buffer += chunk
+        message, self._buffer = self._buffer.split(b'\0', 1)
+        return json.loads(message)
+
+    def close(self):
+        for fd in (self._write, self._read):
+            try:
+                os.close(fd)
+            except OSError:
+                pass
+
+
+class _WebSocket:
+    """The DevTools protocol over the browser's debugging port: the least of a WebSocket client
+    (RFC 6455), text frames only, on 127.0.0.1."""
+
+    def __init__(self, port, path):
+        self._socket = socket.create_connection(('127.0.0.1', port), timeout=SIGN_IN_TIMEOUT)
+        key = base64.b64encode(os.urandom(16)).decode('ascii')
+        request = ('GET {} HTTP/1.1\r\nHost: 127.0.0.1:{}\r\nUpgrade: websocket\r\nConnection: Upgrade\r\n'
+                   'Sec-WebSocket-Key: {}\r\nSec-WebSocket-Version: 13\r\n\r\n').format(path, port, key)
+        self._socket.sendall(request.encode('ascii'))
+        head = b''
+        while b'\r\n\r\n' not in head:
+            chunk = self._socket.recv(1)
+            if not chunk:
+                raise BrowserError('The browser closed its debugging connection.')
+            head += chunk
+        if b' 101 ' not in head.split(b'\r\n', 1)[0]:
+            raise BrowserError("The browser refused its debugging connection: " + head.split(b'\r\n', 1)[0].decode())
+
+    def _exactly(self, count):
+        data = b''
+        while len(data) < count:
+            chunk = self._socket.recv(count - len(data))
+            if not chunk:
+                raise SignInCancelled('The browser closed.')
+            data += chunk
+        return data
+
+    def send(self, message):
+        data = json.dumps(message).encode('utf-8')
+        mask, size = os.urandom(4), len(data)
+        if size < 126:
+            head = struct.pack('!BB', 0x81, 0x80 | size)
+        elif size < 65536:
+            head = struct.pack('!BBH', 0x81, 0x80 | 126, size)
+        else:
+            head = struct.pack('!BBQ', 0x81, 0x80 | 127, size)
+        self._socket.sendall(head + mask + bytes(b ^ mask[i % 4] for i, b in enumerate(data)))
+
+    def receive(self):
+        while True:
+            first, second = self._exactly(2)
+            size = second & 0x7f
+            if size == 126:
+                size = struct.unpack('!H', self._exactly(2))[0]
+            elif size == 127:
+                size = struct.unpack('!Q', self._exactly(8))[0]
+            payload = self._exactly(size)
+            opcode = first & 0x0f
+            if opcode == 8:
+                raise SignInCancelled('The browser closed.')
+            if opcode == 1:
+                return json.loads(payload)
+
+    def close(self):
+        try:
+            self._socket.close()
+        except OSError:
+            pass
+
+
+class Browser:
+    """A browser started for one sign-in, with the DevTools protocol on."""
+
+    def __init__(self, executable, profile, url, hidden, transport=None):
+        self._lock = threading.Lock()
+        self._next_id = 0
+        os.makedirs(profile, exist_ok=True)
+        if os.name == 'posix':
+            os.chmod(profile, 0o700)
+        transport = transport or ('port' if os.name == 'nt' else 'pipe')
+        args = [executable, '--user-data-dir=' + profile] + COMMON_ARGS
+        args += ['--headless=new'] if hidden else ['--app=' + url, '--window-size=520,720']
+        if transport == 'pipe':
+            self._start_with_pipe(args + ['--remote-debugging-pipe'] + (['about:blank'] if hidden else []))
+        else:
+            self._start_with_port(args + ['--remote-debugging-port=0'] + (['about:blank'] if hidden else []), profile)
+        if hidden:
+            target = self.call('Target.createTarget', {'url': url})
+            self._target = target.get('targetId')
+
+    def _start_with_pipe(self, args):
+        to_browser_read, to_browser_write = os.pipe()
+        from_browser_read, from_browser_write = os.pipe()
+        devnull = os.open(os.devnull, os.O_RDWR)
+        # posix_spawn, not subprocess's preexec_fn, which isn't safe in a threaded process (Sublime's
+        # plugin host): its file actions put the pipes where the browser expects them, at 3 and 4
+        actions = [(os.POSIX_SPAWN_DUP2, devnull, 0), (os.POSIX_SPAWN_DUP2, devnull, 1),
+                   (os.POSIX_SPAWN_DUP2, devnull, 2), (os.POSIX_SPAWN_DUP2, to_browser_read, 3),
+                   (os.POSIX_SPAWN_DUP2, from_browser_write, 4)]
+        try:
+            self._pid = os.posix_spawn(args[0], args, os.environ, file_actions=actions, setsid=True)
+        finally:
+            for fd in (to_browser_read, from_browser_write, devnull):
+                os.close(fd)
+        self._process = None
+        self._channel = _Pipe(to_browser_write, from_browser_read)
+
+    def _start_with_port(self, args, profile):
+        port_file = os.path.join(profile, 'DevToolsActivePort')
+        if os.path.exists(port_file):
+            os.remove(port_file)
+        flags = getattr(subprocess, 'CREATE_NEW_PROCESS_GROUP', 0)
+        self._process = subprocess.Popen(args, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
+                                         stderr=subprocess.DEVNULL, creationflags=flags)
+        self._pid = self._process.pid
+        deadline = time.monotonic() + 30
+        while time.monotonic() < deadline:
+            if self._process.poll() is not None:
+                raise BrowserError('The browser exited at start (code {}).'.format(self._process.returncode))
+            try:
+                with open(port_file, encoding='utf-8') as f:
+                    lines = f.read().split('\n')
+                if len(lines) >= 2 and lines[0].strip():
+                    self._channel = _WebSocket(int(lines[0]), lines[1].strip())
+                    return
+            except OSError:
+                pass
+            time.sleep(0.1)
+        raise BrowserError('The browser opened no debugging port.')
+
+    def call(self, method, params=None):
+        with self._lock:
+            self._next_id += 1
+            ident = self._next_id
+            self._channel.send({'id': ident, 'method': method, 'params': params or {}})
+            while True:
+                message = self._channel.receive()
+                if message.get('id') == ident:
+                    if 'error' in message:
+                        raise BrowserError('{}: {}'.format(method, message['error'].get('message')))
+                    return message.get('result', {})
+
+    def cookie(self, name, host):
+        """The value of the cookie named ``name`` that the browser would send to ``host``, or None."""
+        for cookie in self.call('Storage.getCookies').get('cookies', []):
+            domain = cookie.get('domain', '').lstrip('.')
+            if cookie.get('name') == name and (host == domain or host.endswith('.' + domain)):
+                return cookie.get('value')
+        return None
+
+    def running(self):
+        if self._process is not None:
+            return self._process.poll() is None
+        try:
+            pid, _ = os.waitpid(self._pid, os.WNOHANG)
+            return pid == 0
+        except ChildProcessError:
+            return False
+
+    def close(self):
+        try:
+            self.call('Browser.close')
+        except Exception:
+            pass
+        self._channel.close()
+        deadline = time.monotonic() + 5
+        while self.running() and time.monotonic() < deadline:
+            time.sleep(0.05)
+        if self.running():
+            try:
+                if self._process is not None:
+                    self._process.kill()
+                else:
+                    os.killpg(self._pid, 9)
+            except OSError:
+                pass
+        if self._process is not None:
+            self._process.wait(timeout=5)
+        else:
+            try:
+                os.waitpid(self._pid, 0)
+            except ChildProcessError:
+                pass
+
+
+def wait_for_cookie(browser, name, host, timeout, poll=0.5):
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        if not browser.running():
+            raise SignInCancelled('The sign-in window was closed.')
+        value = browser.cookie(name, host)
+        if value:
+            return value
+        time.sleep(poll)
+    return None
+
+
+def read_cookie(executable, profile, url, name='cam_passport', host=None, hidden_first=True, transport=None,
+                timeout=SIGN_IN_TIMEOUT, silent_timeout=SILENT_TIMEOUT, on_window=None):
+    """Opens ``url`` and returns the cookie ``name`` once the browser has it for ``host`` (by
+    default the URL's). Tries a hidden window first, which is enough when the provider still
+    remembers the user; then a window the user signs in in."""
+    host = host or urlsplit(url).hostname
+    if hidden_first:
+        browser = Browser(executable, profile, url, hidden=True, transport=transport)
+        try:
+            value = wait_for_cookie(browser, name, host, silent_timeout)
+        except SignInCancelled:
+            value = None
+        finally:
+            browser.close()
+        if value:
+            return value
+    if on_window is not None:
+        on_window()
+    browser = Browser(executable, profile, url, hidden=False, transport=transport)
+    try:
+        value = wait_for_cookie(browser, name, host, timeout)
+    finally:
+        browser.close()
+    if not value:
+        raise SignInTimedOut('No sign-in in {} seconds.'.format(timeout))
+    return value
