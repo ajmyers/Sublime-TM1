@@ -133,12 +133,15 @@ def challenge(base_url, verify=True, client=None):
 
 def cognos_root(dispatcher):
     """Cognos's web root (ending in /bi) from the forms a ClientCAMURI takes: .../bi/v1/disp,
-    .../bi, or a gateway's .../cgi-bin/cognos.cgi."""
+    .../bi, a gateway's .../cgi-bin/cognos.cgi, or a dispatcher's .../p2pd/servlet/dispatch."""
     url = dispatcher.rstrip('/')
     match = re.match(r'(.*?/bi)(/.*)?$', url)
     if match:
         return match.group(1)
     match = re.match(r'(.*)/cgi-bin/cognos(isapi)?\.(cgi|dll)$', url, re.IGNORECASE)
+    if match:
+        return match.group(1) + '/bi'
+    match = re.match(r'(.*)/p2pd(/.*)?$', url)
     if match:
         return match.group(1) + '/bi'
     return url + '/bi'
@@ -186,3 +189,29 @@ def browser_login_url(dispatcher, namespace):
     from urllib.parse import quote
 
     return cognos_root(dispatcher) + '/?CAMNamespace=' + quote(namespace)
+
+
+@dataclass(frozen=True)
+class Method:
+    # "basic", "cam" (a user and password) or "browser" (a passport from a browser sign-in)
+    kind: str
+    # Cognos's address, for "browser"
+    dispatcher: str = ''
+
+
+def resolve_method(connection, client=None):
+    """How to log in to the connection's TM1, asking TM1 and Cognos. An explicit method in the
+    project wins; without a namespace it's TM1's own security; with one, Cognos says whether the
+    namespace prompts for a password or signs in through the browser."""
+    if connection.auth:
+        dispatcher = connection.dispatcher
+        if connection.auth == 'browser' and not dispatcher:
+            dispatcher = challenge(connection.base_url, connection.verify, client).dispatcher
+        return Method(connection.auth, dispatcher)
+    if not connection.namespace:
+        return Method('basic')
+    dispatcher = connection.dispatcher or challenge(connection.base_url, connection.verify, client).dispatcher
+    if not dispatcher:
+        return Method('cam')
+    kind = login_kind(dispatcher, connection.namespace, connection.verify, client)
+    return Method('browser' if kind == 'browser' else 'cam', dispatcher)
