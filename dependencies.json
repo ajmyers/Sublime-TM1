@@ -5,13 +5,14 @@
 			"annotated-types",
 			"anyio",
 			"h11",
-			"httpcore",
-			"httpx",
+			"httpcore2",
+			"httpx2",
 			"idna",
 			"pydantic",
 			"pydantic-core",
 			"pyyaml",
 			"skipcheck-tm1",
+			"truststore",
 			"typing-extensions",
 			"typing-inspection"
 		]

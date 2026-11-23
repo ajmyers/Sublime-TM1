@@ -1,12 +1,12 @@
-"""Builds a Package Control channel holding the libraries the default channel doesn't have yet,
-for developing the package in Sublime Text before they're published.
+"""Builds a Package Control channel holding the library the default channel doesn't have yet,
+skipcheck-tm1, for developing the package in Sublime Text before it's published.
 
     python3 tools/local_channel.py ~/tm1-local-channel
 
 Then add the repository it prints to "repositories" in Packages/User/Package Control.sublime-settings
 and run "Package Control: Satisfy Libraries". It builds skipcheck-tm1 from its repository, at the
-commit tests/requirements.txt pins, and downloads httpx and httpcore from PyPI. Remove the entry
-once skipcheck-tm1 has a final release in the default channel.
+commit tests/requirements.txt pins; everything it needs is in the default channel. Remove the
+entry once skipcheck-tm1 has a final release there.
 """
 
 import hashlib
@@ -18,11 +18,8 @@ import sys
 
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# Not in the default channel: (name, version, description, issues)
-LIBRARIES = [
-    ('httpcore', '1.0.9', 'A minimal low-level HTTP client.', 'https://github.com/encode/httpcore/issues'),
-    ('httpx', '0.28.1', 'A fully featured HTTP client for Python.', 'https://github.com/encode/httpx/issues'),
-]
+# Other libraries the default channel lacks, from PyPI: (name, version, description, issues)
+LIBRARIES = []
 
 
 def skipcheck_requirement():
@@ -48,8 +45,9 @@ def main(out):
     os.makedirs(wheels, exist_ok=True)
     pip = [sys.executable, '-m', 'pip']
     subprocess.run(pip + ['wheel', '--quiet', '--no-deps', '-w', wheels, skipcheck_requirement()], check=True)
-    subprocess.run(pip + ['download', '--quiet', '--no-deps', '--only-binary=:all:', '-d', wheels]
-                   + ['{}=={}'.format(name, version) for name, version, _, _ in LIBRARIES], check=True)
+    if LIBRARIES:
+        subprocess.run(pip + ['download', '--quiet', '--no-deps', '--only-binary=:all:', '-d', wheels]
+                       + ['{}=={}'.format(name, version) for name, version, _, _ in LIBRARIES], check=True)
 
     libraries = []
     for name, version, description, issues in LIBRARIES:
