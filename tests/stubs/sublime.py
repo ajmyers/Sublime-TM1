@@ -41,6 +41,13 @@ def active_window():
     return None
 
 
+_cache_path = '/tmp/sublime-cache'
+
+
+def cache_path():
+    return _cache_path
+
+
 def executable_path():
     return '/Applications/Sublime Text.app/Contents/MacOS/sublime_text'
 
