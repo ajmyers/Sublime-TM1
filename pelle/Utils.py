@@ -248,8 +248,8 @@ def view_to_process(view, process):
         parse_section = section
         section_text[parse_section] = ''
 
-        regex_find = re.compile('^(#+\s*?)?(' + parse_section + ')(:|;)')
-        regex_end = re.compile('^(#+\s*?)?({})(:|;)'.format('|'.join(sections)))
+        regex_find = re.compile(r'^(#+\s*?)?(' + parse_section + r')(:|;)')
+        regex_end = re.compile(r'^(#+\s*?)?({})(:|;)'.format('|'.join(sections)))
 
         search_active = False
 
