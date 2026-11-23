@@ -3,3 +3,7 @@ env/
 scrape_tm1_docs/venv
 scrape_tm1_docs/.idea
 commands/Test.py
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
