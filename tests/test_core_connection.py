@@ -83,15 +83,15 @@ def test_describes_who_connects_without_the_password():
 
 def logged_in_with(connection, password):
     """The Authorization header the client logs in with."""
-    import httpx
+    import httpx2
 
     seen = []
 
     def handler(request):
         seen.append(request.headers.get('Authorization'))
-        return httpx.Response(200, json={'ID': 1}, headers={'Set-Cookie': 'TM1SessionId=abc; Path=/api/'})
+        return httpx2.Response(200, json={'ID': 1}, headers={'Set-Cookie': 'TM1SessionId=abc; Path=/api/'})
 
-    client = build_client(connection, password, http_client=httpx.Client(transport=httpx.MockTransport(handler)))
+    client = build_client(connection, password, http_client=httpx2.Client(transport=httpx2.MockTransport(handler)))
     try:
         client.session.login()
     finally:

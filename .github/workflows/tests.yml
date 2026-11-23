@@ -21,5 +21,5 @@ jobs:
           python-version: "3.14"
       - run: pip install -r tests/requirements.txt
       - run: pytest
-      # The rewritten code and the tests; the legacy commands aren't linted, as they're being replaced
-      - run: ruff check core tests
+      # The rewritten code, tools and tests; the legacy commands aren't linted, as they're being replaced
+      - run: ruff check core plugin tools tests
