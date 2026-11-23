@@ -1,0 +1,13 @@
+# What the built package leaves out (git archive, which build.sh uses, and Package Control's
+# GitHub source honour export-ignore): development tooling and the docs scraper, nothing Sublime
+# loads. The README's images stay in the repository, where GitHub and packagecontrol.io show them.
+/.github export-ignore
+/.githooks export-ignore
+/.gitattributes export-ignore
+/.gitignore export-ignore
+/.python-version export-ignore
+/build.sh export-ignore
+/images export-ignore
+/pyproject.toml export-ignore
+/scrape_tm1_docs export-ignore
+/tests export-ignore
