@@ -35,6 +35,20 @@ def _submit(fn, *args):
     return executor.submit(fn, *args)
 
 
+def in_background(work, on_done, on_error):
+    """Runs ``work()`` on the gateway's threads and hands its result or error back on the UI thread:
+    for work that's no project's yet, like the probes of setting one up."""
+    def run():
+        try:
+            result = work()
+        except Exception as e:
+            # Bound now: the name e is gone once this except block ends, before the UI thread runs it
+            sublime.set_timeout(lambda error=e: on_error(error), 0)
+        else:
+            sublime.set_timeout(lambda: on_done(result), 0)
+    _submit(run)
+
+
 def shutdown():
     """Closes every session and stops the threads: for plugin_unloaded."""
     global _executor

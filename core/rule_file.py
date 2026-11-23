@@ -40,3 +40,13 @@ def rules_to_text(cube_name, dimension_names, rules):
 def text_to_rules(text):
     """The rules to put for a .rux file: the whole file, header included."""
     return text.replace('\r\n', '\n').strip('\n') + '\n'
+
+
+def error_line(text, line_number):
+    """The 0-based line of the file that TM1's rule error points at. Put sends the file from its
+    first line that isn't blank, so TM1's lines start there."""
+    lines = text.replace('\r\n', '\n').split('\n')
+    first = 0
+    while first < len(lines) and not lines[first]:
+        first += 1
+    return min(first + line_number - 1, len(lines) - 1)

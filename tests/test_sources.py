@@ -10,7 +10,7 @@ from conftest import ROOT
 
 SOURCES = sorted(
     os.path.relpath(path, ROOT)
-    for pattern in ['*.py', 'commands/*.py', 'pelle/**/*.py']
+    for pattern in ['*.py', 'core/*.py', 'plugin/*.py']
     for path in glob.glob(os.path.join(ROOT, pattern), recursive=True)
 )
 

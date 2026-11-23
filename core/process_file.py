@@ -243,3 +243,43 @@ def _variable(variable, position):
     else:
         kind, name = ProcessVariableType.STRING, name.replace('(String)', '')
     return ProcessVariable(name=name.strip(), type=kind, position=position, start_byte=0, end_byte=0)
+
+
+def error_line(text, procedure, line_number):
+    """The 0-based line of the file that TM1's compile error points at: ``line_number`` of the
+    procedure (Prolog, Metadata, Data, Epilog), counted from its first line as the file holds it
+    (after the blank lines that follow the section's header). None if the file has no such section."""
+    lines = text.replace('\r\n', '\n').split('\n')
+    section = str(procedure).upper()
+    for index, line in enumerate(lines):
+        match = SECTION_START.search(line)
+        if match and match.group(2) == section:
+            first = index + 1
+            while first < len(lines) and not lines[first].strip():
+                first += 1
+            return min(first + line_number - 1, len(lines) - 1)
+    return None
+
+
+PROCEDURES = ('PROLOG', 'METADATA', 'DATA', 'EPILOG')
+
+
+def format_procedures(text, formatter):
+    """The file with the code of its four procedures passed through ``formatter``, and every
+    other line as it was: the header sections, the separators, the blank lines around the code."""
+    newline = '\r\n' if '\r\n' in text else '\n'
+    lines = text.replace('\r\n', '\n').split('\n')
+    headers = [i for i, line in enumerate(lines) if SECTION_START.search(line)]
+    for position, header in reversed(list(enumerate(headers))):
+        if SECTION_START.search(lines[header]).group(2) not in PROCEDURES:
+            continue
+        end = headers[position + 1] if position + 1 < len(headers) else len(lines)
+        start = header + 1
+        while start < end and not lines[start].strip():
+            start += 1
+        stop = end
+        while stop > start and (not lines[stop - 1].strip() or lines[stop - 1].rstrip() == COMMENT):
+            stop -= 1
+        if start < stop:
+            lines[start:stop] = formatter('\n'.join(lines[start:stop])).split('\n')
+    return newline.join(lines)

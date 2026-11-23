@@ -13,7 +13,7 @@ PLUGIN_CLASSES = (sublime_plugin.Command, sublime_plugin.EventListener, sublime_
 
 def defined_plugin_classes():
     found = {}
-    for path in glob.glob(os.path.join(ROOT, 'commands', '*.py')) + glob.glob(os.path.join(ROOT, 'plugin', '*.py')):
+    for path in glob.glob(os.path.join(ROOT, 'plugin', '*.py')):
         package = os.path.basename(os.path.dirname(path))
         module = importlib.import_module('tm1pkg.{}.{}'.format(package, os.path.splitext(os.path.basename(path))[0]))
         for name, value in vars(module).items():

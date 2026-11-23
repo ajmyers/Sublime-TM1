@@ -1,6 +1,9 @@
 """Just enough of Sublime Text's `sublime` module to import and test the package outside Sublime."""
 
 COMPLETION_FORMAT_TEXT = 0
+DRAW_NO_FILL = 32
+DRAW_NO_OUTLINE = 256
+DRAW_SQUIGGLY_UNDERLINE = 1024
 COMPLETION_FORMAT_SNIPPET = 1
 KIND_SNIPPET = (5, 's', 'Snippet')
 
@@ -19,6 +22,14 @@ def version():
 
 def message_dialog(message):
     dialogs.append(message)
+
+
+_ok_cancel_answers = []
+
+
+def ok_cancel_dialog(message, ok_title=''):
+    dialogs.append(message)
+    return _ok_cancel_answers.pop(0) if _ok_cancel_answers else True
 
 
 def error_message(message):
