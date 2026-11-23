@@ -149,3 +149,22 @@ def test_the_profile_is_private(server, tmp_path):
     profile = tmp_path / 'profile'
     read_cookie(EXECUTABLE, str(profile), server.url, transport='pipe')
     assert (profile.stat().st_mode & 0o777) == 0o700
+
+
+@needs_browser
+@pytest.mark.skipif(os.name != 'posix', reason='the pipe transport is POSIX')
+def test_the_pipe_works_from_a_fresh_process(server, tmp_path):
+    # A fresh process's pipes land on descriptors 3 and 4, where the browser expects its own:
+    # the case pytest, with many files open, never hits
+    import subprocess
+    import sys
+
+    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    script = (
+        'import sys, types; sys.path.insert(0, {root!r});'
+        'p = types.ModuleType("tm1pkg"); p.__path__ = [{root!r}]; sys.modules["tm1pkg"] = p;'
+        'from tm1pkg.core.browser import read_cookie;'
+        'print(read_cookie({exe!r}, {profile!r}, {url!r}, transport="pipe"))'
+    ).format(root=root, exe=EXECUTABLE, profile=str(tmp_path / 'profile'), url=server.url)
+    result = subprocess.run([sys.executable, '-c', script], capture_output=True, text=True, timeout=60)
+    assert result.stdout.strip() == 'MTsxMDE6passport', result.stderr[-2000:]

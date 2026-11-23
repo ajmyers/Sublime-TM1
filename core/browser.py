@@ -246,9 +246,21 @@ class Browser:
             self._target = target.get('targetId')
 
     def _start_with_pipe(self, args):
+        import fcntl
+
+        def above_the_targets(fd):
+            # The browser's ends must land on 3 and 4. A fresh process's pipes can already be 3 and
+            # 4, and dup2(3, 3) leaves close-on-exec set, so the browser would start without them:
+            # move them above 10 first, from where dup2 gives the browser clean copies
+            moved = fcntl.fcntl(fd, fcntl.F_DUPFD_CLOEXEC, 10)
+            os.close(fd)
+            return moved
+
         to_browser_read, to_browser_write = os.pipe()
         from_browser_read, from_browser_write = os.pipe()
-        devnull = os.open(os.devnull, os.O_RDWR)
+        to_browser_read = above_the_targets(to_browser_read)
+        from_browser_write = above_the_targets(from_browser_write)
+        devnull = above_the_targets(os.open(os.devnull, os.O_RDWR))
         # posix_spawn, not subprocess's preexec_fn, which isn't safe in a threaded process (Sublime's
         # plugin host): its file actions put the pipes where the browser expects them, at 3 and 4
         actions = [(os.POSIX_SPAWN_DUP2, devnull, 0), (os.POSIX_SPAWN_DUP2, devnull, 1),
