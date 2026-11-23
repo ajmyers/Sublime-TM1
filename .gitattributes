@@ -12,3 +12,7 @@
 /scrape_tm1_docs export-ignore
 /tests export-ignore
 /tools export-ignore
+
+# The snapshots are compared byte for byte, with LF line endings: keep Git on Windows from
+# checking them out with CRLF
+/tests/snapshots/** text eol=lf

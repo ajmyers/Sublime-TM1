@@ -32,6 +32,14 @@ class Connection:
     verify: object = True
     # Run processes asynchronously and poll (TM1 11.x and later), rather than in one long request
     async_requests: bool = True
+    # How to log in: "basic" (TM1's own security), "cam" (a user and password for a CAM namespace) or
+    # "browser" (sign in in a browser window, for a CAM passport). Empty: worked out at connection,
+    # from TM1 and Cognos (plugin/gateway.py)
+    auth: str = ''
+    # Cognos's address, when the one TM1 gives (its ClientCAMURI) isn't reachable from here
+    dispatcher: str = ''
+    # Read from 0.2.x's settings: logs in as 0.2.x did, without working anything out
+    legacy: bool = False
 
     @property
     def base_url(self):
@@ -48,7 +56,9 @@ class Connection:
         return '{} at {}'.format(who, self.base_url)
 
     def to_settings(self):
-        return asdict(self)
+        settings = asdict(self)
+        settings.pop('legacy')
+        return settings
 
 
 class NotConfigured(Exception):
@@ -93,11 +103,17 @@ def without_stored_passwords(settings):
     return result
 
 
+METHODS = ('basic', 'cam', 'browser')
+
+
 def _from_current(data):
+    auth = data.get('auth') or ''
     return Connection(
         address=data['address'], port=str(data['port']), user=data.get('user', ''),
         ssl=bool(data.get('ssl', False)), namespace=data.get('namespace') or '',
         verify=data.get('verify', True), async_requests=bool(data.get('async_requests', True)),
+        # An unknown method (such as an earlier build's "oidc") is worked out again
+        auth=auth if auth in METHODS else '', dispatcher=data.get('dispatcher') or '',
     )
 
 
@@ -105,7 +121,7 @@ def _from_tm1_connection(data):
     return Connection(
         address=data['address'], port=str(data['port']), user=data.get('user', ''),
         ssl=bool(data.get('ssl', False)), namespace=data.get('namespace') or '', verify=False,
-        async_requests=bool(data.get('async_requests_mode', True)),
+        async_requests=bool(data.get('async_requests_mode', True)), legacy=True,
     )
 
 
@@ -113,20 +129,33 @@ def _from_tm1_connection_settings(data):
     return Connection(
         address=data['ServerAddress'], port=str(data['PortNumber']), user=data.get('UserName', ''),
         ssl=data.get('UseSSL') == 'T', namespace=data.get('CAMNamespaceID') or '', verify=False,
-        async_requests=data.get('UseAsync', 'F') == 'T',
+        async_requests=data.get('UseAsync', 'F') == 'T', legacy=True,
     )
 
 
-def build_client(connection, password, http_client=None):
+def default_method(connection):
+    """The method when nothing has been worked out: what 0.2.x did."""
+    return connection.auth or ('cam' if connection.namespace else 'basic')
+
+
+def authenticator(connection, method, password=None, passport=None):
+    """skipcheck-tm1's authenticator for a method. ``passport`` is a callable giving a CAM passport,
+    for "browser"; skipcheck-tm1 calls it at each TM1 login."""
+    from skipcheck_tm1.auth import basic, cam_namespace, cam_passport
+
+    if method == 'browser':
+        return cam_passport(passport)
+    if method == 'cam':
+        return cam_namespace(connection.user, password or '', connection.namespace)
+    return basic(connection.user, password)
+
+
+def build_client(connection, password, http_client=None, method=None, passport=None):
     """A skipcheck-tm1 client for the connection. Nothing is sent until its first request."""
     from skipcheck_tm1 import Tm1Client
-    from skipcheck_tm1.auth import basic, cam_namespace
 
     builder = Tm1Client.builder().base_url(connection.base_url).session_context(SESSION_CONTEXT)
-    if connection.uses_cam:
-        builder = builder.authenticator(cam_namespace(connection.user, password or '', connection.namespace))
-    else:
-        builder = builder.authenticator(basic(connection.user, password))
+    builder = builder.authenticator(authenticator(connection, method or default_method(connection), password, passport))
     builder = builder.verify(connection.verify)
     if http_client is not None:
         builder = builder.http_client(http_client)

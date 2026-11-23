@@ -1,6 +1,7 @@
 """core.connection: the project's connection settings, and their migration from earlier versions."""
 
 import base64
+import dataclasses
 
 import pytest
 
@@ -37,9 +38,9 @@ def test_reads_the_current_settings():
 def test_reads_the_settings_earlier_versions_wrote():
     assert from_project_settings(TM1_CONNECTION) == Connection(
         address='tm1.example.com', port='8010', user='admin', ssl=True, namespace='LDAP', verify=False,
-        async_requests=False)
+        async_requests=False, legacy=True)
     assert from_project_settings(TM1_CONNECTION_SETTINGS) == Connection(
-        address='tm1', port='5001', user='admin', ssl=False, verify=False, async_requests=True)
+        address='tm1', port='5001', user='admin', ssl=False, verify=False, async_requests=True, legacy=True)
 
 
 def test_projects_from_0_2_keep_their_certificates_unchecked_and_new_ones_check():
@@ -59,8 +60,9 @@ def test_saving_the_connection_keeps_the_earlier_packages_settings():
     settings = with_connection(TM1_CONNECTION, from_project_settings(TM1_CONNECTION))
     assert settings['tm1_connection'] == TM1_CONNECTION['tm1_connection']
     assert settings['format_process_on_update'] is True
-    assert 'password' not in settings['tm1']
-    assert from_project_settings(settings) == from_project_settings(TM1_CONNECTION)
+    assert 'password' not in settings['tm1'] and 'legacy' not in settings['tm1']
+    # Saved under "tm1", it's the same connection, now worked out like any other
+    assert from_project_settings(settings) == dataclasses.replace(from_project_settings(TM1_CONNECTION), legacy=False)
 
 
 def test_finds_and_removes_the_passwords_the_earlier_package_stored():
@@ -81,7 +83,7 @@ def test_describes_who_connects_without_the_password():
     assert Connection(address='h', port='1', user='u', namespace='LDAP').describe() == 'LDAP\\u at http://h:1/api/v1/'
 
 
-def logged_in_with(connection, password):
+def logged_in_with(connection, password, **options):
     """The Authorization header the client logs in with."""
     import httpx2
 
@@ -91,7 +93,8 @@ def logged_in_with(connection, password):
         seen.append(request.headers.get('Authorization'))
         return httpx2.Response(200, json={'ID': 1}, headers={'Set-Cookie': 'TM1SessionId=abc; Path=/api/'})
 
-    client = build_client(connection, password, http_client=httpx2.Client(transport=httpx2.MockTransport(handler)))
+    client = build_client(connection, password, http_client=httpx2.Client(transport=httpx2.MockTransport(handler)),
+                          **options)
     try:
         client.session.login()
     finally:
@@ -107,3 +110,19 @@ def test_logs_in_with_basic_authentication_without_a_namespace():
 def test_logs_in_with_cam_when_the_project_has_a_namespace():
     header = logged_in_with(Connection(address='h', port='1', user='alice', namespace='LDAP'), 'secret')
     assert header == 'CAMNamespace ' + base64.b64encode(b'alice:secret:LDAP').decode()
+
+
+
+def test_logs_in_with_the_browsers_passport():
+    connection = Connection(address='h', port='1', user='', namespace='OIDC')
+    header = logged_in_with(connection, None, method='browser', passport=lambda: 'MTsxMDE6passport')
+    assert header == 'CAMPassport MTsxMDE6passport'
+
+
+def test_reads_the_method_and_dispatcher_and_works_out_an_unknown_method_again():
+    settings = {'tm1': {'address': 'h', 'port': '1', 'user': '', 'namespace': 'OIDC', 'auth': 'browser',
+                        'dispatcher': 'http://localhost:19300'}}
+    connection = from_project_settings(settings)
+    assert (connection.auth, connection.dispatcher) == ('browser', 'http://localhost:19300')
+    settings['tm1']['auth'] = 'oidc'  # an earlier build's setting
+    assert from_project_settings(settings).auth == ''

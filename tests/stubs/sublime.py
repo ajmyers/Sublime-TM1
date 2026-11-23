@@ -84,3 +84,23 @@ class CompletionItem:
         self.completion_format = completion_format
         self.kind = kind
         self.details = details
+
+
+class Settings(dict):
+    def get(self, key, default=None):
+        return dict.get(self, key, default)
+
+    def set(self, key, value):
+        self[key] = value
+
+
+_settings = {}
+
+
+def load_settings(name):
+    return _settings.setdefault(name, Settings())
+
+
+class QuickPanelItem:
+    def __init__(self, trigger, details='', annotation='', kind=None):
+        self.trigger, self.details, self.annotation, self.kind = trigger, details, annotation, kind
