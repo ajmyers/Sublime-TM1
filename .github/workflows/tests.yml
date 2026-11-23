@@ -19,8 +19,7 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.14"
-      # certifi: the requests copied into include/ needs it and doesn't carry it
-      - run: pip install pytest ruff certifi
+      - run: pip install -r tests/requirements.txt
       - run: pytest
-      # Only the tests for now: the plugin's own code is linted once the cleanup (#17) lands
-      - run: ruff check tests
+      # The rewritten code and the tests; the legacy commands aren't linted, as they're being replaced
+      - run: ruff check core tests
