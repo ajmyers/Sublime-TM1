@@ -26,14 +26,14 @@ from .commands.FormatTurboIntegratorProcess import (
     FormatTurboIntegratorProcessCommand,
     OnSaveListener,
 )
-from .commands.GetObjectsFromServer import GetObjectsFromServer
-from .commands.ProjectCompletions import ProjectCompletions
 from .commands.PutObjectToServer import PutObjectToServer
 from .commands.RefreshTm1OpsConsole import RefreshTm1OpsConsoleCommand
 from .commands.RunTurboIntegratorProcess import RunTurboIntegratorProcess
 from .commands.UpdateTm1Project import UpdateTm1Project
 from .plugin import gateway
+from .plugin.completions import ProjectCompletions
 from .plugin.credentials import Tm1ReplaceInputTextCommand
+from .plugin.get import GetObjectsFromServer
 
 __all__ = [
     'ClearTurboIntegratorLogs',

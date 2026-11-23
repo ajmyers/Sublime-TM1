@@ -2,10 +2,11 @@
 
 
 class FakeView:
-    def __init__(self, text='', file_name=None, window=None):
+    def __init__(self, text='', file_name=None, window=None, scope=''):
         self.text = text
         self._file_name = file_name
         self._window = window
+        self.scope = scope
         self.erased = []
         self.commands = []
 
@@ -20,6 +21,9 @@ class FakeView:
 
     def substr(self, region):
         return self.text[region.begin():region.end()]
+
+    def match_selector(self, point, selector):
+        return all(part.strip() in self.scope for part in selector.split(','))
 
     def erase_regions(self, key):
         self.erased.append(key)
@@ -70,6 +74,10 @@ class FakeWindow:
         self.project = project
         self._project_file = project_file
         self.panels = []
+        self.statuses = []
+
+    def status_message(self, text):
+        self.statuses.append(text)
 
     def project_data(self):
         return self.project
