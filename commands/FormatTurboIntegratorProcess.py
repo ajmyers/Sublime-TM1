@@ -48,15 +48,11 @@ class OnSaveListener(sublime_plugin.EventListener):
             print(e)
 
 
-class FormatTurboIntegratorProcess(sublime_plugin.WindowCommand):
-    def run(self):
-        if not self.view.file_name().endswith(".pro"):
-            return
-
-        self.view.run_command('format_turbo_integrator_process')
-
-
 class FormatTurboIntegratorProcessCommand(sublime_plugin.TextCommand):
+    def is_enabled(self):
+        file_name = self.view.file_name()
+        return bool(file_name) and file_name.endswith('.pro')
+
     def run(self, edit):
         process = view_to_process(self.view, None)
 
