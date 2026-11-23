@@ -99,3 +99,8 @@ _settings = {}
 
 def load_settings(name):
     return _settings.setdefault(name, Settings())
+
+
+class QuickPanelItem:
+    def __init__(self, trigger, details='', annotation='', kind=None):
+        self.trigger, self.details, self.annotation, self.kind = trigger, details, annotation, kind

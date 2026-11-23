@@ -75,6 +75,7 @@ class FakeWindow:
         self._project_file = project_file
         self.panels = []
         self.statuses = []
+        self.quick_panels = []
 
     def status_message(self, text):
         self.statuses.append(text)
@@ -87,6 +88,9 @@ class FakeWindow:
 
     def project_file_name(self):
         return self._project_file
+
+    def show_quick_panel(self, items, on_select, placeholder=''):
+        self.quick_panels.append({'items': items, 'on_select': on_select, 'placeholder': placeholder})
 
     def show_input_panel(self, caption, initial, on_done, on_change, on_cancel):
         panel = FakePanel(caption, on_done, on_change, on_cancel)

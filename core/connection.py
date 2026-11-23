@@ -38,6 +38,8 @@ class Connection:
     auth: str = ''
     # Cognos's address, when the one TM1 gives (its ClientCAMURI) isn't reachable from here
     dispatcher: str = ''
+    # Read from 0.2.x's settings: logs in as 0.2.x did, without working anything out
+    legacy: bool = False
 
     @property
     def base_url(self):
@@ -54,7 +56,9 @@ class Connection:
         return '{} at {}'.format(who, self.base_url)
 
     def to_settings(self):
-        return asdict(self)
+        settings = asdict(self)
+        settings.pop('legacy')
+        return settings
 
 
 class NotConfigured(Exception):
@@ -117,7 +121,7 @@ def _from_tm1_connection(data):
     return Connection(
         address=data['address'], port=str(data['port']), user=data.get('user', ''),
         ssl=bool(data.get('ssl', False)), namespace=data.get('namespace') or '', verify=False,
-        async_requests=bool(data.get('async_requests_mode', True)),
+        async_requests=bool(data.get('async_requests_mode', True)), legacy=True,
     )
 
 
@@ -125,7 +129,7 @@ def _from_tm1_connection_settings(data):
     return Connection(
         address=data['ServerAddress'], port=str(data['PortNumber']), user=data.get('UserName', ''),
         ssl=data.get('UseSSL') == 'T', namespace=data.get('CAMNamespaceID') or '', verify=False,
-        async_requests=data.get('UseAsync', 'F') == 'T',
+        async_requests=data.get('UseAsync', 'F') == 'T', legacy=True,
     )
 
 

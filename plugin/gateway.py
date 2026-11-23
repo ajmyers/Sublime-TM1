@@ -78,9 +78,12 @@ def for_window(window, quiet=False):
 
 
 def _resolve(connection):
-    """The method from TM1 and Cognos; what 0.2.x did when they can't be asked."""
+    """The method from TM1 and Cognos; what 0.2.x did for a project from 0.2.x, or when they can't
+    be asked."""
     from ..core.discovery import DiscoveryError, Method, resolve_method
 
+    if connection.legacy and not connection.auth:
+        return Method(default_method(connection), connection.dispatcher)
     try:
         return resolve_method(connection)
     except (DiscoveryError, OSError, ValueError) as e:
@@ -91,6 +94,26 @@ def _resolve(connection):
         print('TM1: couldn\'t work out how to log in to {} ({}); logging in as 0.2.x did'.format(
             connection.base_url, e))
         return Method(default_method(connection), connection.dispatcher)
+
+
+def _find(error, kind):
+    """The error, or one it was raised from, of the given kind."""
+    seen = set()
+    while error is not None and id(error) not in seen:
+        if isinstance(error, kind):
+            return error
+        seen.add(id(error))
+        error = error.__cause__ or error.__context__
+    return None
+
+
+def _save_auth(window, auth):
+    """Remembers the method in the project's "tm1" settings, so the browser isn't tried again."""
+    project = window.project_data() or {}
+    settings = project.setdefault('settings', {})
+    if isinstance(settings.get('tm1'), dict):
+        settings['tm1']['auth'] = auth
+        window.set_project_data(project)
 
 
 def describe_error(connection, error):
@@ -144,24 +167,65 @@ class Gateway:
         self._on_ui(lambda: self._run(window, work, on_done, on_error, retry))
 
     def _work(self, window, work, password, on_done, on_error, retry):
-        from skipcheck_tm1.errors import Tm1AuthenticationError, Tm1ErrorKind
-
         try:
             result = work(self._client_for(password, window))
-        except Tm1AuthenticationError as e:
-            if e.kind == Tm1ErrorKind.CREDENTIAL_REJECTED:
-                credentials.forget(self.key)
-                browser_sign_in.forget(self.key)
-                self._drop_client()
-                if retry:
-                    self._on_ui(lambda: self._run(window, work, on_done, on_error, retry=False))
-                    return
-            self._fail(e, on_error)
         except Exception as e:
-            self._fail(e, on_error)
+            self._failed(e, window, work, on_done, on_error, retry)
+            return
+        if on_done is not None:
+            self._on_ui(lambda: on_done(result))
+
+    def _failed(self, error, window, work, on_done, on_error, retry):
+        from skipcheck_tm1.errors import Tm1AuthenticationError, Tm1ErrorKind
+
+        from ..core.browser import BrowserError, SignInCancelled
+
+        browser_error = _find(error, BrowserError)
+        if isinstance(browser_error, SignInCancelled):
+            self._drop_client()
+            self._on_ui(lambda: window.status_message('TM1: sign-in cancelled'))
+        elif browser_error is not None:
+            self._drop_client()
+            self._on_ui(lambda: self._browser_failed(window, browser_error, work, on_done, on_error))
+        elif isinstance(error, Tm1AuthenticationError) and error.kind == Tm1ErrorKind.CREDENTIAL_REJECTED:
+            # A wrong password, or a passport TM1 no longer takes: forgotten, and asked once more
+            credentials.forget(self.key)
+            browser_sign_in.forget(self.key)
+            self._drop_client()
+            if retry:
+                self._on_ui(lambda: self._run(window, work, on_done, on_error, retry=False))
+            else:
+                self._fail(error, on_error)
         else:
-            if on_done is not None:
-                self._on_ui(lambda: on_done(result))
+            self._fail(error, on_error)
+
+    def _browser_failed(self, window, error, work, on_done, on_error):
+        """The browser sign-in didn't work: say why, and offer the other ways in."""
+        from ..core.discovery import Method
+
+        choices = [
+            ('Sign in with a user and password', 'For a namespace Cognos also lets log on with a password'),
+            ('Paste a CAM passport', 'From a browser where you are signed in to Cognos: its cam_passport cookie'),
+            ('Try the browser again', str(error)),
+            ('Cancel', ''),
+        ]
+
+        def chosen(index):
+            if index == 0:
+                self.method = Method('cam', self.method.dispatcher if self.method else '')
+                _save_auth(window, 'cam')
+                self._run(window, work, on_done, on_error, retry=True)
+            elif index == 1:
+                def pasted(value):
+                    browser_sign_in._passports[self.key] = value.strip()
+                    self._run(window, work, on_done, on_error, retry=False)
+                credentials.ask_secret(window, 'CAM passport:', pasted)
+            elif index == 2:
+                browser_sign_in.forget(self.key)
+                self._run(window, work, on_done, on_error, retry=True)
+
+        items = [sublime.QuickPanelItem(trigger, details=details) for trigger, details in choices]
+        window.show_quick_panel(items, chosen, placeholder='TM1 browser sign-in failed: ' + str(error))
 
     def _fail(self, error, on_error):
         trace = traceback.format_exc()

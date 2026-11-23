@@ -1,6 +1,7 @@
 """core.connection: the project's connection settings, and their migration from earlier versions."""
 
 import base64
+import dataclasses
 
 import pytest
 
@@ -37,9 +38,9 @@ def test_reads_the_current_settings():
 def test_reads_the_settings_earlier_versions_wrote():
     assert from_project_settings(TM1_CONNECTION) == Connection(
         address='tm1.example.com', port='8010', user='admin', ssl=True, namespace='LDAP', verify=False,
-        async_requests=False)
+        async_requests=False, legacy=True)
     assert from_project_settings(TM1_CONNECTION_SETTINGS) == Connection(
-        address='tm1', port='5001', user='admin', ssl=False, verify=False, async_requests=True)
+        address='tm1', port='5001', user='admin', ssl=False, verify=False, async_requests=True, legacy=True)
 
 
 def test_projects_from_0_2_keep_their_certificates_unchecked_and_new_ones_check():
@@ -59,8 +60,9 @@ def test_saving_the_connection_keeps_the_earlier_packages_settings():
     settings = with_connection(TM1_CONNECTION, from_project_settings(TM1_CONNECTION))
     assert settings['tm1_connection'] == TM1_CONNECTION['tm1_connection']
     assert settings['format_process_on_update'] is True
-    assert 'password' not in settings['tm1']
-    assert from_project_settings(settings) == from_project_settings(TM1_CONNECTION)
+    assert 'password' not in settings['tm1'] and 'legacy' not in settings['tm1']
+    # Saved under "tm1", it's the same connection, now worked out like any other
+    assert from_project_settings(settings) == dataclasses.replace(from_project_settings(TM1_CONNECTION), legacy=False)
 
 
 def test_finds_and_removes_the_passwords_the_earlier_package_stored():

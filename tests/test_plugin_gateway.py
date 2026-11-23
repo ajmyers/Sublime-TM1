@@ -257,3 +257,86 @@ def test_when_cognos_cant_be_asked_it_logs_in_as_0_2_did(monkeypatch, capsys):
     assert gateway._resolve(CAM) == Method('cam', '')
     assert gateway._resolve(CONNECTION) == Method('basic', '')
     assert 'logging in as 0.2.x did' in capsys.readouterr().out
+
+
+# When the browser can't be used
+
+def failing_browser(error):
+    h = Harness(method=Method('browser', 'http://cognos:9300/bi/v1/disp'), connection=CAM_PROJECT)
+
+    def passports(key, dispatcher, namespace, on_window=None):
+        def passport():
+            if key in browser_sign_in._passports:
+                return browser_sign_in._passports[key]
+            raise RuntimeError('the authenticator failed') from error
+        return passport
+
+    h.gateway._passport_source = passports
+    return h
+
+
+CAM_PROJECT = Connection(address='tm1', port='8010', user='alice', namespace='OIDC')
+
+
+def run(h, work=lambda client: client.passport() if client.method == 'browser' else client.password):
+    done = []
+    h.gateway.run(h.window, work, done.append)
+    h.run_ui()
+    h.run_ui()
+    return done
+
+
+def test_a_project_from_0_2_logs_in_as_0_2_did_without_asking_tm1_or_cognos(monkeypatch):
+    from tm1pkg.core import discovery
+
+    monkeypatch.setattr(discovery, 'resolve_method', lambda c, client=None: pytest.fail('probed'))
+    legacy = Connection(address='tm1', port='8010', user='alice', namespace='OIDC', legacy=True)
+    assert gateway._resolve(legacy) == Method('cam', '')
+
+
+def test_a_browser_that_fails_offers_the_other_ways_in_and_says_why():
+    from tm1pkg.core.browser import DebuggingBlocked
+
+    h = failing_browser(DebuggingBlocked('blocked by policy'))
+    assert run(h) == []
+    menu = h.window.quick_panels[0]
+    assert [i.trigger for i in menu['items']] == ['Sign in with a user and password', 'Paste a CAM passport',
+                                                   'Try the browser again', 'Cancel']
+    assert 'blocked by policy' in menu['placeholder']
+    assert sublime.dialogs == []
+
+
+def test_choosing_a_password_saves_it_as_the_projects_method_and_asks_for_it():
+    from tm1pkg.core.browser import BrowserError
+
+    h = failing_browser(BrowserError('no browser'))
+    h.window.project = {'settings': {'tm1': {'address': 'tm1', 'port': '8010', 'namespace': 'OIDC'}}}
+    run(h)
+    h.window.quick_panels[0]['on_select'](0)
+    assert h.window.project['settings']['tm1']['auth'] == 'cam'
+    h.answer('secret')
+    h.run_ui()
+    assert h.clients[-1].method == 'cam' and h.clients[-1].password == 'secret'
+
+
+def test_a_pasted_passport_is_used():
+    from tm1pkg.core.browser import BrowserError
+
+    h = failing_browser(BrowserError('no browser'))
+    run(h)
+    h.window.quick_panels[0]['on_select'](1)
+    # The pasted passport goes into the store the browser fills, and the work runs with it
+    h.window.panels[-1].type('MTsxMDE6pasted')
+    h.window.panels[-1].submit()
+    h.run_ui()
+    assert browser_sign_in._passports[PROJECT] == 'MTsxMDE6pasted'
+    assert h.clients[-1].passport() == 'MTsxMDE6pasted'
+
+
+def test_closing_the_window_is_a_quiet_cancel():
+    from tm1pkg.core.browser import SignInCancelled
+
+    h = failing_browser(SignInCancelled('closed'))
+    run(h)
+    assert h.window.quick_panels == [] and sublime.dialogs == []
+    assert h.window.statuses[-1] == 'TM1: sign-in cancelled'
