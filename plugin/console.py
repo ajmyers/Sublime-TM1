@@ -60,7 +60,10 @@ class Poller:
 
     def tick(self):
         if self.stopped or not showing(self.window, self.name):
-            _running.pop((self.window.id(), self.name), None)
+            key = (self.window.id(), self.name)
+            # Only its own entry: a poller replaced by a newer one mustn't unregister that one
+            if _running.get(key) is self:
+                del _running[key]
             return
         if not self.busy:
             tm1 = gateway.for_window(self.window, quiet=True)

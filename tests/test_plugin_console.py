@@ -121,3 +121,24 @@ def test_the_tail_starts_with_the_latest_lines_then_asks_only_for_newer_ones(tim
     assert asked[0] == {'orderby': 'TimeStamp desc', 'top': console.FIRST_LOG_LINES}
     assert asked[1]['filter'] == 'TimeStamp gt 2026-11-23T21:00:00Z'
     assert [t['append'] for t in window.panel_views[console.SERVER_LOG].texts] == [True, True]
+
+
+def test_a_replaced_poller_doesnt_unregister_its_replacement(timers, monkeypatch):
+    # Show Console run again (a refresh, or Kill Thread's) while the first poller still has a tick
+    # pending: that tick must not unregister the second, or a third would leave the second polling
+    gw = Gateway(SimpleNamespace(threads=SimpleNamespace(list=lambda: [])))
+    monkeypatch.setattr(gateway, 'for_window', lambda w, quiet=False: gw)
+    window = Window()
+    console.DisplayTm1OpsConsole(window).run()   # poller A, with a tick pending
+    console.DisplayTm1OpsConsole(window).run()   # poller B replaces A
+    first_tick_of_a = timers.pop(0)
+    first_tick_of_a()                            # A notices it was replaced
+    console.DisplayTm1OpsConsole(window).run()   # poller C replaces B
+    c = console._running[(1, console.CONSOLE)]
+    calls = gw.calls
+    pending, timers[:] = timers[:], []
+    for tick in pending:                         # one round: B's tick and C's
+        tick()
+    # Only C still polls: B was stopped, so one request this round, not two
+    assert gw.calls - calls == 1
+    assert console._running[(1, console.CONSOLE)] is c
