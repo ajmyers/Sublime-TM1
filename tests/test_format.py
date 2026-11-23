@@ -1,10 +1,6 @@
 """The Turbo Integrator formatter (format on save, and TM1: Format)."""
 
-import pytest
-
 from pelle.Format import format_procedure
-
-FIRST_WORD_BUG = pytest.mark.xfail(strict=True, reason='#26: a word at the start of the text is not matched')
 
 
 def test_upper_cases_functions_and_spaces_operators():
@@ -34,10 +30,14 @@ def test_corrects_the_case_of_ti_variables():
     assert format_procedure('nX=datasourcetype;') == 'nX = DatasourceType;'
 
 
-@FIRST_WORD_BUG
 def test_formats_the_first_word_of_a_procedure():
     assert format_procedure('if(nX>0);\nnX=0;\nendif;') == 'IF(nX > 0);\n   nX = 0;\nENDIF;'
     assert format_procedure('datasourcetype=1;') == 'DatasourceType = 1;'
+    assert format_procedure("executeprocess('Archive');") == "EXECUTEPROCESS('Archive');"
+
+
+def test_formats_the_last_word_of_a_procedure():
+    assert format_procedure('nX=1;\nprocessquit') == 'nX = 1;\nPROCESSQUIT'
 
 
 def test_splits_long_executeprocess_calls():
