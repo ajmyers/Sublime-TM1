@@ -9,6 +9,7 @@
   for once more.
 """
 
+import dataclasses
 import threading
 import traceback
 from concurrent.futures import ThreadPoolExecutor
@@ -108,12 +109,15 @@ def _find(error, kind):
 
 
 def _save_auth(window, auth):
-    """Remembers the method in the project's "tm1" settings, so the browser isn't tried again."""
+    """Remembers the method in the project's "tm1" settings, so the browser isn't tried again.
+    Whether it did: a project with only 0.2.x's settings isn't given new ones."""
     project = window.project_data() or {}
     settings = project.setdefault('settings', {})
     if isinstance(settings.get('tm1'), dict):
         settings['tm1']['auth'] = auth
         window.set_project_data(project)
+        return True
+    return False
 
 
 def describe_error(connection, error):
@@ -213,7 +217,10 @@ class Gateway:
         def chosen(index):
             if index == 0:
                 self.method = Method('cam', self.method.dispatcher if self.method else '')
-                _save_auth(window, 'cam')
+                if _save_auth(window, 'cam'):
+                    # Matching the project's settings again, so the next command keeps this gateway,
+                    # and the password and session that come with it
+                    self.connection = dataclasses.replace(self.connection, auth='cam')
                 self._run(window, work, on_done, on_error, retry=True)
             elif index == 1:
                 def pasted(value):

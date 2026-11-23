@@ -340,3 +340,21 @@ def test_closing_the_window_is_a_quiet_cancel():
     run(h)
     assert h.window.quick_panels == [] and sublime.dialogs == []
     assert h.window.statuses[-1] == 'TM1: sign-in cancelled'
+
+
+def test_after_choosing_a_password_the_next_command_keeps_the_gateway_and_password(monkeypatch):
+    from tm1pkg.core.browser import BrowserError
+
+    h = failing_browser(BrowserError('no browser'))
+    settings = {'tm1': {'address': 'tm1', 'port': '8010', 'user': 'alice', 'namespace': 'OIDC'}}
+    h.window.project = {'settings': settings}
+    h.window._project_file = PROJECT
+    monkeypatch.setitem(gateway._gateways, PROJECT, h.gateway)
+    run(h)
+    h.window.quick_panels[0]['on_select'](0)
+    h.answer('secret')
+    h.run_ui()
+    assert gateway.for_window(h.window) is h.gateway
+    run(h)
+    assert len(h.window.panels) == 1  # asked once, not again
+    gateway._gateways.pop(PROJECT, None)
