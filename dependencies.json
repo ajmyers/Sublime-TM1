@@ -1,0 +1,19 @@
+{
+	"$schema": "sublime://packagecontrol.io/schemas/dependencies",
+	"*": {
+		">=4213": [
+			"annotated-types",
+			"anyio",
+			"h11",
+			"httpcore",
+			"httpx",
+			"idna",
+			"pydantic",
+			"pydantic-core",
+			"pyyaml",
+			"skipcheck-tm1",
+			"typing-extensions",
+			"typing-inspection"
+		]
+	}
+}
