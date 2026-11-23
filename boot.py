@@ -13,6 +13,10 @@ for path in ['wcwidth', 'prettytable/src/prettytable', 'TM1py', 'mdxpy', 'urllib
              'charset_normalizer', 'idna', 'ijson', 'pytz/src', 'pyyaml/lib']:
     sys.path.insert(0, os.path.join(base_path, 'include', *path.split('/')))
 
+from .plugin.python_host import work_around_missing_sysconfigdata
+
+work_around_missing_sysconfigdata()
+
 from .commands.ClearTurboIntegratorLogs import ClearTurboIntegratorLogs
 from .commands.CreateNewTm1Project import CreateNewTm1Project
 from .commands.DisplayTm1OpsConsoleCommand import DisplayTm1OpsConsole, KillTm1ThreadCommand
