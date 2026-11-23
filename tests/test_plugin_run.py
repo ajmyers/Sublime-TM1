@@ -15,7 +15,12 @@ class FakeGateway:
         self.connection = SimpleNamespace(async_requests=True)
 
     def run(self, window, work, on_done=None, on_error=None):
-        on_done(work(self.client))
+        try:
+            result = work(self.client)
+        except Exception as e:
+            on_error(e)
+        else:
+            on_done(result)
 
 
 def parameter(name, value, kind, prompt=''):
@@ -93,3 +98,21 @@ def test_clearing_the_logs_takes_the_folder_out_of_the_project(world):
     window.project['folders'].append({'name': 'Model', 'path': str(logs.parent)})
     run.ClearTurboIntegratorLogs(window).run()
     assert [f['name'] for f in window.project['folders']] == ['Model']
+
+
+@pytest.mark.parametrize('error, said', [
+    ('TM1 returned 500: TM1UserException: Cancel [code 174] (POST .../ExecuteWithReturn)', 'Process was cancelled.'),
+    ('TM1 returned 500: something else broke', 'Process failed: TM1 returned 500: something else broke'),
+])
+def test_a_cancelled_or_failed_run_is_reported_in_its_panel(world, monkeypatch, error, said):
+    window, _, logs = world
+
+    def execute(name, parameters, async_requests=True):
+        def work(c):
+            raise RuntimeError(error)
+        return work
+
+    monkeypatch.setattr(run, 'execute', execute)
+    run.RunTurboIntegratorProcess(window).run(process='Load Sales', confirm='Yes')
+    assert said in window.outputs[run.PANEL].text
+    assert said in (next(logs.iterdir()) / '_run.txt').read_text()

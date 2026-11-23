@@ -149,7 +149,17 @@ class RunTurboIntegratorProcess(sublime_plugin.WindowCommand):
                 _write(folder, file_name, content)
             self.window.status_message('TM1: {} {}'.format(name, status))
 
-        tm1.run(self.window, work, done)
+        def failed(error):
+            # Cancelled from the console (Kill Thread), TM1 ends the run's request with this
+            if 'Cancel [code 174]' in str(error):
+                report = '\n\nProcess was cancelled.'
+            else:
+                report = '\n\nProcess failed: {}'.format(error)
+            append(self.window, report + '\n')
+            _write(folder, '_run.txt', text + report)
+            self.window.status_message('TM1: {} {}'.format(name, 'cancelled' if 'cancelled' in report else 'failed'))
+
+        tm1.run(self.window, work, done, failed)
 
 
 class ClearTurboIntegratorLogs(sublime_plugin.WindowCommand):
