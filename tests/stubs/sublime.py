@@ -24,6 +24,14 @@ def message_dialog(message):
     dialogs.append(message)
 
 
+_ok_cancel_answers = []
+
+
+def ok_cancel_dialog(message, ok_title=''):
+    dialogs.append(message)
+    return _ok_cancel_answers.pop(0) if _ok_cancel_answers else True
+
+
 def error_message(message):
     dialogs.append(message)
 

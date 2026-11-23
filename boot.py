@@ -17,8 +17,6 @@ from .plugin.python_host import work_around_missing_sysconfigdata
 
 work_around_missing_sysconfigdata()
 
-from .commands.CreateNewTm1Project import CreateNewTm1Project
-from .commands.UpdateTm1Project import UpdateTm1Project
 from .plugin import gateway
 from .plugin.completions import ProjectCompletions
 from .plugin.console import (
@@ -39,6 +37,7 @@ from .plugin.format import (
 from .plugin.get import GetObjectsFromServer
 from .plugin.put import PutObjectToServer
 from .plugin.run import ClearTurboIntegratorLogs, RunTurboIntegratorProcess
+from .plugin.setup import CreateNewTm1Project, Tm1SignOutCommand, UpdateTm1Project
 
 __all__ = [
     'ClearTurboIntegratorLogs',
@@ -56,6 +55,7 @@ __all__ = [
     'RunTurboIntegratorProcess',
     'Tm1DiagnosticsListener',
     'Tm1SetPanelTextCommand',
+    'Tm1SignOutCommand',
     'Tm1TailServerLogCommand',
     'Tm1ReplaceInputTextCommand',
     'UpdateTm1Project',
