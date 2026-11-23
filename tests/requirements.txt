@@ -1,0 +1,8 @@
+# What the tests need outside Sublime Text, on Python 3.14 (Sublime Text 4213+'s plugin host)
+pytest
+ruff
+pyyaml
+# The copied requests in include/ imports it; Sublime bundles its own. Goes with include/ (#22)
+certifi
+# The TM1 client, pinned to a commit of its repository until it has a final release on PyPI
+skipcheck-tm1 @ git+https://github.com/ajmyers/skipcheck-tm1@35c269642cddb72e51ec8c8264d18abbaee00bf4#subdirectory=python/tm1-client
