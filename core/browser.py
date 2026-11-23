@@ -20,6 +20,7 @@ import base64
 import json
 import os
 import posixpath
+import select
 import shutil
 import socket
 import struct
@@ -49,6 +50,17 @@ class SignInCancelled(BrowserError):
 
 class SignInTimedOut(BrowserError):
     """No passport came back in time."""
+
+
+class DebuggingBlocked(BrowserError):
+    """The browser started but never answered on its debugging connection: most often an
+    organisation's browser policy (RemoteDebuggingAllowed) turning it off."""
+
+
+# How long a browser has to answer its first command before it's taken not to be listening
+START_TIMEOUT = 15
+# How long any later command may take
+CALL_TIMEOUT = 30
 
 
 # Finding a browser
@@ -137,8 +149,11 @@ class _Pipe:
         except OSError as e:
             raise SignInCancelled('The browser closed.') from e
 
-    def receive(self):
+    def receive(self, timeout=CALL_TIMEOUT):
         while b'\0' not in self._buffer:
+            ready, _, _ = select.select([self._read], [], [], timeout)
+            if not ready:
+                raise TimeoutError('The browser did not answer in {} seconds.'.format(timeout))
             try:
                 chunk = os.read(self._read, 65536)
             except OSError as e:
@@ -203,9 +218,13 @@ class _WebSocket:
         except OSError as e:
             raise SignInCancelled('The browser closed.') from e
 
-    def receive(self):
+    def receive(self, timeout=CALL_TIMEOUT):
+        self._socket.settimeout(timeout)
         while True:
-            first, second = self._exactly(2)
+            try:
+                first, second = self._exactly(2)
+            except socket.timeout as e:
+                raise TimeoutError('The browser did not answer in {} seconds.'.format(timeout)) from e
             size = second & 0x7f
             if size == 126:
                 size = struct.unpack('!H', self._exactly(2))[0]
@@ -235,15 +254,32 @@ class Browser:
         if os.name == 'posix':
             os.chmod(profile, 0o700)
         transport = transport or ('port' if os.name == 'nt' else 'pipe')
+        self.host = urlsplit(url).hostname
         args = [executable, '--user-data-dir=' + profile] + COMMON_ARGS
-        args += ['--headless=new'] if hidden else ['--app=' + url, '--window-size=520,720']
+        # Both start on a blank page, so a passport left in the profile is gone before the sign-in
+        args += ['--headless=new', 'about:blank'] if hidden else ['--app=about:blank', '--window-size=520,720']
         if transport == 'pipe':
-            self._start_with_pipe(args + ['--remote-debugging-pipe'] + (['about:blank'] if hidden else []))
+            self._start_with_pipe(args + ['--remote-debugging-pipe'])
         else:
-            self._start_with_port(args + ['--remote-debugging-port=0'] + (['about:blank'] if hidden else []), profile)
+            self._start_with_port(args + ['--remote-debugging-port=0'], profile)
+        try:
+            self.call('Browser.getVersion', timeout=START_TIMEOUT)
+        except TimeoutError as e:
+            self.close()
+            raise DebuggingBlocked(
+                "The browser started but didn't let TM1 read the sign-in: its debugging connection is "
+                "probably turned off by your organisation's browser policy (RemoteDebuggingAllowed).") from e
         if hidden:
-            target = self.call('Target.createTarget', {'url': url})
-            self._target = target.get('targetId')
+            self._target = self.call('Target.createTarget', {'url': 'about:blank'}).get('targetId')
+        else:
+            pages = [t for t in self.call('Target.getTargets').get('targetInfos', []) if t.get('type') == 'page']
+            self._target = pages[0]['targetId'] if pages else self.call(
+                'Target.createTarget', {'url': 'about:blank'}).get('targetId')
+        self.forget_cookie('cam_passport')
+        session = self.call('Target.attachToTarget', {'targetId': self._target, 'flatten': True})['sessionId']
+        # Started from the page, which returns at once: Page.navigate waits for the first response,
+        # and a slow server would hold the sign-in up
+        self.call('Runtime.evaluate', {'expression': 'location.replace({})'.format(json.dumps(url))}, session)
 
     def _start_with_pipe(self, args):
         import fcntl
@@ -279,8 +315,10 @@ class Browser:
         if os.path.exists(port_file):
             os.remove(port_file)
         flags = getattr(subprocess, 'CREATE_NEW_PROCESS_GROUP', 0)
+        # Its own session on POSIX, so close() can end its helper processes with it
         self._process = subprocess.Popen(args, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
-                                         stderr=subprocess.DEVNULL, creationflags=flags)
+                                         stderr=subprocess.DEVNULL, creationflags=flags,
+                                         start_new_session=os.name == 'posix')
         self._pid = self._process.pid
         deadline = time.monotonic() + 30
         while time.monotonic() < deadline:
@@ -297,7 +335,7 @@ class Browser:
             time.sleep(0.1)
         raise BrowserError('The browser opened no debugging port.')
 
-    def call(self, method, params=None, session=None):
+    def call(self, method, params=None, session=None, timeout=CALL_TIMEOUT):
         """A DevTools protocol command: to the browser, or to one page's ``session``."""
         with self._lock:
             self._next_id += 1
@@ -307,7 +345,7 @@ class Browser:
                 message['sessionId'] = session
             self._channel.send(message)
             while True:
-                message = self._channel.receive()
+                message = self._channel.receive(timeout)
                 if message.get('id') == ident:
                     if 'error' in message:
                         raise BrowserError('{}: {}'.format(method, message['error'].get('message')))
@@ -321,6 +359,18 @@ class Browser:
                 return cookie.get('value')
         return None
 
+    def forget_cookie(self, name, host=None):
+        """Deletes the cookie from the profile, for the sign-in's host."""
+        host = host or self.host
+        stale = []
+        for cookie in self.call('Storage.getCookies').get('cookies', []):
+            domain = cookie.get('domain', '').lstrip('.')
+            if cookie.get('name') == name and (host == domain or host.endswith('.' + domain)):
+                stale.append({'name': name, 'value': '', 'domain': cookie['domain'], 'path': cookie.get('path', '/'),
+                              'expires': 1})
+        if stale:
+            self.call('Storage.setCookies', {'cookies': stale})
+
     def page_url(self):
         """The address of the page the sign-in is on."""
         target_id = getattr(self, '_target', None)
@@ -329,6 +379,22 @@ class Browser:
             if target.get('type') == 'page' and (target_id is None or target.get('targetId') == target_id):
                 return target.get('url', '')
         return ''
+
+    def _kill_tree(self):
+        if os.name == 'posix':
+            try:
+                os.killpg(self._pid, 9)
+            except (ProcessLookupError, PermissionError):
+                pass
+        else:
+            if self.running():
+                subprocess.run(['taskkill', '/T', '/F', '/PID', str(self._pid)], stdout=subprocess.DEVNULL,
+                               stderr=subprocess.DEVNULL, check=False)
+        if self._process is not None and self._process.poll() is None:
+            try:
+                self._process.kill()
+            except OSError:
+                pass
 
     def running(self):
         if self._process is not None:
@@ -348,14 +414,9 @@ class Browser:
         deadline = time.monotonic() + 5
         while self.running() and time.monotonic() < deadline:
             time.sleep(0.05)
-        if self.running():
-            try:
-                if self._process is not None:
-                    self._process.kill()
-                else:
-                    os.killpg(self._pid, 9)
-            except OSError:
-                pass
+        # Always end the whole group: the browser's helpers outlive a main process that crashed or
+        # was killed, and would keep the profile (and the pipe) open
+        self._kill_tree()
         if self._process is not None:
             self._process.wait(timeout=5)
         else:
@@ -382,6 +443,11 @@ def wait_for_cookie(browser, name, host, timeout, poll=0.5, give_up_when_user_ne
             raise SignInCancelled('The sign-in window was closed.')
         value = browser.cookie(name, host)
         if value:
+            # Not left in the profile for the next sign-in to mistake for a new one
+            try:
+                browser.forget_cookie(name, host)
+            except BrowserError:
+                pass
             return value
         if give_up_when_user_needed:
             url = browser.page_url()

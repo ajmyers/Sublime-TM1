@@ -52,6 +52,17 @@ def test_the_users_setting_wins():
 
 # Using one
 
+
+def processes_using(profile):
+    """The browser processes still running with this profile, where that can be asked."""
+    import subprocess
+
+    if os.name != 'posix':
+        return []
+    time.sleep(0.5)
+    listing = subprocess.run(['ps', '-axo', 'pid=,command='], capture_output=True, text=True).stdout
+    return [line for line in listing.splitlines() if str(profile) in line]
+
 EXECUTABLE = find_browser()
 needs_browser = pytest.mark.skipif(EXECUTABLE is None, reason='no Chromium-based browser installed')
 TRANSPORTS = ['port'] + (['pipe'] if os.name == 'posix' else [])
@@ -115,6 +126,7 @@ def test_reads_an_httponly_cookie_from_a_hidden_window_and_closes_the_browser(se
         browser_init.undo()
     assert value == 'MTsxMDE6passport'
     assert len(seen) == 1 and not seen[0].running()
+    assert not processes_using(tmp_path / 'profile')
 
 
 @needs_browser
@@ -135,12 +147,14 @@ def test_a_window_closed_before_signing_in_is_a_cancel(tmp_path, transport):
     slow = LoginServer(delay=30)
     b = Browser(EXECUTABLE, str(tmp_path / 'profile'), slow.url, hidden=True, transport=transport)
     try:
+        # Only the main process, as a crash would: its helpers must not outlive close()
         threading.Timer(1.0, lambda: os.kill(b._pid, 9)).start()
         with pytest.raises(SignInCancelled):
             browser.wait_for_cookie(b, 'cam_passport', '127.0.0.1', 20)
     finally:
         b.close()
         slow.stop()
+    assert not processes_using(tmp_path / 'profile')
 
 
 @needs_browser
