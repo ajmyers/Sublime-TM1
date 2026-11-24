@@ -1,0 +1,47 @@
+{
+	"$schema": "https://skipcheck.io/schemas/project.json",
+	"id": "sublime-tm1",
+	"name": "Sublime-TM1",
+	"summary": "A Sublime Text add-in for TM1 developers: edit rules and TurboIntegrator processes against a live server, with auto-complete, syntax checking, auto-formatting and a thread viewer.",
+	"description": "A TurboIntegrator process and rules editor for IBM Planning Analytics (TM1), built on Sublime Text: get and update rules and processes on a live server through the REST API, with auto-complete for every function, syntax checking from the server, auto-formatting, and a viewer for the server's threads.",
+	"kind": "tool",
+	"status": "available",
+	"version": null,
+	"release": false,
+	"order": 60,
+	"sites": [
+		"skipcheck.io",
+		"ajmyers.net"
+	],
+	"links": [
+		{
+			"label": "Install from Package Control",
+			"href": "https://packagecontrol.io/packages/TM1%20Planning%20Analytics%20Developer%20Tools"
+		},
+		{
+			"label": "Source",
+			"href": "https://github.com/ajmyers/Sublime-TM1"
+		}
+	],
+	"visual": {
+		"kind": "editor",
+		"title": "create_Y2Ksales_cube.pro — Prolog",
+		"lang": "ti",
+		"firstLine": 12,
+		"code": "vCube = 'Y2Ksales';\nIF( CubeExists( vCube ) = 0 );\n  CubeCreate( vCube, 'Region', 'Month' );\nENDIF;\nCellPu",
+		"completions": [
+			{
+				"name": "CellPutN",
+				"detail": "( Value, Cube, e1, e2 … )"
+			},
+			{
+				"name": "CellPutS",
+				"detail": "( String, Cube, e1, e2 … )"
+			},
+			{
+				"name": "CellPutProportionalSpread",
+				"detail": "( … )"
+			}
+		]
+	}
+}

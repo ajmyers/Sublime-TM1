@@ -1,0 +1,73 @@
+# Publishes this package's entry to the project store, which skipcheck.io and ajmyers.net draw the
+# projects' cards from (see ajmyers/skipcheck.io's README, "The project store"). The entry is
+# .github/project-entry.json; its version and release come from the release being published.
+#
+#   Pull request:       checks the entry with the store's own rules, publishes nothing.
+#   Release published:  publishes the entry with that release's version (Package Control installs
+#                       the release's tag).
+#   Manual run:         publishes the entry with the latest release's version: for an entry
+#                       changed between releases.
+#
+# The store's rules and publish script are skipcheck.io's, downloaded from it.
+#
+# Repo secrets needed to publish:
+#   CLOUDFLARE_PROJECTS_TOKEN  - Workers KV read and write: the project store
+# Repo variables:
+#   CLOUDFLARE_ACCOUNT_ID      - the Cloudflare account
+name: Project entry
+
+on:
+  pull_request:
+    paths:
+      - .github/project-entry.json
+      - .github/workflows/project.yml
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  entry:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Fill in the version
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          tag="${RELEASE_TAG:-$(gh release view --repo "$GITHUB_REPOSITORY" --json tagName --jq .tagName)}"
+          version="${tag#v}"
+          # A release is a final version, such as 1.2.3
+          if echo "$version" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then release=true; else release=false; fi
+          mkdir -p "$RUNNER_TEMP/project-store"
+          jq --arg version "$version" --argjson release "$release" '.version = $version | .release = $release' \
+            .github/project-entry.json > "$RUNNER_TEMP/project-store/entry.json"
+          echo "Version $version (release: $release)"
+
+      - name: Get the store's tools
+        working-directory: ${{ runner.temp }}/project-store
+        run: |
+          for tool in publish-project.mjs project-entry.mjs; do
+            curl -fsSL --retry 3 -o "$tool" "https://skipcheck.io/tools/$tool"
+          done
+
+      - name: Check the entry
+        if: ${{ github.event_name == 'pull_request' }}
+        working-directory: ${{ runner.temp }}/project-store
+        run: node publish-project.mjs --check entry.json
+
+      - name: Publish the entry
+        if: ${{ github.event_name != 'pull_request' }}
+        working-directory: ${{ runner.temp }}/project-store
+        env:
+          CLOUDFLARE_PROJECTS_TOKEN: ${{ secrets.CLOUDFLARE_PROJECTS_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: node publish-project.mjs entry.json
