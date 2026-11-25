@@ -2,5 +2,6 @@
 pytest
 ruff
 pyyaml
-# The TM1 client, pinned to a commit of its repository until it has a final release on PyPI
-skipcheck-tm1 @ git+https://github.com/ajmyers/skipcheck-tm1@60cbbabc2c4b48e173af6fcb8a4334ceea6e0fce#subdirectory=python/tm1-client
+# The TM1 client, on its 0.3 line: patch releases (0.3.x) keep the API, so they're taken; 0.4 may
+# change it, so moving to it is a deliberate bump here
+skipcheck-tm1~=0.3.0

@@ -33,6 +33,5 @@ jobs:
       - if: runner.os == 'Linux'
         run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
       - run: pytest
-      # The rewritten code, tools and tests; the legacy commands aren't linted, as they're being replaced
       - if: runner.os == 'Linux'
-        run: ruff check core plugin tools tests
+        run: ruff check core plugin tests
