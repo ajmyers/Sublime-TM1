@@ -34,7 +34,12 @@ def world(tmp_path, monkeypatch):
                                                               parameter('pScale', 1000, 'Numeric')])
     client = SimpleNamespace(processes=SimpleNamespace(list=lambda **o: [SimpleNamespace(name=n) for n in
                                                                           ['Archive', 'Load Sales', 'Sales.Caller']],
-                                                       get=lambda name, **o: process))
+                                                       get=lambda name, **o: get(name, **o)))
+
+    def get(name, **options):
+        # Parameters is a complex collection: TM1 refuses it in $expand (#46)
+        assert options == {'select': 'Name,Parameters'}
+        return process
     monkeypatch.setattr(gateway, 'for_window', lambda w, quiet=False: FakeGateway(client))
 
     def execute(name, parameters, async_requests=True):

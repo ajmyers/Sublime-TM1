@@ -90,7 +90,7 @@ class RunTurboIntegratorProcess(sublime_plugin.WindowCommand):
 
         def chosen(index):
             if index >= 0:
-                tm1.run(self.window, lambda c: c.processes.get(names[index], select='Name', expand='Parameters'),
+                tm1.run(self.window, lambda c: c.processes.get(names[index], select='Name,Parameters'),
                         lambda process: self.ask(tm1, process, list(process.parameters or []), {}))
 
         self.window.show_quick_panel(names, chosen, selected_index=selected, placeholder='Process to run')
