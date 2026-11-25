@@ -30,9 +30,9 @@ class Processes:
         return SimpleNamespace(name=name)
 
     def create(self, process):
-        self.calls.append(('create', process.name))
+        self.calls.append(('create', process.json()['Name']))
 
-    def update(self, name, process):
+    def update(self, name, patch):
         self.calls.append(('update', name))
 
     def compile(self, name):
@@ -43,8 +43,8 @@ class Cubes:
     def __init__(self, errors=()):
         self.errors, self.calls = list(errors), []
 
-    def update(self, name, cube):
-        self.calls.append(('update', name, cube.rules))
+    def update(self, name, patch):
+        self.calls.append(('update', name, patch.json()))
 
     def check_rules(self, name):
         return self.errors
@@ -90,7 +90,7 @@ def test_puts_rules_and_shows_their_errors(monkeypatch):
     cubes = Cubes(errors=[RuleSyntaxError(line_number=text.split('\n').index('broken') + 1, message='bad')])
     view = FakeView(text, '/p/rules/Sales.rux')
     put_in(view, SimpleNamespace(cubes=cubes), monkeypatch)
-    assert cubes.calls == [('update', 'Sales', rule_file.text_to_rules(text))]
+    assert cubes.calls == [('update', 'Sales', {'Rules': rule_file.text_to_rules(text)})]
     assert view.region_text(diagnostics.KEY) == ['broken']
 
 

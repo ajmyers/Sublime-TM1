@@ -20,6 +20,21 @@ def test_a_process_with_an_error_is_put_and_the_error_is_on_its_line(tm1):
         tm1.processes.delete(NAME)
 
 
+def test_parameters_keep_their_type_and_value_through_a_put(tm1):
+    """The typed writes don't send a parameter's type: TM1 takes it from the value."""
+    import core_samples
+
+    text = process_file.process_to_text(core_samples.parameters_and_variables())
+    try:
+        for _ in ('create', 'update'):
+            assert put.put_process(NAME, text)(tm1) == []
+            parameters = {p.name: (p.type.value, p.value) for p in
+                          tm1.processes.get(NAME, select='Name,Parameters').parameters}
+            assert parameters == {'pYear': ('String', '2024'), 'pScale': ('Numeric', 1000)}
+    finally:
+        tm1.processes.delete(NAME)
+
+
 def test_rules_with_an_error_are_checked_and_the_error_is_on_its_line(tm1):
     cube = next(c for c in tm1.cubes.list(select='Name,Rules', expand='Dimensions($select=Name)') if c.rules)
     original = cube.rules
@@ -29,6 +44,6 @@ def test_rules_with_an_error_are_checked_and_the_error_is_on_its_line(tm1):
         errors = put.put_rules(cube.name, broken)(tm1)
         assert errors and 'undefined_function_xyz' in broken.split('\n')[errors[0][0]]
     finally:
-        from skipcheck_tm1.model import Cube
-        tm1.cubes.update(cube.name, Cube(rules=original))
+        from skipcheck_tm1.model import CubePatch
+        tm1.cubes.update(cube.name, CubePatch.builder().rules(original).build())
     assert put.put_rules(cube.name, text)(tm1) == []
