@@ -12,14 +12,16 @@ from . import diagnostics, gateway
 def put_process(name, text):
     def work(client):
         from skipcheck_tm1.errors import Tm1NotFoundError
+        from skipcheck_tm1.model import ProcessCreate, ProcessPatch
 
+        # The file reads as a Process; the writes send only what TM1 applies in a create or a patch
         process = process_file.text_to_process(text, name)
         try:
             client.processes.get(name, select='Name')
         except Tm1NotFoundError:
-            client.processes.create(process)
+            client.processes.create(ProcessCreate.builder(process).build())
         else:
-            client.processes.update(name, process)
+            client.processes.update(name, ProcessPatch.builder(process).build())
         return [(process_file.error_line(text, error.procedure.value, error.line_number), error.message)
                 for error in client.processes.compile(name)]
     return work
@@ -27,9 +29,9 @@ def put_process(name, text):
 
 def put_rules(name, text):
     def work(client):
-        from skipcheck_tm1.model import Cube
+        from skipcheck_tm1.model import CubePatch
 
-        client.cubes.update(name, Cube(rules=rule_file.text_to_rules(text)))
+        client.cubes.update(name, CubePatch.builder().rules(rule_file.text_to_rules(text)).build())
         return [(rule_file.error_line(text, error.line_number), error.message)
                 for error in client.cubes.check_rules(name)]
     return work

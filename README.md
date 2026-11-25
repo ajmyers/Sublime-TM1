@@ -202,8 +202,8 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 ### Development
 
 - Symlink the repository into Sublime's `Packages` folder as `TM1 Planning Analytics Developer Tools`, so changes reload as you save.
-- The libraries come from Package Control. Until skipcheck-tm1 has a release in its default channel, `python3 tools/local_channel.py <folder>` builds a local channel with it: add the repository it prints to Package Control's `"repositories"`, and run 'Package Control: Satisfy Libraries'.
-- Tests run outside Sublime, on Python 3.14: `pip install -r tests/requirements.txt`, then `pytest` and `ruff check core plugin tools tests`. `core/` is the code that doesn't need Sublime; `plugin/` is the Sublime side.
+- The libraries come from Package Control's default channel, skipcheck-tm1 among them: run 'Package Control: Satisfy Libraries' after symlinking.
+- Tests run outside Sublime, on Python 3.14: `pip install -r tests/requirements.txt`, then `pytest` and `ruff check core plugin tests`. `core/` is the code that doesn't need Sublime; `plugin/` is the Sublime side.
 - The tests in `tests/live` run against a real TM1 when `TM1_URL` (with `TM1_USER`, `TM1_PASSWORD`) is set, and the CAM and browser ones with `TM1_CAM_URL`, `CAM_NAMESPACE`, `CAM_USER`, `CAM_PASSWORD` and `COGNOS_URL`. [skipcheck-tm1's `pa-setup`](https://github.com/ajmyers/skipcheck-tm1/tree/master/docker/pa-setup) starts TM1 with IBM's SData sample, Cognos and Keycloak locally, from your own licensed IBM downloads.
 - `.github/project-entry.json` is this package's card on [skipcheck.io](https://skipcheck.io) and [ajmyers.net](https://ajmyers.net): its summary, links and the editor shown beside it. Publishing a release publishes it, with the release's version (`.github/workflows/project.yml`); to change the card between releases, run that workflow by hand.
 
