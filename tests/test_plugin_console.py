@@ -142,3 +142,34 @@ def test_a_replaced_poller_doesnt_unregister_its_replacement(timers, monkeypatch
     # Only C still polls: B was stopped, so one request this round, not two
     assert gw.calls - calls == 1
     assert console._running[(1, console.CONSOLE)] is c
+
+
+
+class PasswordGateway(Gateway):
+    """A gateway whose first run asks for the password, which shows the input panel in place of
+    the console's (Sublime shows one panel at a time); the work runs once it's typed."""
+
+    def __init__(self, client, window):
+        super().__init__(client, defer=True)
+        self.window = window
+
+    def run(self, window, work, on_done=None, on_error=None):
+        if self.calls == 0:
+            self.window.active = 'input'
+        super().run(window, work, on_done, on_error)
+
+
+def test_after_the_password_prompt_the_console_shows_and_keeps_polling(timers, monkeypatch):
+    window = Window()
+    gw = PasswordGateway(SimpleNamespace(threads=SimpleNamespace(list=lambda: [thread(5)])), window)
+    monkeypatch.setattr(gateway, 'for_window', lambda w, quiet=False: gw)
+    console.DisplayTm1OpsConsole(window).run()
+    timers.pop(0)()                    # a tick while the password is being typed
+    window.active = None               # typed: the input panel closes
+    gw.pending.pop(0)()                # TM1 answers
+    assert window.active == 'output.' + console.CONSOLE
+    timers.pop(0)()
+    assert gw.calls == 2               # still polling
+    window.active = None               # now the user closes it
+    timers.pop(0)()
+    assert timers == [] and gw.calls == 2
