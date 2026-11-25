@@ -39,7 +39,7 @@ Easily view the current state of your TM1 server. See all the currently running 
 
 ### Signing In, However Your TM1 Is Secured
 
-TM1's own security, CAM with a user and password, or CAM through single sign-on (OpenID Connect, SAML…) in a browser window. Pelle works out which from the server, and never stores your password.
+TM1's own security, CAM with a user and password, or CAM through single sign-on (OpenID Connect, SAML…) in a browser window. Pelle works out which from the server. Your password is never written to the project: it's kept in memory, or in your system's keychain if you choose.
 
 ## Installation
 
@@ -73,7 +73,8 @@ The project opens in a new window, with a Sidebar containing its .sublime-projec
 
 ### Signing in
 
-- **Your password is never stored.** Pelle asks for it the first time a project connects, and keeps it in memory until Sublime closes, TM1 refuses it, or you run 'TM1: Config - Sign Out'.
+- **Your password is never written to the project.** Pelle asks for it the first time a project connects, and keeps it in memory until Sublime closes, TM1 refuses it, or you run 'TM1: Config - Sign Out'.
+- Once TM1 accepts it, Pelle offers to remember it in your system's credential store: the Keychain on macOS, Credential Manager on Windows, the keyring (GNOME Keyring, KWallet, through `secret-tool`) on Linux. Then it's used without asking, until TM1 refuses it (it's removed, and asked again) or you sign out. The answer is kept in the project as `"remember_password"` under `"tm1"`; set it to `false` to be asked each session. If the store can't be reached, Pelle just asks for the password.
 - **Single sign-on:** for a Cognos namespace that signs in through a browser (OpenID Connect with Entra ID, Okta, Keycloak…, SAML), Pelle opens a small browser window on Cognos's own login page. Sign in as you would for Planning Analytics Workspace, and the window closes by itself. It uses a browser profile of its own, never yours, so your identity provider may remember you and later sign-ins can need no window at all.
 - If the browser can't be used (none installed, or your organisation's browser policy blocks it), Pelle says why and offers to sign in with a user and password instead, or to paste a CAM passport (the `cam_passport` cookie from a browser signed in to Cognos).
 - Settings, under `"tm1"` in the project's settings, for when the defaults don't fit:

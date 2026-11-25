@@ -215,11 +215,18 @@ class Tm1SignOutCommand(sublime_plugin.WindowCommand):
     def is_enabled(self):
         return bool(self.window.project_file_name())
 
+    def _connection(self):
+        try:
+            return connections.from_project_settings((self.window.project_data() or {}).get('settings'))
+        except connections.NotConfigured:
+            return None
+
     def run(self):
         key = self.window.project_file_name()
-        credentials.forget(key)
-        browser_sign_in.forget(key)
         stale = gateway._gateways.pop(key, None)
+        # The password goes from the credential store too, when the project remembers it
+        credentials.forget(key, stale.connection if stale is not None else self._connection())
+        browser_sign_in.forget(key)
         if stale is not None:
             stale.close()
         items = [sublime.QuickPanelItem('Done', details='The next connection asks again'),

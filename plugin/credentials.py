@@ -1,42 +1,126 @@
-"""Passwords, asked for when a project first connects and kept only in memory.
+"""Passwords, asked for when a project first connects and kept in memory, or, if the user chooses,
+in the operating system's credential store (core/keychain.py).
 
 0.2.x stored the password in the project file, obfuscated with a fixed key: as good as plain
 text, in a file that's often shared or committed. Now it's asked once per Sublime session per
 project, and forgotten when TM1 refuses it, when the user signs out, or when Sublime closes.
+
+After TM1 first accepts a typed password, the user is offered to remember it in the store; the
+answer is the project's "remember_password" under "tm1". A remembered password is used at the next
+connection, and removed from the store when TM1 refuses it or the user signs out. The store is
+keyed by the connection (namespace, user and server), not the project file. Any failure of the
+store is printed and the password asked for as without one: it never blocks a connection.
 """
 
 import sublime
 import sublime_plugin
 
+from ..core import keychain
+
 MASK = '•'
+REMEMBER = 'remember_password'
 
 _passwords = {}
+# Projects whose password was typed this session and not yet accepted by TM1
+_typed = set()
 
 
 def known(key):
     return key in _passwords
 
 
-def forget(key):
+def forget(key, connection=None):
+    """Forgets the project's password; with the connection, removes it from the store too."""
     _passwords.pop(key, None)
+    _typed.discard(key)
+    if connection is not None:
+        keychain.delete(account(connection))
 
 
 def forget_all():
     _passwords.clear()
+    _typed.clear()
+
+
+def account(connection):
+    """The store's name for a connection's password: who, and where."""
+    return connection.describe()
+
+
+def remembering(window):
+    """The project's answer to remembering its password: True, False, or None (not asked, or a
+    project with only 0.2.x's settings, which has nowhere to keep it)."""
+    settings = ((window.project_data() or {}).get('settings') or {}).get('tm1')
+    if not isinstance(settings, dict):
+        return None
+    value = settings.get(REMEMBER)
+    return value if isinstance(value, bool) else None
+
+
+def _save_answer(window, value):
+    project = window.project_data() or {}
+    settings = (project.get('settings') or {}).get('tm1')
+    if isinstance(settings, dict):
+        settings[REMEMBER] = value
+        window.set_project_data(project)
 
 
 def with_password(window, key, connection, then, on_cancel=None):
-    """Calls ``then(password)`` on the UI thread: at once when the project's password is known,
-    or once the user has typed it."""
+    """Calls then(password) on the UI thread: at once when the project's password is known (this
+    session, or remembered in the store), or once the user has typed it."""
     if key in _passwords:
         then(_passwords[key])
         return
+    if remembering(window):
+        stored = keychain.get(account(connection))
+        if stored is not None:
+            _passwords[key] = stored
+            then(stored)
+            return
 
     def done(password):
         _passwords[key] = password
+        _typed.add(key)
         then(password)
 
     ask_secret(window, 'TM1 password for {}:'.format(connection.describe()), done, on_cancel)
+
+
+def accepted(window, key, connection):
+    """TM1 took the project's password. A password typed this session is stored when the project
+    remembers its password, or the user is offered to, once per project."""
+    if key not in _typed or key not in _passwords:
+        return
+    _typed.discard(key)
+    answer = remembering(window)
+    if answer:
+        keychain.store(account(connection), _passwords[key])
+    elif answer is None and keychain.available() and isinstance(
+            ((window.project_data() or {}).get('settings') or {}).get('tm1'), dict):
+        _offer(window, key, connection)
+
+
+def _offer(window, key, connection):
+    store = keychain.name()
+    items = [sublime.QuickPanelItem('Remember the password in the {}'.format(store),
+                                    details='For {}, until TM1 refuses it or you sign out'.format(
+                                        connection.describe())),
+             sublime.QuickPanelItem('Ask each session', details="Kept in memory only, as now")]
+
+    def chosen(index):
+        if index == 0:
+            _save_answer(window, True)
+            if key in _passwords and keychain.store(account(connection), _passwords[key]):
+                window.status_message('TM1: password remembered in the {}'.format(store))
+        elif index == 1:
+            _save_answer(window, False)
+
+    window.show_quick_panel(items, chosen, placeholder='TM1 accepted the password. Remember it?')
+
+
+def rejected(key, connection):
+    """TM1 refused the project's password: forgotten here and in the store, to be asked again."""
+    forget(key, connection)
 
 
 def unmask(secret, shown, mask=MASK):

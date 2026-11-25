@@ -404,3 +404,36 @@ def test_after_choosing_a_password_the_next_command_keeps_the_gateway_and_passwo
     run(h)
     assert len(h.window.panels) == 1  # asked once, not again
     gateway._gateways.pop(PROJECT, None)
+
+
+
+def test_a_password_tm1_accepts_is_offered_to_the_keychain_and_a_refused_one_removed(credential_store):
+    h = Harness()
+    h.window = FakeWindow(project={'settings': {'tm1': {'address': 'tm1', 'port': '8010', 'user': 'admin'}}},
+                          project_file=PROJECT)
+    passwords = iter(['ok'])
+
+    def work(client):
+        if client.password == 'stale':
+            raise refused()
+        return next(passwords)
+
+    h.gateway.run(h.window, work, lambda r: None)
+    h.run_ui()
+    h.answer('apple')
+    h.run_ui()
+    h.window.quick_panels[0]['on_select'](0)  # remember it
+    account = credentials.account(CONNECTION)
+    assert credential_store.secrets == {account: 'apple'}
+
+    # Next session: the stored password is used; TM1 refuses it; it's removed and asked again
+    credentials.forget_all()
+    h.gateway._drop_client()
+    credential_store.secrets[account] = 'stale'
+    passwords = iter(['ok'])
+    h.gateway.run(h.window, work, lambda r: None)
+    assert credential_store.secrets == {}
+    h.run_ui()
+    h.answer('fresh')
+    h.run_ui()
+    assert credential_store.secrets == {account: 'fresh'}
