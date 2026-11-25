@@ -12,6 +12,8 @@ keyed by the connection (namespace, user and server), not the project file. Any 
 store is printed and the password asked for as without one: it never blocks a connection.
 """
 
+import threading
+
 import sublime
 import sublime_plugin
 
@@ -21,6 +23,12 @@ MASK = '•'
 REMEMBER = 'remember_password'
 
 _passwords = {}
+
+
+def _background(fn):
+    """Runs fn off the UI thread: the store can be slow (secret-tool on Linux, a locked Keychain)."""
+    threading.Thread(target=fn, name='tm1-keychain', daemon=True).start()
+
 # Projects whose password was typed this session and not yet accepted by TM1
 _typed = set()
 
@@ -34,7 +42,8 @@ def forget(key, connection=None):
     _passwords.pop(key, None)
     _typed.discard(key)
     if connection is not None:
-        keychain.delete(account(connection))
+        name = account(connection)
+        _background(lambda: keychain.delete(name))
 
 
 def forget_all():
@@ -71,19 +80,31 @@ def with_password(window, key, connection, then, on_cancel=None):
     if key in _passwords:
         then(_passwords[key])
         return
-    if remembering(window):
-        stored = keychain.get(account(connection))
-        if stored is not None:
-            _passwords[key] = stored
-            then(stored)
-            return
 
     def done(password):
         _passwords[key] = password
         _typed.add(key)
         then(password)
 
-    ask_secret(window, 'TM1 password for {}:'.format(connection.describe()), done, on_cancel)
+    def ask():
+        ask_secret(window, 'TM1 password for {}:'.format(connection.describe()), done, on_cancel)
+
+    if not remembering(window):
+        ask()
+        return
+
+    def read():
+        stored = keychain.get(account(connection))
+
+        def back():
+            if stored is None:
+                ask()
+            else:
+                _passwords[key] = stored
+                then(stored)
+        sublime.set_timeout(back, 0)
+
+    _background(read)
 
 
 def accepted(window, key, connection):
@@ -94,7 +115,8 @@ def accepted(window, key, connection):
     _typed.discard(key)
     answer = remembering(window)
     if answer:
-        keychain.store(account(connection), _passwords[key])
+        password = _passwords[key]
+        _background(lambda: keychain.store(account(connection), password))
     elif answer is None and keychain.available() and isinstance(
             ((window.project_data() or {}).get('settings') or {}).get('tm1'), dict):
         _offer(window, key, connection)
@@ -110,8 +132,14 @@ def _offer(window, key, connection):
     def chosen(index):
         if index == 0:
             _save_answer(window, True)
-            if key in _passwords and keychain.store(account(connection), _passwords[key]):
-                window.status_message('TM1: password remembered in the {}'.format(store))
+            if key in _passwords:
+                password = _passwords[key]
+
+                def save():
+                    if keychain.store(account(connection), password):
+                        sublime.set_timeout(lambda: window.status_message(
+                            'TM1: password remembered in the {}'.format(store)), 0)
+                _background(save)
         elif index == 1:
             _save_answer(window, False)
 

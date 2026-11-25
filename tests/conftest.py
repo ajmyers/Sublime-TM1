@@ -46,6 +46,10 @@ class FakeStore:
 def credential_store(monkeypatch):
     from tm1pkg.core import keychain
 
+    from tm1pkg.plugin import credentials
+
     store = FakeStore()
     monkeypatch.setattr(keychain, '_store', lambda platform=None: store)
+    # The store is used off the UI thread; in tests, at once
+    monkeypatch.setattr(credentials, '_background', lambda fn: fn())
     return store

@@ -152,3 +152,15 @@ def test_not_offered_without_a_store_or_a_place_for_the_answer(credential_store,
     typed(window)
     credentials.accepted(window, '/p/a.sublime-project', CONNECTION)
     assert window.quick_panels == []
+
+
+
+def test_the_store_is_read_off_the_ui_thread(credential_store, monkeypatch):
+    queued = []
+    monkeypatch.setattr(credentials, '_background', queued.append)
+    credential_store.secrets['admin at http://tm1:8010/api/v1/'] = 'stored'
+    window, got = project_window(remember=True), []
+    credentials.with_password(window, '/p/a.sublime-project', CONNECTION, got.append)
+    assert got == [] and window.panels == []  # nothing read on the UI thread
+    queued.pop()()
+    assert got == ['stored']
