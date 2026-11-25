@@ -1,5 +1,6 @@
 """core.threads: the console's thread table and log lines."""
 
+import re
 from types import SimpleNamespace
 
 from tm1pkg.core import threads
@@ -18,9 +19,30 @@ def test_leaves_out_the_consoles_own_request_and_cam_ids():
     assert [r[0] for r in rows] == [1] and rows[0][2] == 'Alice'
 
 
-def test_draws_the_table_with_tm1tops_columns():
-    text = threads.thread_table([thread(7)])
-    assert 'ElapsedTime' in text.splitlines()[1] and '| 7 ' in text
+def test_lays_out_tm1tops_columns_aligned_with_a_cancel_link_per_thread():
+    page = threads.thread_html([thread(7), thread(12, name='Bob', state='Wait', function='POST /api/v1/x')])
+    head, first, second = re.findall(r'<div class="row[^"]*">(.*?)</div>', page)
+    texts = [re.sub(r'<[^>]+>', '', row) for row in (head, first, second)]
+    # Each column starts at the same character in every row: the panel's font is monospace
+    assert texts[1].index('Admin') == texts[0].index('Name') == texts[2].index('Bob')
+    assert texts[1].index('Run') == texts[0].index('State') == texts[2].index('Wait')
+    assert 'href="cancel:7"' in first and 'href="cancel:12"' in second
+    assert 'var(--greenish)' in first and 'var(--yellowish)' in second
+    assert '<table' not in page
+
+
+def test_escapes_what_tm1_sends():
+    page = threads.thread_html([thread(1, function='<script>&', info='a\nb')])
+    assert '<script>' not in page and '&lt;script&gt;&amp;' in page
+
+
+def test_says_so_when_no_other_thread_runs():
+    assert 'No other threads running.' in threads.thread_html([thread(2, function='GET /api/v1/Threads')])
+
+
+def test_only_cancel_links_name_a_thread():
+    assert threads.cancel_target('cancel:42') == 42
+    assert threads.cancel_target('cancel:') is None and threads.cancel_target('https://x') is None
 
 
 def test_formats_log_lines():

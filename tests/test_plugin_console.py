@@ -14,7 +14,10 @@ class Panel:
         self.texts, self._settings = [], {}
 
     def settings(self):
-        return SimpleNamespace(set=lambda k, v: None)
+        return SimpleNamespace(set=self._settings.__setitem__)
+
+    def id(self):
+        return id(self)
 
     def run_command(self, name, args):
         assert name == 'tm1_set_panel_text'
@@ -72,7 +75,10 @@ def test_refreshes_while_showing_and_stops_when_hidden(timers, monkeypatch):
     monkeypatch.setattr(gateway, 'for_window', lambda w, quiet=False: gw)
     window = Window()
     console.DisplayTm1OpsConsole(window).run()
-    assert '| 5 ' in window.panel_views[console.CONSOLE].texts[-1]['text']
+    view = window.panel_views[console.CONSOLE]
+    [phantom] = view.phantoms[console.CONSOLE]
+    assert 'href="cancel:5"' in phantom.content and phantom.layout == sublime.LAYOUT_BLOCK
+    assert view._settings['line_numbers'] is False and view._settings['gutter'] is False
     timers.pop(0)()
     assert gw.calls == 2
     window.active = None  # the user closes the panel
@@ -185,3 +191,40 @@ def test_cancelling_the_password_prompt_stops_the_console(timers, monkeypatch):
     gw.cancel()
     timers.pop(0)()
     assert timers == [] and (1, console.CONSOLE) not in console._running
+
+
+def test_the_consoles_cancel_link_asks_before_cancelling(timers, monkeypatch):
+    cancelled = []
+    client = SimpleNamespace(threads=SimpleNamespace(list=lambda: [thread(5)], cancel=cancelled.append))
+    monkeypatch.setattr(gateway, 'for_window', lambda w, quiet=False: Gateway(client))
+    window = Window()
+    commands = []
+    window.run_command = lambda name, args=None: (
+        commands.append((name, args)), Window.run_command(window, name, args))
+    console.DisplayTm1OpsConsole(window).run()
+    [phantom] = window.panel_views[console.CONSOLE].phantoms[console.CONSOLE]
+    phantom.on_navigate('cancel:5')
+    assert commands[-1] == ('kill_tm1_thread', {'thread': 5, 'confirm': True})
+    kill = console.KillTm1ThreadCommand(window)
+    kill.run(thread=5, confirm=True)
+    assert cancelled == []
+    window.quick_panels[-1]['on_select'](0)
+    assert cancelled == [5]
+
+
+def test_a_keybinding_with_only_a_thread_cancels_it_at_once(timers, monkeypatch):
+    cancelled = []
+    client = SimpleNamespace(threads=SimpleNamespace(list=lambda: [], cancel=cancelled.append))
+    monkeypatch.setattr(gateway, 'for_window', lambda w, quiet=False: Gateway(client))
+    console.KillTm1ThreadCommand(Window()).run(thread='7')
+    assert cancelled == [7]
+
+
+def test_a_refresh_clears_an_earlier_error_and_keeps_one_phantom(timers, monkeypatch):
+    gw = Gateway(SimpleNamespace(threads=SimpleNamespace(list=lambda: [thread(5)])))
+    monkeypatch.setattr(gateway, 'for_window', lambda w, quiet=False: gw)
+    window = Window()
+    console.DisplayTm1OpsConsole(window).run()
+    timers.pop(0)()
+    view = window.panel_views[console.CONSOLE]
+    assert view.texts[-1] == {'text': ''} and len(view.phantoms[console.CONSOLE]) == 1
