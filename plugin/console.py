@@ -22,6 +22,8 @@ LOG_REFRESH = 2.0
 FIRST_LOG_LINES = 50
 
 _running = {}
+# The console's phantoms, by panel: a PhantomSet erases its phantoms when it's garbage collected
+_phantoms = {}
 
 
 def refresh_seconds(window):
@@ -34,7 +36,11 @@ def refresh_seconds(window):
 
 def panel(window, name):
     view = window.find_output_panel(name) or window.create_output_panel(name)
-    view.settings().set('word_wrap', False)
+    settings = view.settings()
+    settings.set('word_wrap', False)
+    # The panels show HTML and log lines, not code: no line numbers or gutter beside them
+    settings.set('line_numbers', False)
+    settings.set('gutter', False)
     return view
 
 
@@ -109,9 +115,21 @@ class DisplayTm1OpsConsole(sublime_plugin.WindowCommand):
         self.window.run_command('show_panel', {'panel': 'output.' + CONSOLE})
 
         def show(threads):
-            view.run_command('tm1_set_panel_text', {'text': tm1_threads.thread_table(threads)})
+            # The threads are HTML in a phantom; the text (an earlier error) is cleared
+            view.run_command('tm1_set_panel_text', {'text': ''})
+            phantoms = _phantoms.get(view.id())
+            if phantoms is None:
+                phantoms = _phantoms[view.id()] = sublime.PhantomSet(view, CONSOLE)
+            phantoms.update([sublime.Phantom(sublime.Region(0), tm1_threads.thread_html(threads),
+                                             sublime.LAYOUT_BLOCK, self.navigate)])
 
         Poller(self.window, CONSOLE, lambda client: client.threads.list(), show, refresh_seconds(self.window)).start()
+
+
+    def navigate(self, href):
+        thread = tm1_threads.cancel_target(href)
+        if thread is not None:
+            self.window.run_command('kill_tm1_thread', {'thread': thread, 'confirm': True})
 
 
 class RefreshTm1OpsConsoleCommand(sublime_plugin.WindowCommand):
@@ -125,12 +143,17 @@ class KillTm1ThreadCommand(sublime_plugin.WindowCommand):
     def is_enabled(self):
         return bool(self.window.project_file_name())
 
-    def run(self, thread=None):
+    def run(self, thread=None, confirm=False):
+        """With a thread: cancels it, after asking when confirm is set (the console's cancel
+        link). A keybinding giving only the thread, as 0.2.x took it, cancels at once."""
         tm1 = gateway.for_window(self.window)
         if tm1 is None:
             return
         if thread is not None:
-            self.kill(tm1, thread)
+            if confirm:
+                self.confirm(tm1, thread)
+            else:
+                self.kill(tm1, thread)
             return
         tm1.run(self.window, lambda client: tm1_threads.others(client.threads.list()),
                 lambda threads: self.choose(tm1, threads))
@@ -145,19 +168,19 @@ class KillTm1ThreadCommand(sublime_plugin.WindowCommand):
                  for t in threads]
 
         def chosen(index):
-            if index < 0:
-                return
-            thread = threads[index]
-
-            def confirmed(answer):
-                if answer == 0:
-                    self.kill(tm1, thread.id)
-
-            confirm = [sublime.QuickPanelItem('Cancel thread {}'.format(thread.id), details=[thread.function or '']),
-                       sublime.QuickPanelItem('Leave it running')]
-            self.window.show_quick_panel(confirm, confirmed, placeholder='Cancel this thread on TM1?')
+            if index >= 0:
+                self.confirm(tm1, threads[index].id, threads[index].function)
 
         self.window.show_quick_panel(items, chosen, placeholder='Thread to cancel')
+
+    def confirm(self, tm1, thread, function=None):
+        def confirmed(answer):
+            if answer == 0:
+                self.kill(tm1, thread)
+
+        items = [sublime.QuickPanelItem('Cancel thread {}'.format(thread), details=[function or '']),
+                 sublime.QuickPanelItem('Leave it running')]
+        self.window.show_quick_panel(items, confirmed, placeholder='Cancel this thread on TM1?')
 
     def kill(self, tm1, thread):
         def done(_):

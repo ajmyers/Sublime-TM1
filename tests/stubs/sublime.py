@@ -6,6 +6,7 @@ DRAW_NO_OUTLINE = 256
 DRAW_SQUIGGLY_UNDERLINE = 1024
 COMPLETION_FORMAT_SNIPPET = 1
 KIND_SNIPPET = (5, 's', 'Snippet')
+LAYOUT_BLOCK = 2
 
 _platform = 'osx'
 dialogs = []
@@ -115,3 +116,20 @@ def load_settings(name):
 class QuickPanelItem:
     def __init__(self, trigger, details='', annotation='', kind=None):
         self.trigger, self.details, self.annotation, self.kind = trigger, details, annotation, kind
+
+
+class Phantom:
+    def __init__(self, region, content, layout, on_navigate=None):
+        self.region, self.content, self.layout, self.on_navigate = region, content, layout, on_navigate
+
+
+class PhantomSet:
+    """Records its phantoms on the view, as view.phantoms[key]."""
+
+    def __init__(self, view, key=''):
+        self.view, self.key = view, key
+
+    def update(self, phantoms):
+        if not hasattr(self.view, 'phantoms'):
+            self.view.phantoms = {}
+        self.view.phantoms[self.key] = list(phantoms)
