@@ -50,6 +50,9 @@ class Poller:
         self.window, self.name, self.fetch, self.show, self.seconds = window, name, fetch, show, seconds
         self.busy = False
         self.stopped = False
+        # Until the first result, a hidden panel is the password prompt's doing (Sublime shows one
+        # panel at a time), not the user's: it doesn't stop the poller, and the result shows it again
+        self.shown = False
 
     def start(self):
         key = (self.window.id(), self.name)
@@ -59,7 +62,7 @@ class Poller:
         self.tick()
 
     def tick(self):
-        if self.stopped or not showing(self.window, self.name):
+        if self.stopped or (self.shown and not showing(self.window, self.name)):
             key = (self.window.id(), self.name)
             # Only its own entry: a poller replaced by a newer one mustn't unregister that one
             if _running.get(key) is self:
@@ -70,13 +73,23 @@ class Poller:
             if tm1 is None:
                 return
             self.busy = True
-            tm1.run(self.window, self.fetch, self.done, self.failed)
+            tm1.run(self.window, self.fetch, self.done, self.failed, self.cancelled)
         sublime.set_timeout(self.tick, int(self.seconds * 1000))
 
     def done(self, result):
         self.busy = False
         if not self.stopped:
+            if not self.shown:
+                self.shown = True
+                if not showing(self.window, self.name):
+                    self.window.run_command('show_panel', {'panel': 'output.' + self.name})
             self.show(result)
+
+    def cancelled(self):
+        # Signing in was cancelled (Esc at the password prompt, say): nothing more will come, and
+        # the panel the prompt replaced mustn't keep this poller ticking unseen
+        self.busy = False
+        self.stopped = True
 
     def failed(self, error):
         self.busy = False

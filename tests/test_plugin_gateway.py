@@ -95,6 +95,15 @@ def test_asks_for_the_password_then_runs_the_work_and_reports_on_the_ui_thread(h
     assert done == ['APPLE']
 
 
+def test_escape_at_the_password_prompt_cancels(h):
+    done, cancelled = [], []
+    h.gateway.run(h.window, lambda client: client.password, done.append, on_cancel=lambda: cancelled.append(1))
+    h.run_ui()
+    h.window.panels[-1].cancel()
+    h.run_ui()
+    assert cancelled == [1] and done == [] and h.clients == []
+
+
 def test_reuses_the_client_while_the_password_holds(h):
     seen = []
     h.gateway.run(h.window, seen.append)
@@ -340,6 +349,43 @@ def test_closing_the_window_is_a_quiet_cancel():
     run(h)
     assert h.window.quick_panels == [] and sublime.dialogs == []
     assert h.window.statuses[-1] == 'TM1: sign-in cancelled'
+
+
+def test_a_cancelled_sign_in_tells_the_caller():
+    from tm1pkg.core.browser import SignInCancelled
+
+    h = failing_browser(SignInCancelled('closed'))
+    cancelled = []
+    h.gateway.run(h.window, lambda client: client.passport(), on_cancel=lambda: cancelled.append(1))
+    h.run_ui()
+    h.run_ui()
+    assert cancelled == [1]
+
+
+@pytest.mark.parametrize('choice', [-1, 3])
+def test_cancelling_the_other_ways_in_tells_the_caller(choice):
+    from tm1pkg.core.browser import BrowserError
+
+    h = failing_browser(BrowserError('no browser'))
+    cancelled = []
+    h.gateway.run(h.window, lambda client: client.passport(), on_cancel=lambda: cancelled.append(1))
+    h.run_ui()
+    h.run_ui()
+    h.window.quick_panels[0]['on_select'](choice)
+    assert cancelled == [1]
+
+
+def test_escape_at_the_passport_prompt_tells_the_caller():
+    from tm1pkg.core.browser import BrowserError
+
+    h = failing_browser(BrowserError('no browser'))
+    cancelled = []
+    h.gateway.run(h.window, lambda client: client.passport(), on_cancel=lambda: cancelled.append(1))
+    h.run_ui()
+    h.run_ui()
+    h.window.quick_panels[0]['on_select'](1)
+    h.window.panels[-1].cancel()
+    assert cancelled == [1]
 
 
 def test_after_choosing_a_password_the_next_command_keeps_the_gateway_and_password(monkeypatch):
