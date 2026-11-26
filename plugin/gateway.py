@@ -161,39 +161,41 @@ class Gateway:
         self._client_password = None
         self._lock = threading.Lock()
 
-    def run(self, window, work, on_done=None, on_error=None):
+    def run(self, window, work, on_done=None, on_error=None, on_cancel=None):
         """Runs ``work(client)`` off the UI thread, then ``on_done(result)`` or
-        ``on_error(error)`` on it. Asks for the password first if it isn't known yet."""
-        self._run(window, work, on_done, on_error, retry=True)
+        ``on_error(error)`` on it. Asks for the password first if it isn't known yet.
+        ``on_cancel()`` runs on the UI thread if the user cancels signing in instead (Esc at a
+        prompt, the browser window closed), when neither of the others will."""
+        self._run(window, work, on_done, on_error, retry=True, on_cancel=on_cancel)
 
-    def _run(self, window, work, on_done, on_error, retry):
+    def _run(self, window, work, on_done, on_error, retry, on_cancel=None):
         if self.method is None:
             # How to log in is worked out once, off the UI thread: it asks TM1 and Cognos
-            self._submit(self._find_method, window, work, on_done, on_error, retry)
+            self._submit(self._find_method, window, work, on_done, on_error, retry, on_cancel)
             return
 
         def start(password):
-            self._submit(self._work, window, work, password, on_done, on_error, retry)
+            self._submit(self._work, window, work, password, on_done, on_error, retry, on_cancel)
 
         if self.method.kind == 'browser':
             start(None)
         else:
-            credentials.with_password(window, self.key, self.connection, start)
+            credentials.with_password(window, self.key, self.connection, start, on_cancel)
 
-    def _find_method(self, window, work, on_done, on_error, retry):
+    def _find_method(self, window, work, on_done, on_error, retry, on_cancel=None):
         self.method = self._resolve(self.connection)
-        self._on_ui(lambda: self._run(window, work, on_done, on_error, retry))
+        self._on_ui(lambda: self._run(window, work, on_done, on_error, retry, on_cancel))
 
-    def _work(self, window, work, password, on_done, on_error, retry):
+    def _work(self, window, work, password, on_done, on_error, retry, on_cancel=None):
         try:
             result = work(self._client_for(password, window))
         except Exception as e:
-            self._failed(e, window, work, on_done, on_error, retry)
+            self._failed(e, window, work, on_done, on_error, retry, on_cancel)
             return
         if on_done is not None:
             self._on_ui(lambda: on_done(result))
 
-    def _failed(self, error, window, work, on_done, on_error, retry):
+    def _failed(self, error, window, work, on_done, on_error, retry, on_cancel=None):
         from skipcheck_tm1.errors import Tm1AuthenticationError, Tm1ErrorKind
 
         from ..core.browser import BrowserError, SignInCancelled
@@ -201,23 +203,28 @@ class Gateway:
         browser_error = _find(error, BrowserError)
         if isinstance(browser_error, SignInCancelled):
             self._drop_client()
-            self._on_ui(lambda: window.status_message('TM1: sign-in cancelled'))
+
+            def cancelled():
+                window.status_message('TM1: sign-in cancelled')
+                if on_cancel is not None:
+                    on_cancel()
+            self._on_ui(cancelled)
         elif browser_error is not None:
             self._drop_client()
-            self._on_ui(lambda: self._browser_failed(window, browser_error, work, on_done, on_error))
+            self._on_ui(lambda: self._browser_failed(window, browser_error, work, on_done, on_error, on_cancel))
         elif isinstance(error, Tm1AuthenticationError) and error.kind == Tm1ErrorKind.CREDENTIAL_REJECTED:
             # A wrong password, or a passport TM1 no longer takes: forgotten, and asked once more
             credentials.forget(self.key)
             browser_sign_in.forget(self.key)
             self._drop_client()
             if retry:
-                self._on_ui(lambda: self._run(window, work, on_done, on_error, retry=False))
+                self._on_ui(lambda: self._run(window, work, on_done, on_error, retry=False, on_cancel=on_cancel))
             else:
                 self._fail(error, on_error)
         else:
             self._fail(error, on_error)
 
-    def _browser_failed(self, window, error, work, on_done, on_error):
+    def _browser_failed(self, window, error, work, on_done, on_error, on_cancel=None):
         """The browser sign-in didn't work: say why, and offer the other ways in."""
         from ..core.discovery import Method
 
@@ -235,15 +242,18 @@ class Gateway:
                     # Matching the project's settings again, so the next command keeps this gateway,
                     # and the password and session that come with it
                     self.connection = dataclasses.replace(self.connection, auth='cam')
-                self._run(window, work, on_done, on_error, retry=True)
+                self._run(window, work, on_done, on_error, retry=True, on_cancel=on_cancel)
             elif index == 1:
                 def pasted(value):
                     browser_sign_in._passports[self.key] = value.strip()
-                    self._run(window, work, on_done, on_error, retry=False)
-                credentials.ask_secret(window, 'CAM passport:', pasted)
+                    self._run(window, work, on_done, on_error, retry=False, on_cancel=on_cancel)
+                credentials.ask_secret(window, 'CAM passport:', pasted, on_cancel)
             elif index == 2:
                 browser_sign_in.forget(self.key)
-                self._run(window, work, on_done, on_error, retry=True)
+                self._run(window, work, on_done, on_error, retry=True, on_cancel=on_cancel)
+            elif on_cancel is not None:
+                # Cancel, or Esc (-1)
+                on_cancel()
 
         items = [sublime.QuickPanelItem(trigger, details=details) for trigger, details in choices]
         window.show_quick_panel(items, chosen, placeholder='TM1 browser sign-in failed: ' + str(error))

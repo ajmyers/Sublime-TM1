@@ -73,7 +73,7 @@ class Poller:
             if tm1 is None:
                 return
             self.busy = True
-            tm1.run(self.window, self.fetch, self.done, self.failed)
+            tm1.run(self.window, self.fetch, self.done, self.failed, self.cancelled)
         sublime.set_timeout(self.tick, int(self.seconds * 1000))
 
     def done(self, result):
@@ -84,6 +84,12 @@ class Poller:
                 if not showing(self.window, self.name):
                     self.window.run_command('show_panel', {'panel': 'output.' + self.name})
             self.show(result)
+
+    def cancelled(self):
+        # Signing in was cancelled (Esc at the password prompt, say): nothing more will come, and
+        # the panel the prompt replaced mustn't keep this poller ticking unseen
+        self.busy = False
+        self.stopped = True
 
     def failed(self, error):
         self.busy = False

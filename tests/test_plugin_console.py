@@ -48,7 +48,7 @@ class Gateway:
     def __init__(self, client, defer=False):
         self.client, self.defer, self.pending, self.calls = client, defer, [], 0
 
-    def run(self, window, work, on_done=None, on_error=None):
+    def run(self, window, work, on_done=None, on_error=None, on_cancel=None):
         self.calls += 1
         step = lambda: on_done(work(self.client))  # noqa: E731
         self.pending.append(step) if self.defer else step()
@@ -153,9 +153,10 @@ class PasswordGateway(Gateway):
         super().__init__(client, defer=True)
         self.window = window
 
-    def run(self, window, work, on_done=None, on_error=None):
+    def run(self, window, work, on_done=None, on_error=None, on_cancel=None):
         if self.calls == 0:
             self.window.active = 'input'
+            self.cancel = on_cancel
         super().run(window, work, on_done, on_error)
 
 
@@ -173,3 +174,14 @@ def test_after_the_password_prompt_the_console_shows_and_keeps_polling(timers, m
     window.active = None               # now the user closes it
     timers.pop(0)()
     assert timers == [] and gw.calls == 2
+
+
+def test_cancelling_the_password_prompt_stops_the_console(timers, monkeypatch):
+    window = Window()
+    gw = PasswordGateway(SimpleNamespace(threads=SimpleNamespace(list=lambda: [thread(5)])), window)
+    monkeypatch.setattr(gateway, 'for_window', lambda w, quiet=False: gw)
+    console.DisplayTm1OpsConsole(window).run()
+    window.active = None               # Esc: the input panel closes, and no result will come
+    gw.cancel()
+    timers.pop(0)()
+    assert timers == [] and (1, console.CONSOLE) not in console._running
