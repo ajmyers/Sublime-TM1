@@ -30,7 +30,8 @@ What's new
 - Run lists the processes without freezing the editor, asks for each
   parameter, then shows the run's own log lines and error files in a panel.
 - New: 'TM1: Console - Tail Server Log' follows the server's message log.
-- The console and Kill Thread no longer block the editor while they refresh.
+- The console shows the threads as a table, with a cancel link for each,
+  and it and Kill Thread no longer block the editor while they refresh.
 - Format Process changes only the code of the four procedures.
 - Completions from 'TM1: Get' are no longer written into the project file;
   the ones 0.2.x wrote there are removed on the next Get.
