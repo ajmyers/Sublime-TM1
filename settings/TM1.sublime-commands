@@ -11,5 +11,6 @@
     { "caption": "TM1: Config - Sign Out", "command": "tm1_sign_out"},
     { "caption": "TM1: Config - Enable Format Process on Save", "command": "enable_format_process_on_save"},
     { "caption": "TM1: Config - Disable Format Process on Save", "command": "disable_format_process_on_save"},
-    { "caption": "TM1: Format - Format Active Process", "command": "format_turbo_integrator_process"}
+    { "caption": "TM1: Format - Format Active Process", "command": "format_turbo_integrator_process"},
+    { "caption": "Preferences: TM1 Settings", "command": "edit_settings", "args": { "base_file": "${packages}/TM1 Planning Analytics Developer Tools/TM1 Planning Analytics Developer Tools.sublime-settings", "default": "// TM1 Planning Analytics Developer Tools: your settings, which override the defaults on the left\n{\n\t$0\n}\n" } }
 ]
