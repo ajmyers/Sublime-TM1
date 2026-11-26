@@ -35,3 +35,30 @@ def test_messages_fit_package_controls_view():
     for path in paths:
         with open(os.path.join(ROOT, path), encoding='utf-8') as f:
             assert all(len(line) <= 79 for line in f.read().split('\n')), path
+
+
+PACKAGE = 'TM1 Planning Analytics Developer Tools'
+
+
+def edit_settings_targets(node):
+    """The base_file of every edit_settings command in a .sublime-commands or .sublime-menu tree."""
+    if isinstance(node, list):
+        return [t for child in node for t in edit_settings_targets(child)]
+    if isinstance(node, dict):
+        found = [node['args']['base_file']] if node.get('command') == 'edit_settings' else []
+        return found + edit_settings_targets(node.get('children', []))
+    return []
+
+
+def test_the_settings_are_named_after_the_package_and_the_menus_open_them():
+    # Package Control's reviewer warns of a .sublime-settings named after neither the package nor a
+    # syntax. The name is part of the interface: users' overrides in Packages/User go by it
+    name = PACKAGE + '.sublime-settings'
+    assert os.path.isfile(os.path.join(ROOT, name))
+    targets = []
+    for path in ('Main.sublime-menu', os.path.join('settings', 'TM1.sublime-commands')):
+        with open(os.path.join(ROOT, path), encoding='utf-8') as f:
+            found = edit_settings_targets(json.load(f))
+        assert found, path
+        targets += found
+    assert set(targets) == {'${packages}/' + PACKAGE + '/' + name}

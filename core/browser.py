@@ -332,7 +332,9 @@ class Browser:
         port_file = os.path.join(profile, 'DevToolsActivePort')
         if os.path.exists(port_file):
             os.remove(port_file)
-        flags = getattr(subprocess, 'CREATE_NEW_PROCESS_GROUP', 0)
+        # CREATE_NO_WINDOW changes nothing for the browser, a GUI program, but keeps any console
+        # window from showing (Windows only, like CREATE_NEW_PROCESS_GROUP)
+        flags = getattr(subprocess, 'CREATE_NEW_PROCESS_GROUP', 0) | getattr(subprocess, 'CREATE_NO_WINDOW', 0)
         # Its own session on POSIX, so close() can end its helper processes with it
         self._process = subprocess.Popen(args, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
                                          stderr=subprocess.DEVNULL, creationflags=flags,
@@ -409,8 +411,10 @@ class Browser:
                 pass
         else:
             if self.running():
+                # taskkill is a console program: without CREATE_NO_WINDOW, a console window flashes
                 subprocess.run(['taskkill', '/T', '/F', '/PID', str(self._pid)], stdout=subprocess.DEVNULL,
-                               stderr=subprocess.DEVNULL, check=False)
+                               stderr=subprocess.DEVNULL, check=False,
+                               creationflags=getattr(subprocess, 'CREATE_NO_WINDOW', 0))
         if self._process is not None and self._process.poll() is None:
             try:
                 self._process.kill()

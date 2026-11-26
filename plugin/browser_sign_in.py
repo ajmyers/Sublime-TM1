@@ -13,7 +13,7 @@ from ..core import browser as browsers
 from ..core.discovery import browser_login_url
 
 PACKAGE = 'TM1 Planning Analytics Developer Tools'
-SETTINGS = 'TM1.sublime-settings'
+SETTINGS = 'TM1 Planning Analytics Developer Tools.sublime-settings'
 
 _passports = {}
 

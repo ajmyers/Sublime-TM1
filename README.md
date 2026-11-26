@@ -81,7 +81,7 @@ The project opens in a new window, with a Sidebar containing its .sublime-projec
   - `"auth"`: `"basic"`, `"cam"` (a user and password) or `"browser"`, instead of working it out;
   - `"verify"`: `false` not to check TM1's certificate, or the path of a CA bundle that signs it;
   - `"dispatcher"`: Cognos's address, when the one TM1 gives isn't reachable from your computer.
-- In Preferences > Package Settings > TM1, `"browser"` sets the browser to sign in with.
+- In Preferences > Package Settings > TM1 > Settings (or 'Preferences: TM1 Settings' in the command palette), `"browser"` sets the browser to sign in with.
 
 ### Populate Rules and Processes from Remote Server
 

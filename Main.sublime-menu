@@ -1,0 +1,18 @@
+[
+    {
+        "id": "preferences",
+        "children": [
+            {
+                "id": "package-settings",
+                "children": [
+                    {
+                        "caption": "TM1",
+                        "children": [
+                            { "caption": "Settings", "command": "edit_settings", "args": { "base_file": "${packages}/TM1 Planning Analytics Developer Tools/TM1 Planning Analytics Developer Tools.sublime-settings", "default": "// TM1 Planning Analytics Developer Tools: your settings, which override the defaults on the left\n{\n\t$0\n}\n" } }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]
