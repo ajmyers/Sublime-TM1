@@ -143,7 +143,8 @@ def open_project(project_file):
         subl = os.path.join(os.path.dirname(executable), 'subl.exe')
     else:
         subl = executable
-    subprocess.Popen([subl, '--project', project_file])
+    # subl.exe is a console program: without this, Windows flashes a console window
+    subprocess.Popen([subl, '--project', project_file], creationflags=getattr(subprocess, 'CREATE_NO_WINDOW', 0))
 
 
 class CreateNewTm1Project(sublime_plugin.WindowCommand):
