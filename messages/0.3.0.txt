@@ -12,7 +12,8 @@ Their settings, .pro and .rux files, commands and keybindings carry over.
 
 The one change you'll notice: the password stored in the project file
 (obfuscated, not encrypted) is no longer used. It's asked for once per
-Sublime session and kept only in memory. To remove the stored one from the
+Sublime session and kept in memory, or, if you choose, in your system's
+keychain (see below). To remove the stored one from the
 project, run 'TM1: Config - Update Current TM1 Project'. A teammate still on
 0.2.x needs it there, so it stays until you choose.
 
@@ -25,6 +26,10 @@ What's new
 - 'TM1: Config - Create New TM1 Project' asks only for the server's host or
   URL, and finds the port, HTTPS and the login itself.
 - New: 'TM1: Config - Sign Out' forgets the password and the sign-in.
+- Once TM1 accepts your password, you're offered to remember it in your
+  system's credential store (Keychain on macOS, Credential Manager on
+  Windows, the keyring through secret-tool on Linux), so it isn't asked
+  each session. It's never written to the project file.
 - Put shows TM1's errors on their own lines in the file, with the message
   beside each one, instead of a popup.
 - Run lists the processes without freezing the editor, asks for each

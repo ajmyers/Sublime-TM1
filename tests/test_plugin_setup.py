@@ -186,3 +186,11 @@ def test_signing_out_forgets_the_password_and_passport(tmp_path, monkeypatch):
     assert key not in credentials._passwords and key not in browser_sign_in._passports
     window.quick_panels[0]['on_select'](1)
     assert not os.path.exists(browser_sign_in.profile_folder())
+
+
+def test_signing_out_removes_the_remembered_password_from_the_store(credential_store):
+    key = '/p/x.sublime-project'
+    tm1 = {'address': 'tm1', 'port': '8010', 'user': 'admin', 'remember_password': True}
+    credential_store.secrets['admin at http://tm1:8010/api/v1/'] = 'apple'
+    setup.Tm1SignOutCommand(FakeWindow(project={'settings': {'tm1': tm1}}, project_file=key)).run()
+    assert credential_store.secrets == {}

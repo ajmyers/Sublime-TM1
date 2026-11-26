@@ -5,8 +5,9 @@
   every other package's async work).
 - Results and errors come back on the UI thread. An error nobody handles is shown in a dialog and
   printed to the console with its traceback; it's never lost in a thread.
-- The password is asked at first use (credentials.py). When TM1 refuses it, it's forgotten and asked
-  for once more.
+- The password is asked at first use, or read from the credential store when the user chose to
+  remember it (credentials.py). When TM1 refuses it, it's forgotten (and removed from the store) and
+  asked for once more.
 """
 
 import dataclasses
@@ -192,6 +193,8 @@ class Gateway:
         except Exception as e:
             self._failed(e, window, work, on_done, on_error, retry, on_cancel)
             return
+        if password is not None:
+            self._on_ui(lambda: credentials.accepted(window, self.key, self.connection))
         if on_done is not None:
             self._on_ui(lambda: on_done(result))
 
@@ -213,8 +216,9 @@ class Gateway:
             self._drop_client()
             self._on_ui(lambda: self._browser_failed(window, browser_error, work, on_done, on_error, on_cancel))
         elif isinstance(error, Tm1AuthenticationError) and error.kind == Tm1ErrorKind.CREDENTIAL_REJECTED:
-            # A wrong password, or a passport TM1 no longer takes: forgotten, and asked once more
-            credentials.forget(self.key)
+            # A wrong password, or a passport TM1 no longer takes: forgotten (in the credential store
+            # too), and asked once more
+            credentials.rejected(self.key, self.connection)
             browser_sign_in.forget(self.key)
             self._drop_client()
             if retry:
