@@ -175,7 +175,10 @@ class _SecretTool:
 
     def _run(self, *args, secret=None):
         return subprocess.run([self._tool, *args, 'service', SERVICE, 'account', self._account], input=secret,
-                              capture_output=True, text=True, timeout=TIMEOUT)
+                              capture_output=True, text=True, timeout=TIMEOUT,
+                              # Only Linux has secret-tool; the flag is 0 there, and is passed so
+                              # every subprocess call in the package handles Windows' console window
+                              creationflags=getattr(subprocess, 'CREATE_NO_WINDOW', 0))
 
     def get(self, account):
         self._account = account
